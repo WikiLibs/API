@@ -1,0 +1,42 @@
+
+# default: &default
+#   adapter: postgresql
+#   encoding: unicode
+#   # For details on connection pooling, see Rails configuration guide
+#   # http://guides.rubyonrails.org/configuring.html#database-pooling
+#   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+# development:
+#   <<: *default
+#   database: WikiLibs_development
+
+# test:
+#   <<: *default
+#   database: WikiLibs_test
+
+# production:
+#   <<: *default
+#    database: WikiLibs_production
+#    username: WikiLibs
+#    password: <%= ENV['WIKILIBS_DATABASE_PASSWORD'] %>
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: db
+  username: <%= ENV["POSTGRES_USER"] %>
+  password: <%= ENV["POSTGRES_PASSWORD"] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: wikilibs_development
+
+test:
+  <<: *default
+  database: wikilibs_test
+
+production:
+  <<: *default
+  host: <%= ENV["POSTGRES_HOST"] %>
+  database: wikilibs_production
