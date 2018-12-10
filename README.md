@@ -1,17 +1,14 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
+usefull command:
 
 * Ruby version
 
 * System dependencies
 
-* Configuration
+* Configuration : docker-compose run --rm
 
-* Database creation
+* Database creation : docker-compose run --rm app rake db:create db:migrate
 
 * Database initialization
 

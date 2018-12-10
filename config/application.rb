@@ -29,5 +29,16 @@ module WikiLibs
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    ActionMailer::Base.smtp_settings = {
+    :address              =>  "smtp.gmail.com",
+    :domain               =>  "mail.google.com",
+    :port                 =>  587,
+    :user_name            =>  "wikilibs.no.response@gmail.com",
+    :password             =>  "12Poissons2hOt4U",
+    :authentification     =>  "login",
+    :enable_starttls_auto =>  true
+  }
+
   end
 end
