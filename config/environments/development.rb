@@ -1,7 +1,7 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.action_mailer.default_url_options = { host: 'localhost', port: 4242 }
+  config.action_mailer.default_url_options = { host: 'eip.yuristudio.net', port: 4242 } #443
   config.action_mailer.delivery_method = :smtp
 
   # In the development environment your application's code is reloaded on

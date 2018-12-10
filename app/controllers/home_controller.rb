@@ -3,7 +3,7 @@ class HomeController < ApplicationController
     if user_signed_in?
       redirect_to '/welcome/index'
     else
-      redirect_to new_user_session_path
+      redirect_to '/users/sign_in'
     end
   end
 end
