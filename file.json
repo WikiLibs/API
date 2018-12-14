@@ -1,0 +1,38 @@
+{
+    "lib":{
+        "fonction1":{
+            "name": "create::window",
+            "link": "test.html"
+        },
+        "fonction2":{
+            "name": "create::sprite",
+            "link": "test.html"
+        },
+        "fonction3":{
+            "name": "create::texture",
+            "link": "test.html"
+        },
+        "fonction4":{
+            "name": "create::text",
+            "link": "test.html"
+        }
+    },
+    "lib2":{
+        "fonction1":{
+            "name": "printf()",
+            "link": "test.html"
+        },
+        "fonction2":{
+            "name": "strlen()",
+            "link": "test.html"
+        },
+        "fonction3":{
+            "name": "strstr()",
+            "link": "test.html"
+        },
+        "fonction4":{
+            "name": "str_to_wordtab()",
+            "link": "test.html"
+        }
+    }
+}

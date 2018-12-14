@@ -29,6 +29,7 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'nokogiri', '1.6.8.1'
 gem 'devise'
+gem 'jquery'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'

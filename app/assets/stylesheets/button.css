@@ -1,0 +1,17 @@
+.buttonCopy {
+    background: transparent;
+    position: absolute;
+    right: 1%;
+    border: none !important;
+    font-size: 10!important;
+    width: 10%;
+}
+
+.buttonCopy:hover {
+    background-color: grey;
+}
+
+.buttonContact {
+    padding-left: 4%;
+    font-size: 140%;
+}

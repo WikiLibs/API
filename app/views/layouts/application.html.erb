@@ -18,11 +18,11 @@
     <button class="btn btn-default" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" style="color:white; background-color:transparent;" id="menu-toggle">                                                                                                                                                                                                                      
       <i class="fas fa-bars"></i>                                                                                                                                                                                              
     </button>                                                                                                                                                                                                                    
-    <a class="navbar-brand fontBold" href="#" style="color:white;padding-left:15px;margin-right:15px">WikiLibs</a>                                                                                                               
+    <a class="navbar-brand fontBold" href="/" style="color:white;padding-left:15px;margin-right:15px">WikiLibs</a>                                                                                                               
     <div class="inner-addon right-addon" style="width:50%; position: relative; align-self: auto;">                                                                                                                               
       <i class="fas fa-search glyphicon"></i>                                                                                                                                                                                  
       <input type="search" class="form-control fontRegular" placeholder="Search" value="" style="border-radius: 100px !important; outline: none;"/>                                                                            
-    </div>   
+    </div>
     <% if user_signed_in? %>
         <%= link_to('Logout', destroy_user_session_path, :class => "log fontBold", method: :delete) %>
         <p class ="log" style="padding-top:17px;"> Hello, <%= current_user.email %></p>
@@ -30,24 +30,47 @@
         <%= link_to('Login', new_user_session_path, :class => "log fontBold") %>
     <% end %>
     <ul class="nav navbar-nav navbar-right">
-      <li>                                                                                                                                                                                                    
+      <li>
         <div class="inset">
         <%= image_tag('pp.png', draggable: "true") %>
         </div>                                                                                                                                                                                                               
       </li>                                                                                                                                                                                                                    
-    </ul>                        
-    <br/>
-    <br/>                                                                                                                                                                                                
+    </ul>                                                                                                                                                                                          
   </header>
-  <div>
-    <br/><br/><br/><br/>
+
+<div id="wrapper">
+<div id="sidebar-wrapper">                                                                                                                                                                                                       
+  <ul class="sidebar-nav">                                                                                                                                                                                                     
+    <p class="title-sidebar-nav fontRegular">Popular Lib</p>
+    <li>
+        <%$tab.keys.each do |lib|%>
+        <% $current_lib = lib %>
+        <a href="#Submenu_<%= lib %>" data-toggle="collapse" aria-expanded="false" class="fontRegular"><%= lib %></a>                                                                                                                   
+        <ul class="collapse list-unstyled" id="Submenu_<%= lib %>">
+          <%$tab[lib].keys.each do |function|%>
+            <% $current_function = function %>
+            <li><a href="/home/index"><%= $tab[lib][function]["name"] %></a></li>
+          <%end%>
+        </ul>
+        <%end%>                                                                                                                                                          
+      </li>
+    </ul>                                                                                                                                                                                                                        
+  </div>                                                                                                                                                                                                                           
+  <div id="page-content-wrapper">
+    <%= yield %>
   </div>
+</div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>                                                 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>                        
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>                           
-  <!-- <script src="sidebar.js"></script> -->
-
-    <%= yield %>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+  });
+  </script>
   </body>
 </html>

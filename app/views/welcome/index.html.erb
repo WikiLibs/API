@@ -1,2 +1,87 @@
-<h1>Welcome</h1>
-<p>You're correctly logged</p>
+<div id="page-content-wrapper">                                                                                                                                                                                                  
+    <div class="fullsizeScreen">                                                                                                                                                                                                 
+        <div>                                                                                                                                                                                                                    
+            <span class="title_welcome fontBold">                                                                                                                                                                                
+                WikiLibs: our passion, for your time                                                                                                                                                                         
+            </span>                                                                                                                                                                                                              
+            <span class="subtitle_welcome fontRegular">                                                                                                                                                                          
+                Coding libraries will never be a problem again                                                                                                                                                               
+            </span>                        
+            <% if !user_signed_in? %>                                                                                                                                                                                      
+            <div class="welcome_container">
+                <a href="/users/sign_up" style="color: white;"><button type="button" class="btn btn-primary btn-lg button_welcome fontRegular">Join the community !</button></a>                                                                                                    
+            </div>
+            <% end %>
+            <%= image_tag('fond.png', draggable: "true", class: "resize") %>
+        </div>                                                                                                                                                                                                                   
+    </div>
+
+<div class="welcome_border"></div>                                                                                                                                                                                           
+    <div class="fullsizeScreen padding_welcome">                                                                                                                                                                                 
+        <div class="padding_middle">                                                                                                                                                                                             
+            <span class="title_middle fontBold">                                                                                                                                                                                 
+                What is WikiLibs ?                                                                                                                                                                                               
+            </span>                                                                                                                                                                                                              
+        </div>                                                                                                                                                                                                                   
+        <div class='row text_middle padding_middle_row'>                                                                                                                                                                         
+            <div class='col-4 text-center black'>
+                <%= image_tag('At.png', draggable: "true", class: "padding_images_welcome_middle") %>
+                <p class="clearMargin">WikiLibs regroups the documentation</p>                                                                                                                                                   
+                <p class="clearMargin">of multiples libraries from</p>                                                                                                                                                           
+                <p class="clearMargin">different languages.</p>                                                                                                                                                                  
+            </div>                                                                                                                                                                                                               
+            <div class='col-4 text-center black'>
+                <%= image_tag('People.png', draggable: "true", class: "padding_images_welcome_middle") %>
+                <p class="clearMargin">Your contribution is also important !</p>                                                                                                                                                 
+                <p class="clearMargin">You can add your own example for</p>                                                                                                                                                      
+                <p class="clearMargin">each function, to help other people.</p>                                                                                                                                                  
+            </div>                                                                                                                                                                                                               
+            <div class='col-4 text-center black'>
+                <%= image_tag('Tools.png', draggable: "true", class: "padding_images_welcome_middle") %>
+                <p class="clearMargin">Wikilibs also gives you access to</p>                                                                                                                                                     
+                <p class="clearMargin">resources like download links</p>                                                                                                                                                         
+                <p class="clearMargin">and tutorial</p>                                                                                                                                                                          
+            </div>                                                                                                                                                                                                               
+        </div>                                                                                                                                                                                                                   
+    </div>                                                                                                                                                                                                                       
+    <div class="fullsizeScreen padding_welcome">                                                                                                                                                                                 
+        <div class="padding_middle">                                                                                                                                                                                             
+            <span class="title_middle1 fontBold">                                                                                                                                                                                
+                How to use it ?                                                                                                                                                                                                  
+            </span>                                                                                                                                                                                                              
+        </div>
+        <div class='row text_middle padding_middle_row'>                                                                                                                                                                         
+            <div class='col-4 text-center black'>
+                <%= image_tag('Mouse.png', draggable: "true", class: "padding_images_welcome_middle") %>
+                <p class="clearMargin">Click on the top left button to</p>                                                                                                                                                       
+                <p class="clearMargin">to make the drawer appear, and choose</p>                                                                                                                                                 
+                <p class="clearMargin">a library (either the most used ones,</p>                                                                                                                                                 
+                <p class="clearMargin">or from the list.</p>                                                                                                                                                                     
+            </div>                                                                                                                                                                                                               
+            <div class='col-4 text-center black'>
+                <%= image_tag('Search.png', draggable: "true", class: "padding_images_welcome_middle") %>
+                <p class="clearMargin">Or you can directly search for your</p>                                                                                                                                                   
+                <p class="clearMargin">desired library in the search bar</p>                                                                                                                                                     
+                <p class="clearMargin">(located in the top side of the site)</p>                                                                                                                                                 
+            </div>                                                                                                                                                                                                               
+            <div class='col-4 text-center black'>
+                <%= image_tag('Think.png', draggable: "true", class: "padding_images_welcome_middle") %>
+                <p class="clearMargin">If you are connected, you can add your</p>                                                                                                                                                
+                <p class="clearMargin">example on a function page. If it's</p>                                                                                                                                                   
+                <p class="clearMargin">approuved by the moderator, it will be visible</p>                                                                                                                                        
+                <p class="clearMargin">to the other users !</p>                                                                                                                                                                  
+            </div>                                                                                                                                                                                                               
+        </div>                                                                                                                                                                                                                   
+    </div>                                                                                                                                                                                                                       
+    <div class="contact_border"></div>                                                                                                                                                                                           
+        <div class="fontRegular front text-center">                                                                                                                                                                                  
+            <a class="buttonContact">CONTACT</a>                                                                                                                                                                                     
+            <a class="buttonContact">HELP AND FAQ</a>                                                                                                                                                                                
+            <a class="buttonContact">TERM OF USE</a>                                                                                                                                                                                 
+            <a class="buttonContact">PRIVACY POLICY</a>                                                                                                                                                                              
+        </div>                                                                                                                                                                                                                       
+        <div class='container footer'>                                                                                                                                                                                               
+        </div>                                                                                                                                                                                                                       
+    </div>                                                                                                                                                                                                                           
+</div>
+</div>
