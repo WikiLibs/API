@@ -1,0 +1,76 @@
+<div class='container'>
+    <h1 class='header1'>sfWindow_destroy</h1>
+    <p>(C/CSFML/sfWindow_destroy)</p>
+    <h2 class='header2'>Prototype</h2>
+    <div class='paddingWell'>
+        <div class="card card-inverse paddingCard" style="background-color: lightgray; border-color: lightgrey; ">
+            <div class="card-block">
+                <p class="card-text black"><span class='type'>void</span> <span class='func'>sfWindow_destroy</span>(<span class='type'>sfWindow*</span>  window)</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='container'>
+    <h2 class='header2'>Description</h2>
+    <div class='paddingWell'>
+        <div class='card borderless'>
+            <div class='black'><br>Destroy&nbsp;a&nbsp;window.<br><br>This&nbsp;function&nbsp;will&nbsp;destroy&nbsp;a&nbsp;previously&nbsp;created&nbsp;window&nbsp;(using&nbsp;sfWindow_create()),&nbsp;and&nbsp;free&nbsp;the&nbsp;resources&nbsp;taken.<br>	</div>
+        </div>
+    </div>
+</div>
+<div class='container'>
+    <h2 class='header2'>Parameters</h2>
+    <div class='paddingWell'>
+        <div class='row'>
+            <div class='col-2 black'><span class='front'>window</span></div>
+            <div class='col-6 black'>Window&nbsp;to&nbsp;destroy</div>
+        </div>
+    </div>
+</div>
+<div class='container'>
+    <h2 class='header2'>Example</h2>
+    <div class='paddingWell'>
+        <div class='black'>In&nbsp;this&nbsp;example,&nbsp;we&nbsp;just&nbsp;create&nbsp;a&nbsp;window&nbsp;using&nbsp;sfWindow_create,&nbsp;then&nbsp;we&nbsp;destroy&nbsp;it.&nbsp;This&nbsp;code&nbsp;only&nbsp;displays&nbsp;the&nbsp;window&nbsp;for&nbsp;one&nbsp;frame</div>
+        <div class="card card-inverse paddingExample1" style="background-color: lightgray; border-color: lightgrey; ">
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title="">
+                         <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title=" Include stdlib.h for NULL">
+                        &nbsp;&nbsp;&nbsp;&nbsp;    <span class='sys'>#include</span> &#60stdlib.h&#62  <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title=" Include Window.h from CSFML">
+                        &nbsp;&nbsp;&nbsp;&nbsp;    <span class='sys'>#include</span> &#60CSFML/Window/Window.h&#62  <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title="">
+                        &nbsp;&nbsp;&nbsp;&nbsp;     <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title=" We create a main function taking no arguments, and return an integer">
+                        &nbsp;&nbsp;&nbsp;&nbsp;    <span class='type'>int</span> main (  )   <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title="">
+                        &nbsp;&nbsp;&nbsp;&nbsp;     {      <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title=" We create a window, setting its properties (resolution, bits per pixel, name and style)">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        sfWindow *window <span class='sys'>=</span> sfWindow_create (  { <span class='int'>1600</span> ,  <span class='int'>900</span> ,  <span class='int'>32</span> }  ,  <span class='string'>"My&nbsp;Window"</span> ,  <span class='int'>0</span> ,  <span class='int'>NULL</span> ) ;  <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title="">
+                         <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title=" We destroy the window here. The window will no longer be usable">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        sfWindow_destroy ( window ) ;  <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title="">
+                         <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title=" We return 0">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        <span class='sys'>return</span>  ( <span class='int'>0</span> ) ;  <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title="">
+                        &nbsp;&nbsp;&nbsp;&nbsp;     }  <br>
+                    </a>
+                    <a class="card-block card-text paddingExampleRow black" data-toggle="tooltip" data-placement="top" title="">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <br>
+                    </a>
+        </div>
+    </div>
+</div>

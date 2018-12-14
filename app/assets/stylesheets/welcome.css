@@ -68,13 +68,13 @@ img.resize {
 
 .padding_middle_row {
     padding-top: 43px;
-    padding-left: 0%;
+    padding-left: 10%;
 }
 
 .title_middle {
     position: relative;
     color: #8560A8;
-    left: 39.5%;
+    left: 42.5%;
     top: -59px;
     font-size: 300%;
 }
@@ -82,13 +82,20 @@ img.resize {
 .title_middle1 {
     position: relative;
     color: #8560A8;
-    left: 41.2%;
+    left: 44.2%;
     top: -59px;
     font-size: 300%;
 }
 
 .text_middle {
-    font-size: 160%;
+    font-size: 30px;
+    line-height: 30px;
+    color: #424242;
+}
+
+.text_middle div p {
+    font-size: 23px;
+    line-height: 40px;
     color: #424242;
 }
 

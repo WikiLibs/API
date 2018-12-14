@@ -1,38 +1,34 @@
 {
-    "lib":{
+    "CSFML":{
         "fonction1":{
-            "name": "create::window",
-            "link": "test.html"
+            "name": "sfWindow_create()",
+            "link": "database/CSFML/FUNC-sfWindow_create.html"
         },
         "fonction2":{
-            "name": "create::sprite",
-            "link": "test.html"
+            "name": "sfWindow_createFromHandle()",
+            "link": "database/CSFML/FUNC-sfWindow_createFromHandle.html"
         },
         "fonction3":{
-            "name": "create::texture",
-            "link": "test.html"
+            "name": "sfWindow_createUnicode()",
+            "link": "database/CSFML/FUNC-sfWindow_createUnicode.html"
         },
         "fonction4":{
-            "name": "create::text",
-            "link": "test.html"
+            "name": "sfWindow_destroy()",
+            "link": "database/CSFML/FUNC-sfWindow_destroy.html"
         }
     },
-    "lib2":{
+    "Opus":{
         "fonction1":{
-            "name": "printf()",
-            "link": "test.html"
+            "name": "tagcompare()",
+            "link": "database/Opus/FUNC-opus_tagcompare.html"
         },
         "fonction2":{
-            "name": "strlen()",
-            "link": "test.html"
+            "name": "tagncompare()",
+            "link": "database/Opus/FUNC-opus_tagncompare.html"
         },
         "fonction3":{
-            "name": "strstr()",
-            "link": "test.html"
-        },
-        "fonction4":{
-            "name": "str_to_wordtab()",
-            "link": "test.html"
+            "name": "tags_clear()",
+            "link": "database/Opus/FUNC-opus_tags_clear.html"
         }
     }
 }
