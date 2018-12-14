@@ -51,7 +51,7 @@
         <ul class="collapse list-unstyled" id="Submenu_<%= lib %>">
           <%$tab[lib].keys.each do |function|%>
             <% $current_function = function %>
-            <li><a href="/home/index"><%= $tab[lib][function]["name"] %></a></li>
+            <li><a href="/home/index#<%= lib %>&<%= function %>"><%= $tab[lib][function]["name"] %></a></li>
           <%end%>
         </ul>
         <%end%>                                                                                                                                                          
