@@ -10,15 +10,22 @@ namespace WikiLibs.Services
 {
     public class ModuleManager : API.IModuleManager
     {
-        private Dictionary<Type, API.IModule> _moduleMap;
+        private Dictionary<Type, API.IModule> _moduleMap = new Dictionary<Type, API.IModule>();
+        private Dictionary<Type, Type> _moduleTypes = new Dictionary<Type, Type>();
 
         public ModuleManager()
         {
         }
 
-        public ModuleManager(ModuleManager other)
+        public ModuleManager(ModuleManager other, DB.Context ctx)
         {
-            _moduleMap = other._moduleMap;
+            foreach (KeyValuePair<Type, Type> kv in _moduleTypes)
+            {
+                if (kv.Value.GetConstructor(new Type[] { typeof(DB.Context) }) != null)
+                    _moduleMap[kv.Key] = (API.IModule)Activator.CreateInstance(kv.Value, new object[] { ctx });
+                else
+                    _moduleMap[kv.Key] = (API.IModule)Activator.CreateInstance(kv.Value);
+            }
         }
 
         public T GetModule<T>() where T : API.IModule
@@ -39,7 +46,7 @@ namespace WikiLibs.Services
             {
                 if (t.GetCustomAttribute<API.Module>() != null)
                 {
-                    _moduleMap[t.GetCustomAttribute<API.Module>().RefType] = (API.IModule)Activator.CreateInstance(t);
+                    _moduleTypes[t.GetCustomAttribute<API.Module>().RefType] = t;
                     builder.AddApplicationPart(asm);
                 }
             }

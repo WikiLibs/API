@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace API.Entities
+namespace WikiLibs.DB
 {
     public class User
     {
-        private Dictionary<string, bool> _perms = new Dictionary<string, bool>();
-
+        [Key]
         public string UUID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -19,18 +20,5 @@ namespace API.Entities
         public string Pseudo { get; set; }
         public string Group { get; set; }
         public string Pass { get; set; }
-
-        public bool HasPermission(string name)
-        {
-            return (_perms.ContainsKey(name));
-        }
-
-        /**
-         * Does not save to database
-         */
-        public void AddPermission(string name)
-        {
-            _perms[name] = true;
-        }
     }
 }

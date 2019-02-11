@@ -31,9 +31,10 @@ namespace WikiLibs
             IMvcBuilder builder = services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             foreach (string s in modules)
                 mgr.LoadModule(builder, s);
-            services.AddScoped<API.IModuleManager>(_ =>
+            services.AddScoped<API.IModuleManager>(o =>
             {
-                return (new Services.ModuleManager(mgr));
+                DB.Context ctx = o.GetService<DB.Context>();
+                return (new Services.ModuleManager(mgr, ctx));
             });
         }
 
