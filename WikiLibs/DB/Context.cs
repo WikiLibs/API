@@ -14,5 +14,6 @@ namespace WikiLibs.DB
         public DbSet<User> Users;
         public DbSet<Group> Groups;
         public DbSet<Permission> Permissions;
+        public DbSet<Info> InfoTable;
     }
 }

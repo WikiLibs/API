@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace WikiLibs.DB
 {
-    public enum InfoType
+    public enum EInfoType
     {
         LANG,
         LIB
     }
     public class Info
     {
-        public InfoType Type { get; set; }
+        public EInfoType Type { get; set; }
         public string Data { get; set; }
     }
 }
