@@ -8,12 +8,17 @@ namespace WikiLibs.DB
 {
     public class Context : DbContext
     {
-        public DbSet<APIKey> APIKeys;
-        public DbSet<Symbol> Symbols;
-        public DbSet<Example> Examples;
-        public DbSet<User> Users;
-        public DbSet<Group> Groups;
-        public DbSet<Permission> Permissions;
-        public DbSet<Info> InfoTable;
+        public DbSet<APIKey> APIKeys { get; set; }
+        public DbSet<Symbol> Symbols { get; set; }
+        public DbSet<Example> Examples { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Info> InfoTable { get; set; }
+
+        public Context(DbContextOptions<Context> ctx)
+            : base(ctx)
+        {
+        }
     }
 }

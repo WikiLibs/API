@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,6 +34,12 @@ namespace WikiLibs.Services
             if (!_moduleMap.ContainsKey(typeof(T)))
                 return (default(T));
             return ((T)_moduleMap[typeof(T)]);
+        }
+
+        public void LoadAll(IConfiguration cfg)
+        {
+            foreach (KeyValuePair<Type, API.IModule> kv in _moduleMap)
+                kv.Value.LoadConfig(cfg);
         }
 
         public void LoadModule(IMvcBuilder builder, string path)
