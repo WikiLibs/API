@@ -19,6 +19,7 @@ namespace API.Entities
         public string Pseudo { get; set; }
         public string Group { get; set; }
         public string Pass { get; set; }
+        public DateTime Date { get; set; }
 
         public bool HasPermission(string name)
         {

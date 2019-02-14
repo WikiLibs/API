@@ -1,4 +1,6 @@
-﻿namespace API.Entities
+﻿using System;
+
+namespace API.Entities
 {
     public class Symbol
     {
@@ -22,5 +24,6 @@
         public string Type { get; set; }
         public Prototype[] Prototypes { get; set; }
         public string[] Symbols { get; set; }
+        public DateTime Date { get; set; }
     }
 }

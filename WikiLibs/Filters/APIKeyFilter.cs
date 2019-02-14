@@ -17,12 +17,13 @@ namespace WikiLibs.Filters
             string controller = descriptor?.ControllerName;
             TypeInfo ctrl = descriptor?.ControllerTypeInfo;
             string action = descriptor?.ActionName;
-            if (ctrl.GetCustomAttribute<API.AuthorizeApiKey>() == null)
-                return (null);
+            IEnumerable<MethodInfo> methods = ctrl.GetMethods().Where(m => m.Name == action);
+            if (methods.Count() <= 0 || methods.ElementAt(0).GetCustomAttribute<API.AuthorizeApiKey>() == null)
+                return (Task.FromResult(0));
             if (!context.HttpContext.Request.Headers.ContainsKey("Authorization"))
             {
                 context.Result = new UnauthorizedResult();
-                return (null);
+                return (Task.FromResult(0));
             }
             var mdmgr = (API.IModuleManager)context.HttpContext.RequestServices
                 .GetService(typeof(API.IModuleManager));
@@ -31,9 +32,9 @@ namespace WikiLibs.Filters
             if (auth == null || auth == "" || !adminmgr.APIKeyExists(auth))
             {
                 context.Result = new UnauthorizedResult();
-                return (null);
+                return (Task.FromResult(0));
             }
-            return (null);
+            return (Task.FromResult(0));
         }
     }
 }

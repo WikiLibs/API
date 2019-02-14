@@ -44,6 +44,7 @@ namespace UserManager
             u.Group = usr.Group;
             u.ShowEmail = usr.ShowEmail;
             u.UUID = usr.UUID;
+            u.Date = usr.Date;
             var perms = _db.Permissions.Where(o => o.Group == u.Group);
             foreach (var p in perms)
                 u.AddPermission(p.Perm);
@@ -69,6 +70,7 @@ namespace UserManager
             u.Group = usr.Group;
             u.ShowEmail = usr.ShowEmail;
             u.UUID = usr.UUID;
+            u.Date = usr.Date;
             var perms = _db.Permissions.Where(o => o.Group == u.Group);
             foreach (var p in perms)
                 u.AddPermission(p.Perm);
@@ -131,6 +133,7 @@ namespace UserManager
             u.Group = usr.Group;
             u.ShowEmail = usr.ShowEmail;
             u.UUID = System.Guid.NewGuid().ToString();
+            u.Date = DateTime.UtcNow;
             _db.Users.Add(u);
             _db.SaveChanges();
             return (200);
@@ -153,6 +156,7 @@ namespace UserManager
             u.Group = usr.Group;
             u.ShowEmail = usr.ShowEmail;
             u.UUID = usr.UUID;
+            u.Date = usr.Date;
             _db.SaveChanges();
             return (200);
         }

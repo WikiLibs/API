@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 namespace SymbolManager
 {
+    [API.Module(typeof(API.Modules.ISymbolManager))]
     public class SymbolManager : API.Modules.ISymbolManager
     {
         private static int N = 0;
@@ -51,7 +52,7 @@ namespace SymbolManager
 
         public string[] GetFirstLibs(string lang)
         {
-            return (_db.InfoTable.Where(o => o.Type == WikiLibs.DB.EInfoType.LIB)
+            return (_db.InfoTable.Where(o => o.Type == WikiLibs.DB.EInfoType.LIB && o.Data.StartsWith(lang + "/"))
                 .Take(N)
                 .Select(o => o.Data)
                 .ToArray());
@@ -66,7 +67,8 @@ namespace SymbolManager
                 Type = sym.Type,
                 Prototypes = JsonConvert.DeserializeObject<Symbol.Prototype[]>(sym.Prototypes),
                 UserID = sym.UserID,
-                Symbols = JsonConvert.DeserializeObject<string[]>(sym.Symbols)
+                Symbols = JsonConvert.DeserializeObject<string[]>(sym.Symbols),
+                Date = sym.Date
             };
 
             return (res);

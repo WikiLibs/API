@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 
 namespace WikiLibs.Services
@@ -48,15 +49,15 @@ namespace WikiLibs.Services
 
             if (!inf.Exists)
                 return;
-            Assembly asm = Assembly.LoadFile(inf.FullName);
+            Assembly asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(inf.FullName);
             foreach (Type t in asm.GetExportedTypes())
             {
                 if (t.GetCustomAttribute<API.Module>() != null)
                 {
                     _moduleTypes[t.GetCustomAttribute<API.Module>().RefType] = t;
-                    builder.AddApplicationPart(asm);
                 }
             }
+            builder.AddApplicationPart(asm);
             Console.WriteLine("Adding module '" + path + "'...");
         }
     }
