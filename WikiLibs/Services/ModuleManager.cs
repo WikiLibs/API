@@ -57,6 +57,7 @@ namespace WikiLibs.Services
                     builder.AddApplicationPart(asm);
                 }
             }
+            Console.WriteLine("Adding module '" + path + "'...");
         }
     }
 }

@@ -15,5 +15,6 @@ namespace WikiLibs.DB
         public string Type { get; set; }
         public string Prototypes { get; set; }
         public string Symbols { get; set; }
+        public DateTime Date { get; set; }
     }
 }

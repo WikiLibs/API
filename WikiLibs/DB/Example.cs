@@ -16,5 +16,6 @@ namespace WikiLibs.DB
         public string Code { get; set; }
         public string Description { get; set; }
         public string UserID { get; set; }
+        public DateTime Date { get; set; }
     }
 }
