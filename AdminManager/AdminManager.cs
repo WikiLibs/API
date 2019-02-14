@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace AdminManager
 {
+    [API.Module(typeof(API.Modules.IAdminManager))]
     public class AdminManager : API.Modules.IAdminManager
     {
         private WikiLibs.DB.Context _db;
@@ -90,9 +91,42 @@ namespace AdminManager
             return (_db.Groups.Select(g => g.Name).ToArray());
         }
 
+        private Group GenDefaultGroup()
+        {
+            Group g = new Group();
+            g.Name = "Default";
+            g.Permissions = new string[] { };
+            return (g);
+        }
+
+        private Group GenRootGroup()
+        {
+            Group g = new Group();
+            g.Name = "Root";
+            g.Permissions = new string[] { "*" };
+            return (g);
+        }
+
+        #region EEXP
+        private void SetupBaseAPIKey()
+        {
+            var res = _db.APIKeys.Where(o => o.Description == "[EEXPTMP]");
+
+            if (res == null || res.Count() <= 0)
+            {
+                APIKey k = CreateAPIKey("[EEXPTMP]");
+                Console.WriteLine(k.Description + ": '" + k.Key + "'");
+            }
+        }
+        #endregion
+
         public void LoadConfig(IConfiguration cfg)
         {
-            throw new NotImplementedException();
+            if (GetGroup("Default") == null)
+                SetGroup(GenDefaultGroup());
+            if (GetGroup("Root") == null)
+                SetGroup(GenRootGroup());
+            SetupBaseAPIKey();
         }
 
         public void PostMessage(string msg)

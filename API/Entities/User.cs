@@ -22,6 +22,8 @@ namespace API.Entities
 
         public bool HasPermission(string name)
         {
+            if (_perms.ContainsKey("*"))
+                return (true);
             return (_perms.ContainsKey(name));
         }
 

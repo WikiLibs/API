@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace UserManager
 {
+    [API.Module(typeof(API.Modules.IUserManager))]
     public class UserManager : API.Modules.IUserManager
     {
         public const string DEFAULT_USER_GROUP = "Default";
@@ -74,8 +75,41 @@ namespace UserManager
             return (u);
         }
 
+        #region EEXP
+        User GenRootUser()
+        {
+            User u = new User
+            {
+                EMail = "root@root.com",
+                FirstName = "ANONYMOUS",
+                LastName = "ANONYMOUS",
+                Icon = "",
+                Pass = "12Poissons2hOt4U",
+                ShowEmail = false,
+                Pseudo = "root",
+                ProfileMsg = "Temporary user for Epitech Experiance"
+            };
+
+            return (u);
+        }
+
+        private void ApplyUserGroup(User u)
+        {
+            User root = GetUser(u.EMail, u.Pass);
+
+            root.Group = "Root";
+            SetUser(root);
+        }
+        #endregion
+
         public void LoadConfig(IConfiguration cfg)
         {
+            User u = GenRootUser();
+            if (GetUser(u.EMail, u.Pass) == null)
+            {
+                SetUser(u);
+                ApplyUserGroup(u);
+            }
         }
 
         private int AddUser(User usr)
@@ -90,7 +124,7 @@ namespace UserManager
             u.FirstName = usr.FirstName;
             u.LastName = usr.LastName;
             u.Pass = usr.Pass;
-            u.Points = usr.Points;
+            u.Points = 0;
             u.Icon = usr.Icon;
             u.ProfileMsg = usr.ProfileMsg;
             u.Pseudo = usr.Pseudo;

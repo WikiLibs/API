@@ -50,7 +50,7 @@ namespace WikiLibs
             });
             List<string> modules = new List<string>();
             Services.ModuleManager mgr = new Services.ModuleManager();
-            Configuration.Bind(modules);
+            Configuration.Bind("Modules", modules);
             IMvcBuilder builder = services.AddMvc(o =>
             {
                 o.Filters.Add(new Filters.APIKeyFilter());

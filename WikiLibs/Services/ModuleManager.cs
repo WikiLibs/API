@@ -20,7 +20,7 @@ namespace WikiLibs.Services
 
         public ModuleManager(ModuleManager other, DB.Context ctx)
         {
-            foreach (KeyValuePair<Type, Type> kv in _moduleTypes)
+            foreach (KeyValuePair<Type, Type> kv in other._moduleTypes)
             {
                 if (kv.Value.GetConstructor(new Type[] { typeof(DB.Context) }) != null)
                     _moduleMap[kv.Key] = (API.IModule)Activator.CreateInstance(kv.Value, new object[] { ctx });
