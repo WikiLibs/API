@@ -108,6 +108,8 @@ namespace SymbolManager.Controllers
             return (res);
         }
 
+        [AllowAnonymous]
+        [API.AuthorizeApiKey]
         [Route("/symbol/{*path}")]
         [HttpGet]
         public IActionResult GetSymbol(string path)
