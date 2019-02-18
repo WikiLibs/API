@@ -27,7 +27,7 @@ namespace WikiLibs
 
         private bool CheckTokenLifeTime(Nullable<DateTime> notBefore, Nullable<DateTime> expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
         {
-            return (expires < DateTime.UtcNow);
+            return (expires > DateTime.UtcNow);
         }
 
         public void ConfigureServices(IServiceCollection services)

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
 using System.Security.Claims;
 
 namespace SymbolManager.Controllers
@@ -43,6 +45,7 @@ namespace SymbolManager.Controllers
 
         API.Entities.Symbol Convert(string path, SymbolUpdate s)
         {
+            Console.WriteLine(JsonConvert.SerializeObject(s));
             var sym = new API.Entities.Symbol
             {
                 Path = path,

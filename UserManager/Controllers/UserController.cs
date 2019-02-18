@@ -8,9 +8,9 @@ namespace UserManager.Controllers
     public class UserController : Controller
     {
         private API.Modules.IUserManager _umgr;
-        private WikiLibs.Services.UserTokenManager _tmgr;
+        private WikiLibs.Services.ITokenManager _tmgr;
 
-        public UserController(API.IModuleManager mdmgr, WikiLibs.Services.UserTokenManager tmgr)
+        public UserController(API.IModuleManager mdmgr, WikiLibs.Services.ITokenManager tmgr)
         {
             _umgr = mdmgr.GetModule<API.Modules.IUserManager>();
             _tmgr = tmgr;
