@@ -14,6 +14,12 @@ namespace SymbolManager.Controllers
             _symmgr = mdmgr.GetModule<API.Modules.ISymbolManager>();
         }
 
+        class SearchResult
+        {
+            public bool next { get; set; }
+            public string[] results { get; set; }
+        }
+
         [API.AuthorizeApiKey]
         [HttpGet]
         [Route("/search/lang")]
@@ -32,10 +38,17 @@ namespace SymbolManager.Controllers
 
         [API.AuthorizeApiKey]
         [HttpGet]
-        [Route("/search/string/{*path}")]
-        public IActionResult SearchSymbols(string path)
+        [Route("/search/string/{page}/{*path}")]
+        public IActionResult SearchSymbols(int page, string path)
         {
-            return (Json(_symmgr.SearchSymbols(path)));
+            var res = _symmgr.SearchSymbols(page, path);
+            var json = new SearchResult
+            {
+                next = res.HasNext,
+                results = res.Symbols
+            };
+
+            return (Json(json));
         }
     }
 }

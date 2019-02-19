@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using API.Entities;
+using API.Modules;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -46,8 +47,8 @@ namespace SymbolManager
         public string[] GetFirstLangs()
         {
             return (_db.InfoTable.Where(o => o.Type == WikiLibs.DB.EInfoType.LANG)
-                .Take(N)
                 .OrderBy(o => o.Data)
+                .Take(N)
                 .Select(o => o.Data)
                 .ToArray());
         }
@@ -55,8 +56,8 @@ namespace SymbolManager
         public string[] GetFirstLibs(string lang)
         {
             return (_db.InfoTable.Where(o => o.Type == WikiLibs.DB.EInfoType.LIB && o.Data.StartsWith(lang + "/"))
-                .Take(N)
                 .OrderBy(o => o.Data)
+                .Take(N)
                 .Select(o => o.Data)
                 .ToArray());
         }
@@ -96,14 +97,6 @@ namespace SymbolManager
             Cfg c = new Cfg();
             cfg.Bind("SymbolManager", c);
             N = c.N;
-        }
-
-        public string[] SearchSymbols(string path)
-        {
-            return (_db.Symbols.Where(sym => sym.Path.Contains(path))
-                .Take(N)
-                .Select(sym => sym.Path)
-                .ToArray());
         }
 
         private bool CheckSymPath(Symbol sym)
@@ -149,6 +142,22 @@ namespace SymbolManager
             s.Date = DateTime.UtcNow;
             _db.SaveChanges();
             return (200);
+        }
+
+        public SymbolSearchResult SearchSymbols(int page, string path)
+        {
+            var data = _db.Symbols.Where(sym => sym.Path.Contains(path))
+                .OrderBy(o => o.Path)
+                .Skip(page * N);
+            bool next = data.Count() > N;
+            var arr = data.Take(N)
+                .Select(sym => sym.Path)
+                .ToArray();
+            var res = new SymbolSearchResult();
+
+            res.HasNext = next;
+            res.Symbols = arr;
+            return (res);
         }
     }
 }

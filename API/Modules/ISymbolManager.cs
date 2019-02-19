@@ -4,10 +4,16 @@ using System.Text;
 
 namespace API.Modules
 {
+    public struct SymbolSearchResult
+    {
+        public bool HasNext;
+        public string[] Symbols;
+    }
+
     public interface ISymbolManager : IModule
     {
         Entities.Symbol GetSymbol(string path);
-        string[] SearchSymbols(string path);
+        SymbolSearchResult SearchSymbols(int page, string path);
         string[] GetFirstLangs();
         string[] GetFirstLibs(string lang);
 
