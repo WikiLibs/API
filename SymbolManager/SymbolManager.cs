@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using API.Entities;
 using Microsoft.Extensions.Configuration;
@@ -46,6 +47,7 @@ namespace SymbolManager
         {
             return (_db.InfoTable.Where(o => o.Type == WikiLibs.DB.EInfoType.LANG)
                 .Take(N)
+                .OrderBy(o => o.Data)
                 .Select(o => o.Data)
                 .ToArray());
         }
@@ -54,6 +56,7 @@ namespace SymbolManager
         {
             return (_db.InfoTable.Where(o => o.Type == WikiLibs.DB.EInfoType.LIB && o.Data.StartsWith(lang + "/"))
                 .Take(N)
+                .OrderBy(o => o.Data)
                 .Select(o => o.Data)
                 .ToArray());
         }
@@ -83,9 +86,16 @@ namespace SymbolManager
             return (ConvertSym(sym));
         }
 
+        class Cfg
+        {
+            public int N { get; set; }
+        }
+
         public void LoadConfig(IConfiguration cfg)
         {
-            cfg.Bind("N", N);
+            Cfg c = new Cfg();
+            cfg.Bind("SymbolManager", c);
+            N = c.N;
         }
 
         public string[] SearchSymbols(string path)
