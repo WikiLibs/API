@@ -11,7 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManager", "UserManager\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminManager", "AdminManager\AdminManager.csproj", "{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymbolManager", "SymbolManager\SymbolManager.csproj", "{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymbolManager", "SymbolManager\SymbolManager.csproj", "{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Data", "WikiLibs.Data\WikiLibs.Data.csproj", "{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Core", "WikiLibs.Core\WikiLibs.Core.csproj", "{4B748472-1E3D-4AD8-A67A-D8255AA726BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.ImportMySQLDB", "WikiLibs.ImportMySQLDB\WikiLibs.ImportMySQLDB.csproj", "{5D0AA5CA-6F04-4B8D-977A-E1B45A35CFBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiLibs.DTO", "WikiLibs.DTO\WikiLibs.DTO.csproj", "{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +47,22 @@ Global
 		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Release|Any CPU.Build.0 = Release|Any CPU
+		{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B748472-1E3D-4AD8-A67A-D8255AA726BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B748472-1E3D-4AD8-A67A-D8255AA726BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B748472-1E3D-4AD8-A67A-D8255AA726BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B748472-1E3D-4AD8-A67A-D8255AA726BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D0AA5CA-6F04-4B8D-977A-E1B45A35CFBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D0AA5CA-6F04-4B8D-977A-E1B45A35CFBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D0AA5CA-6F04-4B8D-977A-E1B45A35CFBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D0AA5CA-6F04-4B8D-977A-E1B45A35CFBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

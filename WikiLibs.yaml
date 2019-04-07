@@ -1,0 +1,1762 @@
+openapi: 3.0.0
+info:
+  description: |-
+    WikiLibs REST API
+     by Nicolas FRAYSSE, William Tessari, Nicolas Jacson, Victor Chau, Alex Krief, Alexandre Tahery et Samuel Rousseaux
+  version: "12 - 06/04/2019"
+  title: WikiLibs
+  termsOfService: WikiLibs
+  contact:
+    email: nicolas1.fraysse@epitech.eu
+tags:
+  - name: auth
+    description: Authentication routes
+  - name: user
+    description: Users
+  - name: symbol
+    description: Find symbols
+  - name: example
+    description: Find examples
+  - name: search
+    description: Search for symbols, langs or libs
+  - name: forum
+    description: Forums access
+  - name: message
+    description: Forum messages access
+  - name: category
+    description: Forum categories access
+  - name: apikeys
+    description: Manage API Keys
+  - name: group
+    description: Group management
+  - name: log
+    description: Access application logs
+  - name: adminmsg
+    description: AdminMessages management
+  - name: admin
+    description: Administration routes
+paths:
+  /auth/external/{service}:
+    get:
+      tags:
+        - auth
+      summary: Login through external service
+      description: Redirect the user to this page in order to engage login through the corresponing external service
+      parameters:
+        - in: path
+          name: service
+          required: true
+          description: External authentication service (ex github, gitlab, ...)
+          schema:
+            type: string
+        - in: query
+          name: redirectUri
+          required: true
+          description: Redirect URI to be called (as POST) with WikiLibs user access token in response body
+          schema:
+            type: string
+        - in: query
+          name: appId
+          required: true
+          description: API Key with special permissions
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '401':
+          description: Unauthorized
+  /auth/internal/login:
+    post:
+      tags:
+        - auth
+      summary: Login through internal service
+      security:
+        - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: User email address
+                password:
+                  type: string
+                  description: User password
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                description: User access token
+        '401':
+          description: Unauthorized
+  /auth/internal/reset:
+    post:
+      tags:
+        - auth
+      summary: Request reset of user password
+      security:
+        - apiKey: []
+      parameters:
+        - in: header
+          name: email
+          required: true
+          description: User email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: User does not exist
+        '409':
+          description: User reset conflict can occur if the user is not logged through internal service
+        '401':
+          description: Unauthorized
+  /auth/internal/register:
+    post:
+      tags:
+        - auth
+      security:
+        - apiKey: []
+      summary: Registration of new user using internal service
+      description: Only special API Keys are accepted
+      requestBody:
+        description: New information about the user
+        required: true
+        content:
+          x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+        '409':
+          description: User conflict
+        '401':
+          description: Unauthorized
+  /auth/internal/verify/{token}:
+    get:
+      tags:
+        - auth
+      summary: Used to verify user email
+      parameters:
+        - in: path
+          name: token
+          required: true
+          description: User temporary token
+          schema:
+            type: string
+        - in: query
+          name: redirectUri
+          required: true
+          description: Redirect URI to redirect the user if verification has succeeded
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+        '404':
+          description: Token does not exist or has expired
+  /auth/refresh:
+    post:
+      tags:
+        - auth
+      summary: Refresh user token
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                description: User token
+        '401':
+          description: Unauthorized
+  /user/{id}:
+    get:
+      tags:
+        - user
+      summary: Get information about a user
+      security:
+        - apiKey: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: User id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+    patch:
+      tags:
+        - user
+        - admin
+      summary: Change information about a given user
+      description: In case the user is logged in through an external service the email field will be ignored
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: User id
+          schema:
+            type: string
+      requestBody:
+        description: New information about the user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateGlobal'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - user
+        - admin
+      summary: Delete a given user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: User id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /user/me:
+    get:
+      tags:
+        - user
+      summary: Get information about the current connected user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+    patch:
+      tags:
+        - user
+      summary: Change information about the current connected user
+      description: In case the user is logged in through an external service the email field will be ignored
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: New information about the user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - user
+      summary: Delete the current connected user account
+      operationId: userMeDelete
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+        '401':
+          description: Unauthorized
+  /symbol/{path}:
+    get:
+      tags:
+        - symbol
+      summary: Get information about a symbol
+      security:
+        - apiKey: []
+      parameters:
+        - in: path
+          name: path
+          required: true
+          description: Symbol path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Symbol'
+        '404':
+          description: Symbol not found
+        '401':
+          description: Unauthorized
+    patch:
+      tags:
+        - symbol
+      summary: Update a symbol
+      description: Depending on the permissions of the user the route might require admin verification
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: path
+          required: true
+          description: Symbol path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SymbolUpdate'
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Symbol not found
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - symbol
+      summary: Delete a symbol
+      description: Depending on the permissions of the user the route might require admin verification
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: path
+          required: true
+          description: Symbol path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Symbol not found
+        '401':
+          description: Unauthorized
+  /symbol:
+    post:
+      tags:
+        - symbol
+      summary: Create a new symbol
+      description: Depending on the permissions of the user the route might require admin verification
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SymbolCreate'
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad symbol format
+        '409':
+          description: Path conflict
+        '401':
+          description: Unauthorized
+  /symbol/requests/{page}:
+    get:
+      tags:
+        - symbol
+        - admin
+      security:
+        - bearerAuth: []
+      summary: List symbol requests on a given page
+      parameters:
+        - in: path
+          name: page
+          required: true
+          description: Page number
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of all found symbols
+                items:
+                  $ref: '#/components/schemas/SymbolRequest'
+        '404':
+          description: Page not found
+        '401':
+          description: Unauthorized
+  /symbol/requests/{id}:
+    post:
+      tags:
+        - symbol
+        - admin
+      summary: Accept a given symbol request
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Request ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Request not found
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - symbol
+        - admin
+      summary: Declines a given symbol request
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Request ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Request not found
+        '401':
+          description: Unauthorized
+  /search/string/{page}/{path}:
+    get:
+      tags:
+        - search
+      summary: Search symbols by string
+      security:
+        - apiKey: []
+      parameters:
+        - in: path
+          name: path
+          required: true
+          description: Name to search for
+          schema:
+            type: string
+        - in: path
+          name: page
+          required: true
+          description: Search result page number (each page is N results)
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResult'
+        '401':
+          description: Unauthorized
+  /search/lang:
+    get:
+      tags:
+        - search
+      summary: Search languages
+      security:
+        - apiKey: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of N first lang names where N is defined in server's config
+                items:
+                  type: string
+        '401':
+          description: Unauthorized
+  /search/lang/{name}:
+    get:
+      tags:
+        - search
+      summary: Search libs for a given language
+      security:
+        - apiKey: []
+      parameters:
+        - in: path
+          name: name
+          required: true
+          description: Language name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of N first lib names where N is defined in server's config
+                items:
+                  type: string
+        '401':
+          description: Unauthorized
+  /example/{symbol}:
+    get:
+      tags:
+        - example
+      security:
+        - apiKey: []
+      summary: List all examples for a given symbol
+      parameters:
+        - in: path
+          name: symbol
+          required: true
+          description: Path of symbol to query examples for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of all found examples
+                items:
+                  $ref: '#/components/schemas/Example'
+        '404':
+          description: Symbol not found
+        '401':
+          description: Unauthorized
+    post:
+      tags:
+        - example
+      security:
+        - bearerAuth: []
+      summary: Create a new example
+      description: Depending on the permissions of the user the route might require admin verification
+      parameters:
+        - in: path
+          name: symbol
+          required: true
+          description: Path of the symbol the example is for
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExampleUpdate'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: New Example ID
+        '404':
+          description: Symbol not found
+        '401':
+          description: Unauthorized
+  /example/{id}:
+    patch:
+      tags:
+        - example
+      security:
+        - bearerAuth: []
+      summary: Update an example
+      description: Depending on the permissions of the user the route might require admin verification
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Example ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExampleUpdate'
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Symbol not found
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - example
+      security:
+        - bearerAuth: []
+      summary: Delete an example
+      description: Depending on the permissions of the user the route might require admin verification
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Example ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Example not found
+        '401':
+          description: Unauthorized
+  /example/requests/{page}:
+    get:
+      tags:
+        - example
+      security:
+        - bearerAuth: []
+      summary: List example requests on a given page
+      parameters:
+        - in: path
+          name: page
+          required: true
+          description: Page number
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of all found examples
+                items:
+                  $ref: '#/components/schemas/ExampleRequest'
+        '404':
+          description: Page not found
+        '401':
+          description: Unauthorized
+  /example/requests/{id}:
+    post:
+      tags:
+        - example
+        - admin
+      summary: Accept a given example request
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Request ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Request not found
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - example
+        - admin
+      summary: Decline a given example request
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Request ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Request not found
+        '401':
+          description: Unauthorized
+  /category:
+    get:
+      tags:
+        - category
+      security:
+        - apiKey: []
+      summary: Lists all forum categories
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of all categories
+                items:
+                  $ref: '#/components/schemas/Category'
+        '401':
+          description: Unauthorized
+    post:
+      tags:
+        - category
+      security:
+        - bearerAuth: []
+      summary: Create a category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          description: Successful operation
+        '409':
+          description: Category conflict
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - category
+      security:
+        - bearerAuth: []
+      summary: Delete a category
+      parameters:
+        - in: header
+          name: name
+          required: true
+          description: Category name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Category not found
+        '401':
+          description: Unauthorized
+  /forum/{name}:
+    get:
+      tags:
+        - forum
+      security:
+        - apiKey: []
+      summary: Search for forums matching name
+      parameters:
+        - in: path
+          name: name
+          required: true
+          description: Search query string
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of forums
+                items:
+                  $ref: '#/components/schemas/Forum'
+        '401':
+          description: Unauthorized
+  /forum:
+    post:
+      tags:
+        - forum
+      security:
+        - bearerAuth: []
+      summary: Create a forum
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumUpdate'
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Category not found
+        '401':
+          description: Unauthorized
+    patch:
+      tags:
+        - forum
+      security:
+        - bearerAuth: []
+      summary: Update a forum
+      parameters:
+        - in: header
+          name: id
+          required: true
+          description: Forum id
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumUpdate'
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Forum not found
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - forum
+      security:
+        - bearerAuth: []
+      summary: Delete a forum
+      parameters:
+        - in: header
+          name: id
+          required: true
+          description: Forum id
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Forum not found
+        '401':
+          description: Unauthorized
+  /message/{forum}:
+    get:
+      tags:
+        - message
+      security:
+        - apiKey: []
+      summary: List all messages in a forum
+      parameters:
+        - in: path
+          name: forum
+          required: true
+          description: Forum ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of messages
+                items:
+                  $ref: '#/components/schemas/Message'
+        '404':
+          description: Forum not found
+        '401':
+          description: Unauthorized
+  /message:
+    post:
+      tags:
+        - message
+      security:
+        - bearerAuth: []
+      summary: Post a message in a forum
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageUpdate'
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Forum not found
+        '401':
+          description: Unauthorized
+    patch:
+      tags:
+        - message
+      security:
+        - bearerAuth: []
+      summary: Update a message
+      parameters:
+        - in: header
+          name: id
+          required: true
+          description: Message id
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageUpdate'
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Message not found
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - message
+      security:
+        - bearerAuth: []
+      summary: Delete a message
+      parameters:
+        - in: header
+          name: id
+          required: true
+          description: Message id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Message not found
+        '401':
+          description: Unauthorized
+  /apikeys:
+    get:
+      tags:
+        - apikeys
+        - admin
+      summary: List all API Keys currently in use
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of all api keys currently in use
+                items:
+                  $ref: '#/components/schemas/APIKey'
+        '401':
+          description: Unauthorized
+    post:
+      tags:
+        - apikeys
+        - admin
+      summary: Create a new API Key
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              description: Description of new API Key
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                description: API Key string
+        '401':
+          description: Unauthorized
+  /apikeys/{key}:
+    delete:
+      tags:
+        - apikeys
+        - admin
+      security:
+        - bearerAuth: []
+      summary: Delete an API Key
+      parameters:
+        - in: path
+          name: key
+          required: true
+          description: API Key string
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '401':
+          description: Unauthorized
+  /group/{name}:
+    get:
+      tags:
+        - group
+        - admin
+      security:
+        - bearerAuth: []
+      summary: Get information about a group
+      parameters:
+        - in: path
+          name: name
+          required: true
+          description: Group name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '404':
+          description: Group not found
+        '401':
+          description: Unauthorized
+    patch:
+      tags:
+        - group
+        - admin
+      security:
+        - bearerAuth: []
+      summary: Update a group
+      parameters:
+        - in: path
+          name: name
+          required: true
+          description: Group name
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Group does not exist
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - group
+        - admin
+      security:
+        - bearerAuth: []
+      summary: Delete a group
+      parameters:
+        - in: path
+          name: name
+          required: true
+          description: Group name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Group does not exist
+        '401':
+          description: Unauthorized
+  /group:
+    get:
+      tags:
+        - group
+        - admin
+      security:
+        - bearerAuth: []
+      summary: List all groups
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of all group names
+                items:
+                  type: string
+        '401':
+          description: Unauthorized
+    post:
+      tags:
+        - group
+        - admin
+      security:
+        - bearerAuth: []
+      summary: Create a group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      responses:
+        '200':
+          description: Successful operation
+        '409':
+          description: Group already exists
+        '401':
+          description: Unauthorized
+  /log/{page}:
+    get:
+      tags:
+        - log
+        - admin
+      security:
+        - bearerAuth: []
+      summary: List log messages on the given page
+      parameters:
+        - in: path
+          name: page
+          required: true
+          description: Log page ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of log messages
+                items:
+                  type: string
+        '404':
+          description: Page not found
+        '401':
+          description: Unauthorized
+    delete:
+      tags:
+        - log
+        - admin
+      security:
+        - bearerAuth: []
+      summary: Clear all log messages on a given page
+      parameters:
+        - in: path
+          name: page
+          required: true
+          description: Log page ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Page not found
+        '401':
+          description: Unauthorized
+  /adminmsg:
+    get:
+      tags:
+        - adminmsg
+        - admin
+      security:
+        - bearerAuth: []
+      summary: List all admin messages
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of log messages
+                items:
+                  $ref: '#/components/schemas/AdminMsg'
+        '404':
+          description: Page not found
+        '401':
+          description: Unauthorized
+    post:
+      tags:
+        - adminmsg
+      security:
+        - bearerAuth: []
+      summary: Post a new admin message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              description: Message content
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Page not found
+        '401':
+          description: Unauthorized
+  /adminmsg/{id}:
+    delete:
+      tags:
+        - adminmsg
+        - admin
+      security:
+        - bearerAuth: []
+      summary: Delete admin message
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: AdminMessage ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Page not found
+        '401':
+          description: Unauthorized
+  /shutdown:
+    delete:
+      tags:
+        - admin
+      security:
+        - bearerAuth: []
+      summary: Shut down the server
+      responses:
+        '200':
+          description: Successful operation
+        '401':
+          description: Unauthorized
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: ApiKey
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User's unique universal ID
+        date:
+          type: string
+          format: date-time
+          description: User's registration date
+        firstName:
+          type: string
+          description: User's first name
+        lastName:
+          type: string
+          description: User's last name
+        icon:
+          type: string
+          format: byte
+          description: User's profile image as base 64 encoded string
+        email:
+          type: string
+          format: email
+          description: User's email address
+        showEmail:
+          type: boolean
+          description: Does this user show his email address publically
+        profileMsg:
+          type: string
+          description: User's profile message
+        points:
+          type: integer
+          description: Number of points
+        pseudo:
+          type: string
+          description: User's pseudo name
+        group:
+          type: string
+          description: User's permission group
+    UserUpdate:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: User's first name
+        lastName:
+          type: string
+          description: User's last name
+        icon:
+          type: string
+          format: byte
+          description: User's profile image as base 64 encoded string
+        email:
+          type: string
+          format: email
+          description: User's email address
+        showEmail:
+          type: boolean
+          description: Does this user show his email address publically
+        profileMsg:
+          type: string
+          description: User's profile message
+        pseudo:
+          type: string
+          description: User's pseudo name
+        password:
+          type: string
+          format: password
+          description: User's new password
+    UserCreate:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: User's first name
+        lastName:
+          type: string
+          description: User's last name
+        icon:
+          type: string
+          format: byte
+          description: User's profile image
+        email:
+          type: string
+          format: email
+          description: User's email address
+        showEmail:
+          type: boolean
+          description: Does this user show his email address publically
+        profileMsg:
+          type: string
+          description: User's profile message
+        pseudo:
+          type: string
+          description: User's pseudo name
+        password:
+          type: string
+          format: password
+          description: User's new password
+    UserUpdateGlobal:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: User's first name
+        lastName:
+          type: string
+          description: User's last name
+        group:
+          type: string
+          description: User's group name
+        icon:
+          type: string
+          format: byte
+          description: User's profile image as base 64 encoded string
+        email:
+          type: string
+          format: email
+          description: User's email address
+        showEmail:
+          type: boolean
+          description: Does this user show his email address publically
+        profileMsg:
+          type: string
+          description: User's profile message
+        pseudo:
+          type: string
+          description: User's pseudo name
+        password:
+          type: string
+          format: password
+          description: User's new password
+    SymbolParam:
+      type: object
+      properties:
+        prototype:
+          type: string
+          description: 'Prototype of parameter (ex : "int myarg = 0")'
+        description:
+          type: string
+          description: Description of parameter
+        path:
+          type: string
+          description: Path of parameter (if any)
+    SymbolPrototype:
+      type: object
+      properties:
+        prototype:
+          type: string
+          description: Prototype
+        description:
+          type: string
+          description: Description for the given prototype
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/SymbolParam'
+    Symbol:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: ID of the user that created the symbol
+        date:
+          type: string
+          format: date-time
+          description: Date of last symbol modification
+        lang:
+          type: string
+          description: Language of symbol (C, C++, etc)
+        type:
+          type: string
+          description: Type of symbol (class in C++ for example)
+        path:
+          type: string
+          description: Path of symbol
+        prototypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SymbolPrototype'
+        symbols:
+          type: array
+          description: Pathes for symbols contained in that symbol
+          items:
+            type: string
+    SymbolRequest:
+      type: object
+      properties:
+        rid:
+          type: integer
+          description: Symbol request ID
+        userId:
+          type: string
+          description: ID of the user that created the symbol
+        date:
+          type: string
+          format: date-time
+          description: Date of request
+        lang:
+          type: string
+          description: Language of symbol (C, C++, etc)
+        type:
+          type: string
+          description: Type of symbol (class in C++ for example)
+        path:
+          type: string
+          description: Path of symbol
+        prototypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SymbolPrototype'
+        symbols:
+          type: array
+          description: Pathes for symbols contained in that symbol
+          items:
+            type: string
+        method:
+          type: string
+          description: method of request (post for creation, delete for deletion and patch for update)
+    SymbolUpdate:
+      type: object
+      properties:
+        lang:
+          type: string
+          description: Language of symbol (C, C++, etc)
+        type:
+          type: string
+          description: Type of symbol (class in C++ for example)
+        prototypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SymbolPrototype'
+        symbols:
+          type: array
+          description: Pathes for symbols contained in that symbol
+          items:
+            type: string
+    SymbolCreate:
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path of symbol
+        lang:
+          type: string
+          description: Language of symbol (C, C++, etc)
+        type:
+          type: string
+          description: Type of symbol (class in C++ for example)
+        prototypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SymbolPrototype'
+        symbols:
+          type: array
+          description: Pathes for symbols contained in that symbol
+          items:
+            type: string
+    APIKey:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Key string
+        description:
+          type: string
+          description: Description of API Key
+    ExampleCodeLine:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code line
+        comment:
+          type: string
+          description: Code line comment
+    Example:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Example ID
+        date:
+          type: string
+          format: date-time
+          description: Date of last example modification
+        path:
+          type: string
+          description: Symbol path
+        code:
+          type: array
+          description: Code
+          items:
+            $ref: '#/components/schemas/ExampleCodeLine'
+        description:
+          type: string
+          description: Description
+        userId:
+          type: string
+          description: ID of the user that created the example
+    ExampleRequest:
+      type: object
+      properties:
+        rid:
+          type: integer
+          description: Example request ID
+        id:
+          type: integer
+          description: Example ID
+        date:
+          type: string
+          format: date-time
+          description: Date of request
+        path:
+          type: string
+          description: Symbol path
+        code:
+          type: array
+          description: Code
+          items:
+            $ref: '#/components/schemas/ExampleCodeLine'
+        description:
+          type: string
+          description: Description
+        userId:
+          type: string
+          description: ID of the user that created the example
+        method:
+          type: string
+          description: method of request (post for creation, delete for deletion and patch for update)
+    ExampleUpdate:
+      type: object
+      properties:
+        code:
+          type: array
+          description: Code
+          items:
+            $ref: '#/components/schemas/ExampleCodeLine'
+        description:
+          type: string
+          description: Description
+    Group:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Group name
+        permissions:
+          type: array
+          description: Permission list
+          items:
+            type: string
+    Category:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Category name
+        tags:
+          type: array
+          description: Tag list
+          items:
+            type: string
+    Forum:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the forum
+        name:
+          type: string
+          description: Forum name
+        category:
+          type: string
+          description: Category of the forum
+        tags:
+          type: array
+          description: Tag list
+          items:
+            type: string
+        content:
+          type: string
+          description: Content of the first post
+        userId:
+          type: string
+          description: User that created the forum
+        date:
+          type: string
+          format: date-time
+          description: Date of creation
+        locked:
+          type: boolean
+          description: Is this forum locked
+    ForumUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Forum name
+        category:
+          type: string
+          description: Category of the forum
+        tags:
+          type: array
+          description: Tag list
+          items:
+            type: string
+        content:
+          type: string
+          description: Content of the first post
+        locked:
+          type: boolean
+          description: Is this forum locked
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the message
+        forum:
+          type: integer
+          description: ID of the forum
+        content:
+          type: string
+          description: Content of the first post
+        userId:
+          type: string
+          description: User that created the forum
+        date:
+          type: string
+          format: date-time
+          description: Date of creation
+    MessageUpdate:
+      type: object
+      properties:
+        forum:
+          type: integer
+          description: ID of the forum
+        content:
+          type: string
+          description: Content of the first post
+    AdminMsg:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of admin message
+        userId:
+          type: string
+          description: ID of the user that posted the message
+        content:
+          type: string
+          description: Message content
+    SearchResult:
+      type: object
+      properties:
+        next:
+          type: boolean
+          description: Is this result page the last one
+        results:
+          type: array
+          description: Array of N symbol paths found where N is defined in server's config
+          items:
+            type: string
