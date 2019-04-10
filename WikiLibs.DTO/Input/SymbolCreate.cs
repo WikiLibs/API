@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -13,31 +14,33 @@ namespace WikiLibs.DTO.Input
             public class Parameter
             {
                 [Required]
-                public string prototype { get; set; }
+                [JsonProperty(PropertyName = "prototype")]
+                public string Proto { get; set; }
                 [Required]
-                public string description { get; set; }
+                public string Description { get; set; }
                 [Required]
-                public string path { get; set; }
+                public string Path { get; set; }
             }
 
             [Required]
-            public string prototype { get; set; }
+            [JsonProperty(PropertyName = "prototype")]
+            public string Proto { get; set; }
             [Required]
-            public string description { get; set; }
+            public string Description { get; set; }
             [Required]
-            public Parameter[] parameters { get; set; }
+            public Parameter[] Parameters { get; set; }
         }
 
         [Required]
-        public string path { get; set; }
+        public string Path { get; set; }
         [Required]
-        public string lang { get; set; }
+        public string Lang { get; set; }
         [Required]
-        public string type { get; set; }
+        public string Type { get; set; }
         [Required]
-        public Prototype[] prototypes { get; set; }
+        public Prototype[] Prototypes { get; set; }
         [Required]
-        public string[] symbols { get; set; }
+        public string[] Symbols { get; set; }
 
         public Symbol CreateNew()
         {
@@ -45,31 +48,31 @@ namespace WikiLibs.DTO.Input
             {
                 LastModificationDate = DateTime.UtcNow,
                 CreationDate = DateTime.UtcNow,
-                Lang = lang,
-                Path = path,
-                Type = type,
+                Lang = Lang,
+                Path = Path,
+                Type = Type,
             };
-            foreach (var proto in prototypes)
+            foreach (var proto in Prototypes)
             {
                 var p = new Data.Models.Prototype
                 {
-                    Data = proto.prototype,
-                    Description = proto.description,
+                    Data = proto.Proto,
+                    Description = proto.Description,
                     Symbol = sym
                 };
-                foreach (var par in proto.parameters)
+                foreach (var par in proto.Parameters)
                 {
                     var param = new PrototypeParam()
                     {
-                        Data = par.prototype,
-                        Description = par.description,
-                        Path = par.path,
+                        Data = par.Proto,
+                        Description = par.Description,
+                        Path = par.Path,
                         Prototype = p
                     };
                     p.Parameters.Add(param);
                 }
             }
-            foreach (var sref in symbols)
+            foreach (var sref in Symbols)
             {
                 var symRef = new SymbolRef()
                 {

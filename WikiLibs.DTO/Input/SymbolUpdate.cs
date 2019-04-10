@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,19 +13,21 @@ namespace WikiLibs.DTO.Input
         {
             public class Parameter
             {
-                public string prototype { get; set; }
-                public string description { get; set; }
-                public string path { get; set; }
+                [JsonProperty(PropertyName = "prototype")]
+                public string Proto { get; set; }
+                public string Description { get; set; }
+                public string Path { get; set; }
             }
 
-            public string prototype { get; set; }
-            public string description { get; set; }
-            public Parameter[] parameters { get; set; }
+            [JsonProperty(PropertyName = "prototype")]
+            public string Proto { get; set; }
+            public string Description { get; set; }
+            public Parameter[] Parameters { get; set; }
         }
 
-        public string type { get; set; }
-        public Prototype[] prototypes { get; set; }
-        public string[] symbols { get; set; }
+        public string Type { get; set; }
+        public Prototype[] Prototypes { get; set; }
+        public string[] Symbols { get; set; }
 
         public Symbol CreatePatch(in Symbol current)
         {
@@ -36,31 +39,31 @@ namespace WikiLibs.DTO.Input
                 Path = current.Path,
                 Id = current.Id,
                 User = current.User,
-                Type = type != null ? type : current.Type
+                Type = Type != null ? Type : current.Type
             };
-            if (prototypes != null)
+            if (Prototypes != null)
             {
-                foreach (var proto in prototypes)
+                foreach (var proto in Prototypes)
                 {
-                    var old = current.Prototypes.Where(p1 => p1.Data == proto.prototype).FirstOrDefault();
+                    var old = current.Prototypes.Where(p1 => p1.Data == proto.Proto).FirstOrDefault();
                     var p = new Data.Models.Prototype
                     {
                         Id = old != null ? old.Id : 0,
-                        Data = proto.prototype != null ? proto.prototype : old.Data,
-                        Description = proto.description != null ? proto.description : old.Description,
+                        Data = proto.Proto != null ? proto.Proto : old.Data,
+                        Description = proto.Description != null ? proto.Description : old.Description,
                         Symbol = sym
                     };
-                    if (proto.parameters != null)
+                    if (proto.Parameters != null)
                     {
-                        foreach (var par in proto.parameters)
+                        foreach (var par in proto.Parameters)
                         {
-                            var oldParam = old != null ? old.Parameters.Where(p1 => p1.Data == par.prototype).FirstOrDefault() : null;
+                            var oldParam = old != null ? old.Parameters.Where(p1 => p1.Data == par.Proto).FirstOrDefault() : null;
                             var param = new PrototypeParam()
                             {
                                 Id = oldParam != null ? oldParam.Id : 0,
-                                Data = par.prototype != null ? par.prototype : oldParam.Data,
-                                Description = par.description != null ? par.description : oldParam.Description,
-                                Path = par.path != null ? par.path : oldParam.Path,
+                                Data = par.Proto != null ? par.Proto : oldParam.Data,
+                                Description = par.Description != null ? par.Description : oldParam.Description,
+                                Path = par.Path != null ? par.Path : oldParam.Path,
                                 Prototype = p
                             };
                             p.Parameters.Add(param);
@@ -72,9 +75,9 @@ namespace WikiLibs.DTO.Input
             }
             else
                 sym.Prototypes = current.Prototypes;
-            if (symbols != null)
+            if (Symbols != null)
             {
-                foreach (var sref in symbols)
+                foreach (var sref in Symbols)
                 {
                     var symRef = new SymbolRef()
                     {

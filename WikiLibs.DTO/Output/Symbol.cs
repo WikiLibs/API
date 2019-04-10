@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using WikiLibs.Data.Models;
@@ -11,50 +12,52 @@ namespace WikiLibs.DTO.Output
         {
             public class Parameter
             {
-                public string prototype { get; set; }
-                public string description { get; set; }
-                public string path { get; set; }
+                [JsonProperty(PropertyName = "prototype")]
+                public string Proto { get; set; }
+                public string Description { get; set; }
+                public string Path { get; set; }
             }
 
-            public string prototype { get; set; }
-            public string description { get; set; }
-            public Parameter[] parameters { get; set; }
+            [JsonProperty(PropertyName = "prototype")]
+            public string Proto { get; set; }
+            public string Description { get; set; }
+            public Parameter[] Parameters { get; set; }
         }
 
-        public string userId { get; set; }
-        public string date { get; set; }
-        public string lang { get; set; }
-        public string type { get; set; }
-        public string path { get; set; }
-        public Prototype[] prototypes { get; set; }
-        public string[] symbols { get; set; }
+        public string UserId { get; set; }
+        public string Date { get; set; }
+        public string Lang { get; set; }
+        public string Type { get; set; }
+        public string Path { get; set; }
+        public Prototype[] Prototypes { get; set; }
+        public string[] Symbols { get; set; }
 
         public void Map(in Data.Models.Symbol model)
         {
-            userId = model.User.UUID;
-            date = model.LastModificationDate.ToString();
-            lang = model.Lang;
-            type = model.Type;
-            path = model.Path;
-            symbols = new string[model.Symbols.Count];
-            prototypes = new Prototype[model.Prototypes.Count];
+            UserId = model.User.UUID;
+            Date = model.LastModificationDate.ToString();
+            Lang = model.Lang;
+            Type = model.Type;
+            Path = model.Path;
+            Symbols = new string[model.Symbols.Count];
+            Prototypes = new Prototype[model.Prototypes.Count];
             int i = 0;
             foreach (var proto in model.Prototypes)
             {
-                prototypes[i] = new Prototype()
+                Prototypes[i] = new Prototype()
                 {
-                    prototype = proto.Data,
-                    description = proto.Description,
-                    parameters = new Prototype.Parameter[proto.Parameters.Count]
+                    Proto = proto.Data,
+                    Description = proto.Description,
+                    Parameters = new Prototype.Parameter[proto.Parameters.Count]
                 };
                 int j = 0;
                 foreach (var param in proto.Parameters)
                 {
-                    prototypes[i].parameters[j] = new Prototype.Parameter()
+                    Prototypes[i].Parameters[j] = new Prototype.Parameter()
                     {
-                        description = param.Description,
-                        path = param.Path,
-                        prototype = param.Data
+                        Description = param.Description,
+                        Path = param.Path,
+                        Proto = param.Data
                     };
                     ++j;
                 }
@@ -62,7 +65,7 @@ namespace WikiLibs.DTO.Output
             }
             int k = 0;
             foreach (var sref in model.Symbols)
-                symbols[k++] = sref.Path;
+                Symbols[k++] = sref.Path;
         }
     }
 }

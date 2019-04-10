@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WikiLibs.API\WikiLibs.API.csproj" />
     <ProjectReference Include="..\WikiLibs.Data\WikiLibs.Data.csproj" />
   </ItemGroup>
 

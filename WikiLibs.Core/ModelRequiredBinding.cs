@@ -11,7 +11,9 @@ namespace WikiLibs.Core
     {
         public void CreateBindingMetadata(BindingMetadataProviderContext context)
         {
-            if (context.PropertyAttributes.OfType<RequiredAttribute>().Any())
+            if (context != null
+                && context.PropertyAttributes != null
+                && context.PropertyAttributes.OfType<RequiredAttribute>().Any())
                 context.BindingMetadata.IsBindingRequired = true;
         }
     }

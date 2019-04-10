@@ -7,14 +7,14 @@ namespace WikiLibs.DTO.Input
 {
     public class UserUpdate : IPatchDTO<Data.Models.User>
     {
-        public string firstName { get; set; }
-        public string lastName { get; set; }
-        public string icon { get; set; }
-        public string email { get; set; }
-        public bool @private { get; set; }
-        public string profileMsg { get; set; }
-        public string pseudo { get; set; }
-        public string password { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Icon { get; set; }
+        public string Email { get; set; }
+        public bool Private { get; set; }
+        public string ProfileMsg { get; set; }
+        public string Pseudo { get; set; }
+        public string Password { get; set; }
 
         public User CreatePatch(in User current)
         {

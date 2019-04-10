@@ -7,31 +7,31 @@ namespace WikiLibs.DTO.Output
 {
     public class User : IGetDTO<Data.Models.User>
     {
-        public string id { get; set; }
-        public string date { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
-        public string icon { get; set; }
-        public string email { get; set; }
-        public bool @private { get; set; }
-        public string profileMsg { get; set; }
-        public int points { get; set; }
-        public string pseudo { get; set; }
-        public string group { get; set; }
+        public string Id { get; set; }
+        public string Date { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Icon { get; set; }
+        public string Email { get; set; }
+        public bool Private { get; set; }
+        public string ProfileMsg { get; set; }
+        public int Points { get; set; }
+        public string Pseudo { get; set; }
+        public string Group { get; set; }
 
         public void Map(in Data.Models.User model)
         {
-            id = model.UUID;
-            date = model.RegistrationDate.ToString();
-            firstName = model.FirstName;
-            lastName = model.LastName;
-            icon = model.Icon;
-            email = model.EMail;
-            @private = model.Private;
-            profileMsg = model.ProfileMsg;
-            points = model.Points;
-            pseudo = model.Pseudo;
-            group = model.Group.Name;
+            Id = model.UUID;
+            Date = model.RegistrationDate.ToString();
+            FirstName = model.FirstName;
+            LastName = model.LastName;
+            Icon = model.Icon;
+            Email = model.EMail;
+            Private = model.Private;
+            ProfileMsg = model.ProfileMsg;
+            Points = model.Points;
+            Pseudo = model.Pseudo;
+            Group = model.Group.Name;
         }
     }
 }

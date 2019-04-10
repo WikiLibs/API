@@ -19,7 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Core", "WikiLibs.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.ImportMySQLDB", "WikiLibs.ImportMySQLDB\WikiLibs.ImportMySQLDB.csproj", "{5D0AA5CA-6F04-4B8D-977A-E1B45A35CFBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiLibs.DTO", "WikiLibs.DTO\WikiLibs.DTO.csproj", "{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.DTO", "WikiLibs.DTO\WikiLibs.DTO.csproj", "{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.API", "WikiLibs.API\WikiLibs.API.csproj", "{96EA7CDF-46E6-4786-88DA-8CADF542BF33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiLibs.Symbols", "WikiLibs.Symbols\WikiLibs.Symbols.csproj", "{FE03C079-62DA-4D8C-B279-E704D723B058}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,14 @@ Global
 		{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96EA7CDF-46E6-4786-88DA-8CADF542BF33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96EA7CDF-46E6-4786-88DA-8CADF542BF33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96EA7CDF-46E6-4786-88DA-8CADF542BF33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96EA7CDF-46E6-4786-88DA-8CADF542BF33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE03C079-62DA-4D8C-B279-E704D723B058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE03C079-62DA-4D8C-B279-E704D723B058}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE03C079-62DA-4D8C-B279-E704D723B058}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE03C079-62DA-4D8C-B279-E704D723B058}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
