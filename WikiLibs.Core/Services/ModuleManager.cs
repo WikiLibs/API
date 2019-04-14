@@ -5,21 +5,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
+using WikiLibs.API;
 
 namespace WikiLibs.Core.Services
 {
-    public class ModuleManager : API.IModuleManager
+    public class ModuleManager : IModuleManager
     {
         struct ModuleTypeInfo
         {
+            public Type AbstractClass { get; set; }
             public Type MainClass { get; set; }
             public Type ConfigClass { get; set; }
             public string Name { get; set; }
+            public string Version { get; set; }
         }
 
-        private Dictionary<Type, API.IModule> _moduleMap = new Dictionary<Type, API.IModule>();
+        private Dictionary<Type, IModule> _moduleMap = new Dictionary<Type, IModule>();
         private Dictionary<Type, object> _configuratorMap = new Dictionary<Type, object>();
         private Dictionary<Type, ModuleTypeInfo> _moduleTypes = new Dictionary<Type, ModuleTypeInfo>();
+        private List<ModuleInfo> _moduleList = new List<ModuleInfo>();
 
         public ModuleManager()
         {
@@ -29,23 +33,28 @@ namespace WikiLibs.Core.Services
         {
             foreach (var kv in other._moduleTypes)
             {
-                if (kv.Value.MainClass.GetConstructor(new Type[] { typeof(Data.Context) }) != null)
+                if (kv.Value.ConfigClass != null)
                 {
-                    if (kv.Value.ConfigClass != null)
-                        _moduleMap[kv.Key] = (API.IModule)Activator.CreateInstance(kv.Value.MainClass,
+                    if (kv.Value.MainClass.GetConstructor(new Type[] { typeof(Data.Context), kv.Value.ConfigClass }) != null)
+                        _moduleMap[kv.Key] = (IModule)Activator.CreateInstance(kv.Value.MainClass,
                             new object[] { ctx, other._configuratorMap[kv.Value.ConfigClass] });
                     else
-                        _moduleMap[kv.Key] = (API.IModule)Activator.CreateInstance(kv.Value.MainClass,
-                            new object[] { ctx });
+                        _moduleMap[kv.Key] = (IModule)Activator.CreateInstance(kv.Value.MainClass,
+                            new object[] { other._configuratorMap[kv.Value.ConfigClass] });
                 }
                 else
                 {
-                    if (kv.Value.ConfigClass != null)
-                        _moduleMap[kv.Key] = (API.IModule)Activator.CreateInstance(kv.Value.MainClass,
-                            new object[] { other._configuratorMap[kv.Value.ConfigClass] });
+                    if (kv.Value.MainClass.GetConstructor(new Type[] { typeof(Data.Context) }) != null)
+                        _moduleMap[kv.Key] = (IModule)Activator.CreateInstance(kv.Value.MainClass,
+                            new object[] { ctx });
                     else
-                        _moduleMap[kv.Key] = (API.IModule)Activator.CreateInstance(kv.Value.MainClass);
+                        _moduleMap[kv.Key] = (IModule)Activator.CreateInstance(kv.Value.MainClass);
                 }
+                _moduleList.Add(new ModuleInfo()
+                {
+                    Name = kv.Value.Name,
+                    Version = kv.Value.Version
+                });
             }
         }
 
@@ -71,6 +80,8 @@ namespace WikiLibs.Core.Services
 
         private void CheckModule(ModuleTypeInfo infos)
         {
+            if (!infos.AbstractClass.IsAssignableFrom(infos.MainClass))
+                throw new ArgumentException("Cannot bind module : incorrect base class");
             if (infos.ConfigClass == null)
                 return;
             if (infos.MainClass.GetConstructors().Length != 1)
@@ -84,16 +95,18 @@ namespace WikiLibs.Core.Services
 
         public void LoadModule(IMvcBuilder builder, string path)
         {
-            FileInfo inf = new FileInfo("./Modules/" + path + ".dll");
+            FileInfo inf = new FileInfo(Program.AssemblyDirectory + "/" + path + ".dll");
             ModuleTypeInfo cur = new ModuleTypeInfo() { Name = path };
 
             if (!inf.Exists)
                 return;
             Assembly asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(inf.FullName);
+            cur.Version = asm.GetName().Version.ToString();
             foreach (Type t in asm.GetExportedTypes())
             {
                 if (t.GetCustomAttribute<API.Module>() != null)
                 {
+                    cur.AbstractClass = t.GetCustomAttribute<API.Module>().RefType;
                     if (cur.MainClass != null)
                         throw new ArgumentException("Duplicate Module Main class");
                     cur.MainClass = t;
@@ -108,7 +121,11 @@ namespace WikiLibs.Core.Services
             CheckModule(cur);
             _moduleTypes[cur.MainClass] = cur;
             builder.AddApplicationPart(asm);
-            Console.WriteLine("Adding module '" + path + "'...");
+        }
+
+        public ICollection<ModuleInfo> GetModules()
+        {
+            return (_moduleList);
         }
     }
 }

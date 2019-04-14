@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,14 @@ namespace WikiLibs.Core.Middleware
             _next = next;
         }
 
+        private string GenObjectString(JsonErrorResult res)
+        {
+            return (JsonConvert.SerializeObject(res, Formatting.Indented, new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            }));
+        }
+
         public async Task Invoke(HttpContext ctx)
         {
             JsonErrorResult res = null;
@@ -44,7 +53,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.Clear();
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 403;
-                await ctx.Response.WriteAsync(JsonConvert.SerializeObject(res, Formatting.Indented));
+                await ctx.Response.WriteAsync(GenObjectString(res));
             }
             catch (API.Exceptions.InvalidResource ex)
             {
@@ -58,7 +67,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.Clear();
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 400;
-                await ctx.Response.WriteAsync(JsonConvert.SerializeObject(res, Formatting.Indented));
+                await ctx.Response.WriteAsync(GenObjectString(res));
             }
             catch (API.Exceptions.ResourceAlreadyExists ex)
             {
@@ -72,7 +81,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.Clear();
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 409;
-                await ctx.Response.WriteAsync(JsonConvert.SerializeObject(res, Formatting.Indented));
+                await ctx.Response.WriteAsync(GenObjectString(res));
             }
             catch (API.Exceptions.ResourceNotFound ex)
             {
@@ -86,7 +95,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.Clear();
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 404;
-                await ctx.Response.WriteAsync(JsonConvert.SerializeObject(res, Formatting.Indented));
+                await ctx.Response.WriteAsync(GenObjectString(res));
             }
             catch (Exception ex)
             {
@@ -100,7 +109,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.Clear();
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 500;
-                await ctx.Response.WriteAsync(JsonConvert.SerializeObject(res, Formatting.Indented));
+                await ctx.Response.WriteAsync(GenObjectString(res));
             }
         }
     }

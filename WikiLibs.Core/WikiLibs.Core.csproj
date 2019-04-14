@@ -13,11 +13,14 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.1.1" />
+    <PackageReference Include="System.Management" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WikiLibs.API\WikiLibs.API.csproj" />
     <ProjectReference Include="..\WikiLibs.Data\WikiLibs.Data.csproj" />
+    <ProjectReference Include="..\WikiLibs.DTO\WikiLibs.DTO.csproj" />
+    <ProjectReference Include="..\WikiLibs.Symbols\WikiLibs.Symbols.csproj" />
   </ItemGroup>
 
 </Project>

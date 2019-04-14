@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Serialization;
 using WikiLibs.Core.Services;
 
 namespace WikiLibs.Core
@@ -29,16 +30,21 @@ namespace WikiLibs.Core
         {
             var modules = new List<string>();
             var mgr = new ModuleManager();
+
             IMvcBuilder builder = services.AddMvc(o =>
             {
                 o.ModelMetadataDetailsProviders.Add(new ModelRequiredBinding());
                 o.Filters.Add(new Filters.APIKeyFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-              .AddJsonOptions(o => o.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore);
-
+              .AddJsonOptions(o =>
+              {
+                  o.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                  o.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+              });
+            Configuration.Bind("Modules", modules);
             foreach (var s in modules)
                 mgr.LoadModule(builder, s);
-            Configuration.Bind("Modules", modules);
+            mgr.LoadAll(Configuration);
             services.AddDbContext<Data.Context>(o => o.UseLazyLoadingProxies()
                                                       .UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddHttpContextAccessor();
