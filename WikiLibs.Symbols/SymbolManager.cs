@@ -26,7 +26,7 @@ namespace WikiLibs.Symbols
             return (objs[0] + '/' + objs[1] + '/');
         }
 
-        public void DeleteSymbol(Symbol sym)
+        public void Delete(Symbol sym)
         {
             var s = _db.Symbols.Find(new object[] { sym.Id });
 
@@ -66,7 +66,7 @@ namespace WikiLibs.Symbols
                 .ToArray());
         }
 
-        public Symbol GetSymbol(string path)
+        public Symbol Get(string path)
         {
             var sym = _db.Symbols.Where(o => o.Path == path);
 
@@ -86,7 +86,7 @@ namespace WikiLibs.Symbols
             return (objs.Length > 2);
         }
 
-        public void CreateSymbol(Symbol sym)
+        public void Post(Symbol sym)
         {
             if (!CheckSymPath(sym))
                 throw new API.Exceptions.InvalidResource()
@@ -111,7 +111,7 @@ namespace WikiLibs.Symbols
             _db.SaveChanges();
         }
 
-        public void PatchSymbol(Symbol sym)
+        public void Patch(Symbol sym)
         {
             var s = _db.Symbols.Find(new object[] { sym.Id });
             if (s == null)
@@ -169,6 +169,20 @@ namespace WikiLibs.Symbols
             res.HasNext = next;
             res.Symbols = arr;
             return (res);
+        }
+
+        public void Delete(string key)
+        {
+            var sym = Get(key);
+
+            if (sym == null)
+                throw new API.Exceptions.ResourceNotFound()
+                {
+                    ResourceId = key,
+                    ResourceName = key,
+                    ResourceType = typeof(Symbol)
+                };
+            Delete(sym);
         }
     }
 }

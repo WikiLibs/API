@@ -27,9 +27,9 @@ namespace WikiLibs.Core.Filters
             }
             var mdmgr = (API.IModuleManager)context.HttpContext.RequestServices
                 .GetService(typeof(API.IModuleManager));
-            var adminmgr = mdmgr.GetModule<API.Modules.IAdminManager>();
+            var adminmgr = mdmgr.GetModule<API.Modules.Admin.IAdminManager>();
             string auth = context.HttpContext.Request.Headers["Authorization"];
-            if (auth == null || auth == "" || !adminmgr.APIKeyExists(auth))
+            if (auth == null || auth == "" || !adminmgr.APIKeyManager.Exists(auth))
             {
                 context.Result = new UnauthorizedResult();
                 return (Task.FromResult(0));
