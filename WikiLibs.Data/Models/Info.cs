@@ -12,11 +12,8 @@ namespace WikiLibs.Data.Models
         LANG,
         LIB
     }
-    public class Info
+    public class Info : Model
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
         public EInfoType Type { get; set; }
         public string Data { get; set; }
     }

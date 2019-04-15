@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace WikiLibs.Data.Models
 {
-    public class Group
+    public class Group : Model
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
         public string Name { get; set; }
         public virtual ICollection<Permission> Permissions { get; set; } = new HashSet<Permission>();
     }

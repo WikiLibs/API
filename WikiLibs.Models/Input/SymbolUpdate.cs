@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using WikiLibs.Data.Models;
 
-namespace WikiLibs.DTO.Input
+namespace WikiLibs.Models.Input
 {
-    public class SymbolUpdate : IPatchDTO<Data.Models.Symbol>
+    public class SymbolUpdate : PatchModel<SymbolUpdate, Symbol>
     {
         public class Prototype
         {
@@ -29,7 +29,7 @@ namespace WikiLibs.DTO.Input
         public Prototype[] Prototypes { get; set; }
         public string[] Symbols { get; set; }
 
-        public Symbol CreatePatch(in Symbol current)
+        public override Symbol CreatePatch(in Symbol current)
         {
             var sym = new Symbol()
             {

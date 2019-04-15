@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace WikiLibs.Data.Models
 {
-    public class Example
+    public class Example : Model
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
         [Required]
         public virtual Symbol Symbol { get; set; }
         public string Code { get; set; }

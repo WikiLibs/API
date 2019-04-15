@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using WikiLibs.Data.Models;
 
-namespace WikiLibs.DTO.Output
+namespace WikiLibs.Models.Output
 {
-    public class Symbol : IGetDTO<Data.Models.Symbol>
+    public class Symbol : GetModel<Symbol, Data.Models.Symbol>
     {
         public class Prototype
         {
@@ -32,7 +32,7 @@ namespace WikiLibs.DTO.Output
         public Prototype[] Prototypes { get; set; }
         public string[] Symbols { get; set; }
 
-        public void Map(in Data.Models.Symbol model)
+        public override void Map(in Data.Models.Symbol model)
         {
             UserId = model.User.UUID;
             Date = model.LastModificationDate.ToString();
