@@ -7,7 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\WikiLibs.API\WikiLibs.API.csproj" />
     <ProjectReference Include="..\WikiLibs.Data\WikiLibs.Data.csproj" />
-    <ProjectReference Include="..\WikiLibs.DTO\WikiLibs.DTO.csproj" />
+    <ProjectReference Include="..\WikiLibs.Models\WikiLibs.Models.csproj" />
   </ItemGroup>
 
 </Project>

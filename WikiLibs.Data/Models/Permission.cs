@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace WikiLibs.Data.Models
 {
-    public class Permission
+    public class Permission : Model
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
         [Required]
         public virtual Group Group { get; set; }
         public string Perm { get; set; }

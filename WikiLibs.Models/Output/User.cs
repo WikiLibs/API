@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using WikiLibs.Data.Models;
 
-namespace WikiLibs.DTO.Output
+namespace WikiLibs.Models.Output
 {
-    public class User : IGetDTO<Data.Models.User>
+    public class User : GetModel<User, Data.Models.User>
     {
         public string Id { get; set; }
         public string Date { get; set; }
@@ -19,7 +19,7 @@ namespace WikiLibs.DTO.Output
         public string Pseudo { get; set; }
         public string Group { get; set; }
 
-        public void Map(in Data.Models.User model)
+        public override void Map(in Data.Models.User model)
         {
             Id = model.UUID;
             Date = model.RegistrationDate.ToString();

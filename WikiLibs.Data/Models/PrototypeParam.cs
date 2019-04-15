@@ -6,11 +6,8 @@ using System.Text;
 
 namespace WikiLibs.Data.Models
 {
-    public class PrototypeParam
+    public class PrototypeParam : Model
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
         [Required]
         public virtual Prototype Prototype { get; set; }
         public string Data { get; set; }

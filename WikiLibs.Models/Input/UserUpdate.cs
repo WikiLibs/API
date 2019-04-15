@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using WikiLibs.Data.Models;
 
-namespace WikiLibs.DTO.Input
+namespace WikiLibs.Models.Input
 {
-    public class UserUpdate : IPatchDTO<Data.Models.User>
+    public class UserUpdate : PatchModel<UserUpdate, User>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -16,7 +16,7 @@ namespace WikiLibs.DTO.Input
         public string Pseudo { get; set; }
         public string Password { get; set; }
 
-        public User CreatePatch(in User current)
+        public override User CreatePatch(in User current)
         {
             throw new NotImplementedException();
         }

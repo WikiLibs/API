@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using WikiLibs.Data.Models;
 
-namespace WikiLibs.DTO.Input
+namespace WikiLibs.Models.Input
 {
-    public class SymbolCreate : IPostDTO<Data.Models.Symbol>
+    public class SymbolCreate : PostModel<SymbolCreate, Symbol>
     {
         public class Prototype
         {
@@ -42,7 +42,7 @@ namespace WikiLibs.DTO.Input
         [Required]
         public string[] Symbols { get; set; }
 
-        public Symbol CreateNew()
+        public override Symbol CreateModel()
         {
             var sym = new Symbol()
             {
