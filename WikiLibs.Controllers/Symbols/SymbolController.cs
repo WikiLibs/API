@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
+using WikiLibs.API;
 
 namespace WikiLibs.Controllers.Symbols
 {
@@ -12,16 +11,16 @@ namespace WikiLibs.Controllers.Symbols
     public class SymbolController : Controller
     {
         private API.Modules.ISymbolManager _symmgr;
-        private API.IUser _user;
+        private IUser _user;
 
-        public SymbolController(API.IModuleManager mgr, API.IUser usr)
+        public SymbolController(IModuleManager mgr, IUser usr)
         {
             _symmgr = mgr.GetModule<API.Modules.ISymbolManager>();
             _user = usr;
         }
 
         [AllowAnonymous]
-        [API.AuthorizeApiKey]
+        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("{*path}")]
         public IActionResult GetSymbol([Required] string path)
         {
@@ -38,7 +37,7 @@ namespace WikiLibs.Controllers.Symbols
                     ResourceName = sym.Path,
                     ResourceId = sym.Path,
                     ResourceType = typeof(Data.Models.Symbol),
-                    MissingPermission = API.Permissions.CREATE_SYMBOL
+                    MissingPermission = Permissions.CREATE_SYMBOL
                 };
             _symmgr.Post(sym.CreateModel());
             return (Ok());
@@ -53,7 +52,7 @@ namespace WikiLibs.Controllers.Symbols
                     ResourceName = path,
                     ResourceId = path,
                     ResourceType = typeof(Data.Models.Symbol),
-                    MissingPermission = API.Permissions.UPDATE_SYMBOL
+                    MissingPermission = Permissions.UPDATE_SYMBOL
                 };
             _symmgr.Patch(sym.CreatePatch(_symmgr.Get(path)));
             return (Ok());
@@ -62,13 +61,13 @@ namespace WikiLibs.Controllers.Symbols
         [HttpDelete("{*path}")]
         public IActionResult DeleteSymbol([Required] string path)
         {
-            if (!_user.HasPermission(API.Permissions.DELETE_SYMBOL))
+            if (!_user.HasPermission(Permissions.DELETE_SYMBOL))
                 throw new API.Exceptions.InsuficientPermission()
                 {
                     ResourceName = path,
                     ResourceId = path,
                     ResourceType = typeof(Data.Models.Symbol),
-                    MissingPermission = API.Permissions.DELETE_SYMBOL
+                    MissingPermission = Permissions.DELETE_SYMBOL
                 };
             _symmgr.Delete(path);
             return (Ok());
