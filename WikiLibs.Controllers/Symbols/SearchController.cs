@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WikiLibs.Symbols.Controllers
+namespace WikiLibs.Controllers.Symbols
 {
     [Route("/search/")]
     public class SearchController : Controller

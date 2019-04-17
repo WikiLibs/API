@@ -5,7 +5,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
-namespace WikiLibs.Symbols.Controllers
+namespace WikiLibs.Controllers.Symbols
 {
     [Authorize]
     [Route("/symbol/")]

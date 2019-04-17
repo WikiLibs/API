@@ -54,6 +54,13 @@ namespace WikiLibs.Core
                 return (new ModuleManager(mgr, ctx));
             });
             services.AddScoped<IUser>(o => new StandardUser(o.GetService<IHttpContextAccessor>(), o.GetService<Data.Context>()));
+            services.AddCors(o =>
+                o.AddPolicy("AllowAll", p =>
+                    p.AllowAnyHeader()
+                     .AllowAnyMethod()
+                     .AllowAnyOrigin()
+                )
+            );
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -62,6 +69,7 @@ namespace WikiLibs.Core
             if (!env.IsDevelopment())
                 app.UseHsts();
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
             app.UseMvc();
         }
     }

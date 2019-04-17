@@ -29,11 +29,13 @@ namespace WikiLibs.Core.Services
             return (_perms[name]);
         }
 
-        public string GenToken(string uuid = null)
+        public bool IsExternal()
         {
-            throw new NotImplementedException();
+            return (false);
         }
 
         public Data.Models.User User { get; }
+
+        public string UserId => User.UUID;
     }
 }
