@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Core.Services
 {
@@ -29,13 +30,10 @@ namespace WikiLibs.Core.Services
             return (_perms[name]);
         }
 
-        public bool IsExternal()
-        {
-            return (false);
-        }
+        public bool IsExternal => false;
 
         public Data.Models.User User { get; }
 
-        public string UserId => User.UUID;
+        public string UserId => User.Id;
     }
 }

@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace WikiLibs.Data.Models
 {
-    public class APIKey
+    public class APIKey : Model<string>
     {
-        [Key]
-        public string Key { get; set; }
         public string Description { get; set; }
     }
 }

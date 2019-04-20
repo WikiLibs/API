@@ -9,13 +9,9 @@ namespace WikiLibs.Shared.Service
     {
         bool HasPermission(string name);
 
-        /// <summary>
-        /// Generates a new token
-        /// </summary>
-        /// <param name="uuid">If null generate token for current connected user, otherwise specify the UUID in the token</param>
-        /// <returns>The newly generated JWT token</returns>
-        string GenToken(string uuid = null);
+        bool IsExternal { get; }
 
         Data.Models.User User { get; }
+        string UserId { get; }
     }
 }

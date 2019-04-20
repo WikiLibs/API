@@ -34,7 +34,7 @@ namespace WikiLibs.Models.Output
 
         public override void Map(in Data.Models.Symbol model)
         {
-            UserId = model.User.UUID;
+            UserId = model.User.Id;
             Date = model.LastModificationDate.ToString();
             Lang = model.Lang;
             Type = model.Type;

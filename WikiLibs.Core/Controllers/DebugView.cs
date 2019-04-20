@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Core.Controllers
 {
@@ -20,7 +21,7 @@ namespace WikiLibs.Core.Controllers
         public string Name { get; set; }
         public string Version { get; set; }
         public HostView Host { get; set; }
-        public ICollection<API.ModuleInfo> Modules { get; set; }
+        public ICollection<ModuleInfo> Modules { get; set; }
         public ICollection<TypeInfo> Controllers { get; set; }
     }
 }

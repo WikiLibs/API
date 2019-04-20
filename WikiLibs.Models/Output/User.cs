@@ -21,7 +21,7 @@ namespace WikiLibs.Models.Output
 
         public override void Map(in Data.Models.User model)
         {
-            Id = model.UUID;
+            Id = model.Id;
             Date = model.RegistrationDate.ToString();
             FirstName = model.FirstName;
             LastName = model.LastName;

@@ -41,7 +41,7 @@ namespace WikiLibs.Core.Middleware
             {
                 await _next(ctx);
             }
-            catch (API.Exceptions.InsuficientPermission ex)
+            catch (Shared.Exceptions.InsuficientPermission ex)
             {
                 res = new JsonErrorResult()
                 {
@@ -55,7 +55,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.StatusCode = 403;
                 await ctx.Response.WriteAsync(GenObjectString(res));
             }
-            catch (API.Exceptions.InvalidResource ex)
+            catch (Shared.Exceptions.InvalidResource ex)
             {
                 res = new JsonErrorResult()
                 {
@@ -69,7 +69,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.StatusCode = 400;
                 await ctx.Response.WriteAsync(GenObjectString(res));
             }
-            catch (API.Exceptions.ResourceAlreadyExists ex)
+            catch (Shared.Exceptions.ResourceAlreadyExists ex)
             {
                 res = new JsonErrorResult()
                 {
@@ -83,7 +83,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.StatusCode = 409;
                 await ctx.Response.WriteAsync(GenObjectString(res));
             }
-            catch (API.Exceptions.ResourceNotFound ex)
+            catch (Shared.Exceptions.ResourceNotFound ex)
             {
                 res = new JsonErrorResult()
                 {

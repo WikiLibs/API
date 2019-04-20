@@ -8,7 +8,7 @@ using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Service;
 
-namespace WikiLibs.Controllers.Symbols
+namespace WikiLibs.API.Symbols
 {
     [Authorize]
     [Route("/symbol/")]

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Newtonsoft.Json.Serialization;
+using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Core.Controllers
 {
@@ -14,9 +15,9 @@ namespace WikiLibs.Core.Controllers
     public class DebugController : Controller
     {
         private readonly ApplicationPartManager _partManager;
-        private readonly API.IModuleManager _modules;
+        private readonly IModuleManager _modules;
 
-        public DebugController(ApplicationPartManager partManager, API.IModuleManager mgr)
+        public DebugController(ApplicationPartManager partManager, IModuleManager mgr)
         {
             _partManager = partManager;
             _modules = mgr;

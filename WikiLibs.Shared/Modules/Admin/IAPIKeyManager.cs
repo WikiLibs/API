@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WikiLibs.Shared.Modules.Admin
 {
-    public interface IAPIKeyManager : ICRUDOperations<Data.Models.APIKey, string, string>
+    public interface IAPIKeyManager : ICRUDOperations<Data.Models.APIKey, string>
     {
         ICollection<Data.Models.APIKey> GetAll();
         bool Exists(string key);

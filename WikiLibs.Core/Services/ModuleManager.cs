@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
-using WikiLibs.API;
+using WikiLibs.Shared;
+using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Core.Services
 {
@@ -58,7 +59,7 @@ namespace WikiLibs.Core.Services
             }
         }
 
-        public T GetModule<T>() where T : API.IModule
+        public T GetModule<T>() where T : IModule
         {
             if (!_moduleMap.ContainsKey(typeof(T)))
                 return (default(T));
@@ -104,14 +105,14 @@ namespace WikiLibs.Core.Services
             cur.Version = asm.GetName().Version.ToString();
             foreach (Type t in asm.GetExportedTypes())
             {
-                if (t.GetCustomAttribute<API.Module>() != null)
+                if (t.GetCustomAttribute<Shared.Attributes.Module>() != null)
                 {
-                    cur.AbstractClass = t.GetCustomAttribute<API.Module>().RefType;
+                    cur.AbstractClass = t.GetCustomAttribute<Shared.Attributes.Module>().RefType;
                     if (cur.MainClass != null)
                         throw new ArgumentException("Duplicate Module Main class");
                     cur.MainClass = t;
                 }
-                else if (t.GetCustomAttribute<API.Configurator>() != null)
+                else if (t.GetCustomAttribute<Shared.Attributes.Configurator>() != null)
                 {
                     if (cur.ConfigClass != null)
                         throw new ArgumentException("Duplicate Config class");

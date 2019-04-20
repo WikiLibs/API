@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
 using WikiLibs.Core.Services;
+using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Core
 {
@@ -48,7 +49,7 @@ namespace WikiLibs.Core
             services.AddDbContext<Data.Context>(o => o.UseLazyLoadingProxies()
                                                       .UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddHttpContextAccessor();
-            services.AddScoped<API.IModuleManager>(o =>
+            services.AddScoped<IModuleManager>(o =>
             {
                 Data.Context ctx = o.GetService<Data.Context>();
                 return (new ModuleManager(mgr, ctx));
