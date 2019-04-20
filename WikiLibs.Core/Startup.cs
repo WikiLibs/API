@@ -65,8 +65,9 @@ namespace WikiLibs.Core
             );
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory)
         {
+            
             app.UseMiddleware<Middleware.ErrorHandlingMiddleware>();
             if (!env.IsDevelopment())
                 app.UseHsts();

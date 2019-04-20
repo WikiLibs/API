@@ -33,6 +33,11 @@ namespace WikiLibs.Core
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureLogging(o =>
+                {
+                    o.ClearProviders();
+                    o.AddProvider(new Logging.Console());
+                })
                 .UseStartup<Startup>();
     }
 }
