@@ -1,8 +1,10 @@
 ﻿using System;
+using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules.Admin;
 
 namespace WikiLibs.Admin
 {
+    [Module(typeof(IAdminManager))]
     public class AdminManager : IAdminManager
     {
         private readonly APIKeyManager _apiKeyManager;
