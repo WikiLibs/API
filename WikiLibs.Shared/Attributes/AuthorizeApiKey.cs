@@ -8,11 +8,26 @@ namespace WikiLibs.Shared.Attributes
     [AttributeUsage(AttributeTargets.Method)]
     public class AuthorizeApiKey : Attribute
     {
-        public const int Registration = 1;
-        public const int Authentication = 2;
-        public const int Standard = 4;
+        public const int Registration = 0x10;
+        public const int Authentication = 0x20;
+        public const int Standard = 0x40;
 
         [Required]
         public int Flag { get; set; }
+
+        public static string GetFlagName(int flag)
+        {
+            switch (flag)
+            {
+                case Registration:
+                    return "Registration";
+                case Authentication:
+                    return "Authentication";
+                case Standard:
+                    return "Standard";
+                default:
+                    return "Null";
+            }
+        }
     }
 }

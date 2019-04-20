@@ -14,19 +14,25 @@ namespace WikiLibs.Core.Filters
 {
     public class APIKeyFilter : IAsyncAuthorizationFilter
     {
-        public Task OnAuthorizationAsync(AuthorizationFilterContext context)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
             string controller = descriptor?.ControllerName;
             TypeInfo ctrl = descriptor?.ControllerTypeInfo;
             string action = descriptor?.ActionName;
             IEnumerable<MethodInfo> methods = ctrl.GetMethods().Where(m => m.Name == action);
-            if (methods.Count() <= 0 || methods.ElementAt(0).GetCustomAttribute<AuthorizeApiKey>() == null)
-                return (Task.FromResult(0));
+            var attribute = methods.Count() > 0 ? methods.ElementAt(0).GetCustomAttribute<AuthorizeApiKey>() : null;
+            if (attribute == null)
+                return;
             if (!context.HttpContext.Request.Headers.ContainsKey("Authorization"))
             {
-                context.Result = new UnauthorizedResult();
-                return (Task.FromResult(0));
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = "APIKey",
+                    ResourceId = "APIKey",
+                    MissingPermission = "APIKey",
+                    ResourceType = typeof(Data.Models.APIKey)
+                };
             }
             var mdmgr = (IModuleManager)context.HttpContext.RequestServices
                 .GetService(typeof(IModuleManager));
@@ -34,10 +40,26 @@ namespace WikiLibs.Core.Filters
             string auth = context.HttpContext.Request.Headers["Authorization"];
             if (auth == null || auth == "" || !adminmgr.APIKeyManager.Exists(auth))
             {
-                context.Result = new UnauthorizedResult();
-                return (Task.FromResult(0));
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = "APIKey",
+                    ResourceId = "APIKey",
+                    MissingPermission = "APIKey",
+                    ResourceType = typeof(Data.Models.APIKey)
+                };
             }
-            return (Task.FromResult(0));
+            var mdl = await adminmgr.APIKeyManager.GetAsync(auth);
+            if ((mdl.Flags & attribute.Flag) == 0)
+            {
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = "APIKey",
+                    ResourceId = "APIKey",
+                    MissingPermission = "APIKey." + AuthorizeApiKey.GetFlagName(attribute.Flag),
+                    ResourceType = typeof(Data.Models.APIKey)
+                };
+            }
+            await adminmgr.APIKeyManager.UseAPIKey(auth);
         }
     }
 }

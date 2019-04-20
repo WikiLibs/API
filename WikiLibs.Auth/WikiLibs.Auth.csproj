@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WikiLibs.Data\WikiLibs.Data.csproj" />
+    <ProjectReference Include="..\WikiLibs.Shared\WikiLibs.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
