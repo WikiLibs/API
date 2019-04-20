@@ -18,9 +18,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WikiLibs.API\WikiLibs.API.csproj" />
-    <ProjectReference Include="..\WikiLibs.Controllers\WikiLibs.Controllers.csproj" />
     <ProjectReference Include="..\WikiLibs.Data\WikiLibs.Data.csproj" />
     <ProjectReference Include="..\WikiLibs.Models\WikiLibs.Models.csproj" />
+    <ProjectReference Include="..\WikiLibs.Shared\WikiLibs.Shared.csproj" />
     <ProjectReference Include="..\WikiLibs.Symbols\WikiLibs.Symbols.csproj" />
   </ItemGroup>
 

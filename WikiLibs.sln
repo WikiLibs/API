@@ -21,11 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.ImportMySQLDB", "W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Models", "WikiLibs.Models\WikiLibs.Models.csproj", "{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.API", "WikiLibs.API\WikiLibs.API.csproj", "{96EA7CDF-46E6-4786-88DA-8CADF542BF33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Shared", "WikiLibs.Shared\WikiLibs.Shared.csproj", "{96EA7CDF-46E6-4786-88DA-8CADF542BF33}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Symbols", "WikiLibs.Symbols\WikiLibs.Symbols.csproj", "{FE03C079-62DA-4D8C-B279-E704D723B058}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiLibs.Controllers", "WikiLibs.Controllers\WikiLibs.Controllers.csproj", "{F573B919-E8BF-4879-BA9A-1A1675903789}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.API", "WikiLibs.API\WikiLibs.API.csproj", "{F573B919-E8BF-4879-BA9A-1A1675903789}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

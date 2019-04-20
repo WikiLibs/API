@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -6,8 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WikiLibs.Data\WikiLibs.Data.csproj" />
-    <ProjectReference Include="..\WikiLibs.Models\WikiLibs.Models.csproj" />
-    <ProjectReference Include="..\WikiLibs.Shared\WikiLibs.Shared.csproj" />
   </ItemGroup>
 
 </Project>

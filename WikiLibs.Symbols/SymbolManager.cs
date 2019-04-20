@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using WikiLibs.API.Modules;
+using WikiLibs.Shared.Modules;
 using WikiLibs.Data.Models;
+using WikiLibs.Shared;
+using System.Threading.Tasks;
+using WikiLibs.Shared.Helpers;
+using WikiLibs.Shared.Attributes;
 
 namespace WikiLibs.Symbols
 {
-    [API.Module(typeof(ISymbolManager))]
-    public class SymbolManager : ISymbolManager
+    [Module(typeof(ISymbolManager))]
+    public class SymbolManager : BaseCRUDOperations<Data.Context, Symbol>, ISymbolManager
     {
-        private Data.Context _db;
         private Config _cfg;
 
-        public SymbolManager(Data.Context db, Config cfg)
+        public SymbolManager(Data.Context db, Config cfg) : base(db)
         {
-            _db = db;
             _cfg = cfg;
         }
 
@@ -26,31 +27,22 @@ namespace WikiLibs.Symbols
             return (objs[0] + '/' + objs[1] + '/');
         }
 
-        public void Delete(Symbol sym)
+        public override async Task<Symbol> DeleteAsync(Symbol sym)
         {
-            var s = _db.Symbols.Find(new object[] { sym.Id });
-
-            if (s == null)
-                throw new API.Exceptions.ResourceNotFound()
-                {
-                    ResourceType = typeof(Symbol),
-                    ResourceId = sym.Id.ToString(),
-                    ResourceName = sym.Path
-                };
-            _db.Remove(s);
-            _db.SaveChanges();
-            if (_db.Symbols.Where(sy => sy.Lang == sym.Lang).Count() <= 0)
-                _db.InfoTable.RemoveRange(_db.InfoTable.Where(sy =>
+            await base.DeleteAsync(sym);
+            if (!Set.Any(sy => sy.Lang == sym.Lang))
+                Context.InfoTable.RemoveRange(Context.InfoTable.Where(sy =>
                     sy.Type == EInfoType.LANG && sy.Data == sym.Lang));
             string libl = GetLibLangPath(sym);
-            if (_db.Symbols.Where(sy => sy.Path.StartsWith(libl)).Count() <= 0)
-                _db.InfoTable.RemoveRange(_db.InfoTable.Where(sy =>
+            if (!Set.Any(sy => sy.Path.StartsWith(libl)))
+                Context.InfoTable.RemoveRange(Context.InfoTable.Where(sy =>
                     sy.Type == EInfoType.LIB && sy.Data == libl));
+            return (sym);
         }
 
         public string[] GetFirstLangs()
         {
-            return (_db.InfoTable.Where(o => o.Type == EInfoType.LANG)
+            return (Context.InfoTable.Where(o => o.Type == EInfoType.LANG)
                 .OrderBy(o => o.Data)
                 .Take(_cfg.MaxSymsPerPage)
                 .Select(o => o.Data)
@@ -59,7 +51,7 @@ namespace WikiLibs.Symbols
 
         public string[] GetFirstLibs(string lang)
         {
-            return (_db.InfoTable.Where(o => o.Type == EInfoType.LIB && o.Data.StartsWith(lang + "/"))
+            return (Context.InfoTable.Where(o => o.Type == EInfoType.LIB && o.Data.StartsWith(lang + "/"))
                 .OrderBy(o => o.Data)
                 .Take(_cfg.MaxSymsPerPage)
                 .Select(o => o.Data)
@@ -68,10 +60,10 @@ namespace WikiLibs.Symbols
 
         public Symbol Get(string path)
         {
-            var sym = _db.Symbols.Where(o => o.Path == path);
+            var sym = Set.Where(o => o.Path == path);
 
             if (sym == null || sym.Count() <= 0)
-                throw new API.Exceptions.ResourceNotFound()
+                throw new Shared.Exceptions.ResourceNotFound()
                 {
                     ResourceType = typeof(Symbol),
                     ResourceName = path
@@ -86,41 +78,34 @@ namespace WikiLibs.Symbols
             return (objs.Length > 2);
         }
 
-        public void Post(Symbol sym)
+        public override async Task<Symbol> PostAsync(Symbol sym)
         {
             if (!CheckSymPath(sym))
-                throw new API.Exceptions.InvalidResource()
+                throw new Shared.Exceptions.InvalidResource()
                 {
                     PropertyName = "Path",
                     ResourceType = typeof(Symbol),
                     ResourceName = sym.Path
                 };
-            if (_db.Symbols.Any(o => o.Path == sym.Path))
-                throw new API.Exceptions.ResourceAlreadyExists()
+            if (Set.Any(o => o.Path == sym.Path))
+                throw new Shared.Exceptions.ResourceAlreadyExists()
                 {
-                    ResourceId = _db.Symbols.Where(o => o.Path == sym.Path).First().Id.ToString(),
+                    ResourceId = Set.Where(o => o.Path == sym.Path).First().Id.ToString(),
                     ResourceType = typeof(Symbol),
                     ResourceName = sym.Path
                 };
             string libl = GetLibLangPath(sym);
-            if (_db.InfoTable.Where(o => o.Type == EInfoType.LANG && o.Data == sym.Lang).Count() <= 0)
-                _db.InfoTable.Add(new Info { Type = EInfoType.LANG, Data = sym.Lang });
-            if (_db.InfoTable.Where(o => o.Type == EInfoType.LIB && o.Data == libl).Count() <= 0)
-                _db.InfoTable.Add(new Info { Type = EInfoType.LIB, Data = libl });
-            _db.Symbols.Add(sym);
-            _db.SaveChanges();
+            if (Context.InfoTable.Where(o => o.Type == EInfoType.LANG && o.Data == sym.Lang).Count() <= 0)
+                Context.InfoTable.Add(new Info { Type = EInfoType.LANG, Data = sym.Lang });
+            if (Context.InfoTable.Where(o => o.Type == EInfoType.LIB && o.Data == libl).Count() <= 0)
+                Context.InfoTable.Add(new Info { Type = EInfoType.LIB, Data = libl });
+            return (await base.PostAsync(sym));
         }
 
-        public void Patch(Symbol sym)
+        public override async Task<Symbol> PatchAsync(long key, Symbol sym)
         {
-            var s = _db.Symbols.Find(new object[] { sym.Id });
-            if (s == null)
-                throw new API.Exceptions.ResourceNotFound()
-                {
-                    ResourceType = typeof(Symbol),
-                    ResourceName = sym.Path,
-                    ResourceId = sym.Id.ToString()
-                };
+            var s = await GetAsync(key);
+
             s.LastModificationDate = sym.LastModificationDate;
             s.Type = sym.Type;
             foreach (var proto in s.Prototypes)
@@ -128,7 +113,7 @@ namespace WikiLibs.Symbols
                 var edit = sym.Prototypes.Where(p => p.Id == proto.Id).SingleOrDefault();
                 if (edit == null)
                 {
-                    _db.Remove(proto);
+                    Context.Remove(proto);
                     continue;
                 }
                 proto.Data = edit.Data;
@@ -138,7 +123,7 @@ namespace WikiLibs.Symbols
                     var edit1 = edit.Parameters.Where(p => p.Id == param.Id).SingleOrDefault();
                     if (edit1 == null)
                     {
-                        _db.Remove(param);
+                        Context.Remove(param);
                         continue;
                     }
                     param.Path = edit1.Path;
@@ -152,37 +137,26 @@ namespace WikiLibs.Symbols
             }
             foreach (var proto in sym.Prototypes)
                 s.Prototypes.Add(proto);
-            _db.SaveChanges();
+            await SaveChanges();
+            return (s);
         }
 
-        public SymbolSearchResult SearchSymbols(int page, string path)
+        public PageResult<string> SearchSymbols(string path, PageOptions options)
         {
-            var data = _db.Symbols.Where(sym => sym.Path.Contains(path))
+            var data = Set.Where(sym => sym.Path.Contains(path))
                 .OrderBy(o => o.Path)
-                .Skip(page * _cfg.MaxSymsPerPage);
-            bool next = data.Count() > _cfg.MaxSymsPerPage;
-            var arr = data.Take(_cfg.MaxSymsPerPage)
-                .Select(sym => sym.Path)
-                .ToArray();
-            var res = new SymbolSearchResult();
+                .Skip(options.PageNum * _cfg.GetMaxSymbols(options));
+            bool next = data.Count() > _cfg.GetMaxSymbols(options);
+            var arr = data.Take(_cfg.GetMaxSymbols(options))
+                .Select(sym => sym.Path);
 
-            res.HasNext = next;
-            res.Symbols = arr;
-            return (res);
-        }
-
-        public void Delete(string key)
-        {
-            var sym = Get(key);
-
-            if (sym == null)
-                throw new API.Exceptions.ResourceNotFound()
-                {
-                    ResourceId = key,
-                    ResourceName = key,
-                    ResourceType = typeof(Symbol)
-                };
-            Delete(sym);
+            return (new PageResult<string>()
+            {
+                Data = arr,
+                HasMorePages = next,
+                PageNum = options.PageNum,
+                PageSize = options.PageSize
+            });
         }
     }
 }

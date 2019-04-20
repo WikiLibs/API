@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace WikiLibs.Data.Models
 {
-    public class User
+    public class User : Model<string>
     {
-        [Key]
-        public string UUID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Icon { get; set; }
