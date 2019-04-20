@@ -50,7 +50,7 @@ namespace WikiLibs.ImportMySQLDB
             {
                 var newUsr = new Data.Models.User()
                 {
-                    UUID = usr.UUID,
+                    Id = usr.UUID,
                     FirstName = usr.FirstName,
                     LastName = usr.LastName,
                     Icon = usr.Icon,
@@ -75,7 +75,7 @@ namespace WikiLibs.ImportMySQLDB
                     CreationDate = sym.Date,
                     LastModificationDate = DateTime.UtcNow,
                     Type = sym.Type,
-                    User = newctx.Users.Where(u => u.UUID == sym.UserID).FirstOrDefault()
+                    User = newctx.Users.Where(u => u.Id == sym.UserID).FirstOrDefault()
                 };
                 foreach (var proto in JsonConvert.DeserializeObject<API.Entities.Symbol.Prototype[]>(sym.Prototypes))
                 {

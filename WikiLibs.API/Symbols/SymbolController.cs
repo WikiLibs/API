@@ -26,7 +26,7 @@ namespace WikiLibs.API.Symbols
         [AllowAnonymous]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("{*path}")]
-        public IActionResult GetSymbol([Required] string path)
+        public IActionResult GetSymbol([Required, FromRoute] string path)
         {
             var sym = _symmgr.Get(path);
             return (Json(Models.Output.Symbol.CreateModel(sym)));
@@ -48,7 +48,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPatch("{*path}")]
-        public async Task<IActionResult> PatchSymbol([Required] string path, [FromBody] Models.Input.SymbolUpdate sym)
+        public async Task<IActionResult> PatchSymbol([Required, FromRoute] string path, [FromBody] Models.Input.SymbolUpdate sym)
         {
             if (!_user.HasPermission(Permissions.UPDATE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
@@ -63,7 +63,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpDelete("{*path}")]
-        public IActionResult DeleteSymbol([Required] string path)
+        public IActionResult DeleteSymbol([Required, FromRoute] string path)
         {
             if (!_user.HasPermission(Permissions.DELETE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
