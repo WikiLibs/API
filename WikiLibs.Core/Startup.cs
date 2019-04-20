@@ -36,6 +36,7 @@ namespace WikiLibs.Core
             {
                 o.ModelMetadataDetailsProviders.Add(new ModelRequiredBinding());
                 o.Filters.Add(new Filters.APIKeyFilter());
+                o.Filters.Add(new Filters.ModelStateFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
               .AddJsonOptions(o =>
               {
