@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
 using WikiLibs.Core.Services;
 using WikiLibs.Shared.Service;
@@ -52,8 +47,9 @@ namespace WikiLibs.Core
             services.AddHttpContextAccessor();
             services.AddScoped<IModuleManager>(o =>
             {
+                var factory = o.GetService<ILoggerFactory>();
                 Data.Context ctx = o.GetService<Data.Context>();
-                return (new ModuleManager(mgr, ctx));
+                return (new ModuleManager(mgr, ctx, factory));
             });
             services.AddScoped<IUser>(o => new StandardUser(o.GetService<IHttpContextAccessor>(), o.GetService<Data.Context>()));
             services.AddCors(o =>
@@ -67,13 +63,19 @@ namespace WikiLibs.Core
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory)
         {
-            
             app.UseMiddleware<Middleware.ErrorHandlingMiddleware>();
             if (!env.IsDevelopment())
                 app.UseHsts();
             app.UseHttpsRedirection();
             app.UseCors("AllowAll");
             app.UseMvc();
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var mdMgr = scope.ServiceProvider.GetService<IModuleManager>();
+                Data.Context ctx = scope.ServiceProvider.GetService<Data.Context>();
+                ((ModuleManager)mdMgr).CallModuleInitializers(factory, ctx, env);
+            }
         }
     }
 }

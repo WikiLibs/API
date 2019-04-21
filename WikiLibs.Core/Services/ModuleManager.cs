@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +19,7 @@ namespace WikiLibs.Core.Services
             public Type AbstractClass { get; set; }
             public Type MainClass { get; set; }
             public Type ConfigClass { get; set; }
+            public MethodInfo Initializer { get; set; }
             public string Name { get; set; }
             public string Version { get; set; }
         }
@@ -30,33 +33,46 @@ namespace WikiLibs.Core.Services
         {
         }
 
-        public ModuleManager(ModuleManager other, Data.Context ctx)
+        private object[] GetParameters(ParameterInfo[] paris, Type configClass,
+                                       string modName, ILoggerFactory factory,
+                                       ModuleManager other, Data.Context ctx)
+        {
+            List<object> pars = new List<object>();
+
+            foreach (var par in paris)
+            {
+                if (par.ParameterType == typeof(Data.Context))
+                    pars.Add(ctx);
+                else if (par.ParameterType == configClass)
+                    pars.Add(other._configuratorMap[configClass]);
+                else if (par.ParameterType == typeof(IModuleManager))
+                    pars.Add(this);
+                else if (par.ParameterType == typeof(ILogger))
+                    pars.Add(factory.CreateLogger(modName));
+            }
+            if (pars.Count == 0)
+                return (null);
+            return (pars.ToArray());
+        }
+
+        public ModuleManager(ModuleManager other, Data.Context ctx, ILoggerFactory factory)
         {
             foreach (var kv in other._moduleTypes)
             {
-                if (kv.Value.ConfigClass != null)
-                {
-                    if (kv.Value.MainClass.GetConstructor(new Type[] { typeof(Data.Context), kv.Value.ConfigClass }) != null)
-                        _moduleMap[kv.Key] = (IModule)Activator.CreateInstance(kv.Value.MainClass,
-                            new object[] { ctx, other._configuratorMap[kv.Value.ConfigClass] });
-                    else
-                        _moduleMap[kv.Key] = (IModule)Activator.CreateInstance(kv.Value.MainClass,
-                            new object[] { other._configuratorMap[kv.Value.ConfigClass] });
-                }
+                var pars = GetParameters(kv.Value.MainClass.GetConstructors()[0].GetParameters(), kv.Value.ConfigClass,
+                                         kv.Value.Name, factory, other, ctx);
+
+                if (pars == null)
+                    _moduleMap[kv.Value.AbstractClass] = (IModule)Activator.CreateInstance(kv.Value.MainClass);
                 else
-                {
-                    if (kv.Value.MainClass.GetConstructor(new Type[] { typeof(Data.Context) }) != null)
-                        _moduleMap[kv.Key] = (IModule)Activator.CreateInstance(kv.Value.MainClass,
-                            new object[] { ctx });
-                    else
-                        _moduleMap[kv.Key] = (IModule)Activator.CreateInstance(kv.Value.MainClass);
-                }
+                    _moduleMap[kv.Value.AbstractClass] = (IModule)Activator.CreateInstance(kv.Value.MainClass, pars);
                 _moduleList.Add(new ModuleInfo()
                 {
                     Name = kv.Value.Name,
                     Version = kv.Value.Version
                 });
             }
+            _moduleTypes = other._moduleTypes;
         }
 
         public T GetModule<T>() where T : IModule
@@ -79,8 +95,21 @@ namespace WikiLibs.Core.Services
             }
         }
 
-        private void CheckModule(ModuleTypeInfo infos)
+        private void AttemptLocateInitializer(ref ModuleTypeInfo infos)
         {
+            foreach (var m in infos.MainClass.GetMethods())
+            {
+                if (m.IsStatic && m.GetCustomAttribute<Shared.Attributes.ModuleInitializer>() != null)
+                {
+                    infos.Initializer = m;
+                    return;
+                }
+            }
+        }
+
+        private void CheckModule(ref ModuleTypeInfo infos)
+        {
+            AttemptLocateInitializer(ref infos);
             if (!infos.AbstractClass.IsAssignableFrom(infos.MainClass))
                 throw new ArgumentException("Cannot bind module : incorrect base class");
             if (infos.ConfigClass == null)
@@ -90,8 +119,6 @@ namespace WikiLibs.Core.Services
             var ctx = infos.MainClass.GetConstructors()[0];
             if (ctx.GetParameters().Length <= 0)
                 throw new ArgumentException("Configuration class was provided but never used");
-            if (ctx.GetParameters()[ctx.GetParameters().Length - 1].ParameterType != infos.ConfigClass)
-                throw new ArgumentException("Configuration class must be last argument of module constructor");
         }
 
         public void LoadModule(IMvcBuilder builder, string path)
@@ -119,9 +146,28 @@ namespace WikiLibs.Core.Services
                     cur.ConfigClass = t;
                 }
             }
-            CheckModule(cur);
+            CheckModule(ref cur);
             _moduleTypes[cur.MainClass] = cur;
             builder.AddApplicationPart(asm);
+        }
+
+        public void CallModuleInitializers(ILoggerFactory factory, Data.Context ctx, IHostingEnvironment host)
+        {
+            foreach (var kv in _moduleTypes)
+            {
+                if (kv.Value.Initializer != null)
+                {
+                    var attribute = kv.Value.Initializer.GetCustomAttribute<Shared.Attributes.ModuleInitializer>();
+
+                    if (host.IsDevelopment() && !attribute.Debug)
+                        continue;
+                    else if (!attribute.Release && !host.IsDevelopment())
+                        continue;
+                    kv.Value.Initializer.Invoke(null, GetParameters(kv.Value.Initializer.GetParameters(),
+                                                                    kv.Value.ConfigClass, kv.Value.Name,
+                                                                    factory, this, ctx));
+                }
+            }
         }
 
         public ICollection<ModuleInfo> GetModules()
