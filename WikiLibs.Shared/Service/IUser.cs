@@ -12,6 +12,11 @@ namespace WikiLibs.Shared.Service
         bool IsExternal { get; }
 
         Data.Models.User User { get; }
+
         string UserId { get; }
+
+        int Points { get; set; }
+
+        Task Save();
     }
 }
