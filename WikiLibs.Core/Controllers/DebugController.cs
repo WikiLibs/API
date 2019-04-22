@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Newtonsoft.Json.Serialization;
+using WikiLibs.Shared.Modules.Admin;
 using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Core.Controllers
@@ -16,11 +17,13 @@ namespace WikiLibs.Core.Controllers
     {
         private readonly ApplicationPartManager _partManager;
         private readonly IModuleManager _modules;
+        private readonly IAdminManager _admin;
 
         public DebugController(ApplicationPartManager partManager, IModuleManager mgr)
         {
             _partManager = partManager;
             _modules = mgr;
+            _admin = mgr.GetModule<IAdminManager>();
         }
 
         private string GetCPUId()
@@ -74,6 +77,7 @@ namespace WikiLibs.Core.Controllers
             {
                 Name = "WikiLibs API Server",
                 Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                DevKey = _admin.APIKeyManager.GetAllOfDescription("[WIKILIBS_SUPER_DEV_API_KEY]").First().Id,
                 Host = new DebugView.HostView()
                 {
                     Framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,

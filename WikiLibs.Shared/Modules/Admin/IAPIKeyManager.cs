@@ -10,5 +10,6 @@ namespace WikiLibs.Shared.Modules.Admin
         IQueryable<Data.Models.APIKey> GetAll();
         bool Exists(string key);
         Task UseAPIKey(string key);
+        IQueryable<Data.Models.APIKey> GetAllOfDescription(string desc);
     }
 }

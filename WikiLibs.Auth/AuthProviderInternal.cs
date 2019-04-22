@@ -4,11 +4,17 @@ using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Data.Models;
 using WikiLibs.Shared.Modules.Auth;
+using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Auth
 {
     public class AuthProviderInternal : IAuthProvider
     {
+        public AuthProviderInternal(IModuleManager mgr)
+        {
+
+        }
+
         public string GetConnectionString()
         {
             return (null);

@@ -54,5 +54,10 @@ namespace WikiLibs.Admin
                 await DeleteAsync(apiKey);
             await SaveChanges();
         }
+
+        public IQueryable<APIKey> GetAllOfDescription(string desc)
+        {
+            return (Set.Where(x => x.Description == desc));
+        }
     }
 }

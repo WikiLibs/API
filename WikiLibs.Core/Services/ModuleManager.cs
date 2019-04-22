@@ -29,6 +29,9 @@ namespace WikiLibs.Core.Services
         private Dictionary<Type, ModuleTypeInfo> _moduleTypes = new Dictionary<Type, ModuleTypeInfo>();
         private List<ModuleInfo> _moduleList = new List<ModuleInfo>();
 
+        private readonly Data.Context _context;
+        private readonly ILoggerFactory _loggerFactory;
+
         public ModuleManager()
         {
         }
@@ -57,7 +60,9 @@ namespace WikiLibs.Core.Services
 
         public ModuleManager(ModuleManager other, Data.Context ctx, ILoggerFactory factory)
         {
-            foreach (var kv in other._moduleTypes)
+            _loggerFactory = factory;
+            _context = ctx;
+            /*foreach (var kv in other._moduleTypes)
             {
                 var pars = GetParameters(kv.Value.MainClass.GetConstructors()[0].GetParameters(), kv.Value.ConfigClass,
                                          kv.Value.Name, factory, other, ctx);
@@ -71,14 +76,33 @@ namespace WikiLibs.Core.Services
                     Name = kv.Value.Name,
                     Version = kv.Value.Version
                 });
-            }
+            }*/
             _moduleTypes = other._moduleTypes;
+            _moduleList = other._moduleList;
+            _configuratorMap = other._configuratorMap;
+        }
+
+        private void SetupInstance<T>()
+        {
+            var module = _moduleTypes[typeof(T)];
+            var pars = GetParameters(module.MainClass.GetConstructors()[0].GetParameters(), module.ConfigClass,
+                                     module.Name, _loggerFactory, this, _context);
+
+            if (pars == null)
+                _moduleMap[module.AbstractClass] = (IModule)Activator.CreateInstance(module.MainClass);
+            else
+                _moduleMap[module.AbstractClass] = (IModule)Activator.CreateInstance(module.MainClass, pars);
         }
 
         public T GetModule<T>() where T : IModule
         {
             if (!_moduleMap.ContainsKey(typeof(T)))
-                return (default(T));
+            {
+                if (_moduleTypes.ContainsKey(typeof(T)))
+                    SetupInstance<T>();
+                else
+                    return (default(T));
+            }
             return ((T)_moduleMap[typeof(T)]);
         }
 
@@ -147,7 +171,12 @@ namespace WikiLibs.Core.Services
                 }
             }
             CheckModule(ref cur);
-            _moduleTypes[cur.MainClass] = cur;
+            _moduleTypes[cur.AbstractClass] = cur;
+            _moduleList.Add(new ModuleInfo()
+            {
+                Name = cur.Name,
+                Version = cur.Version
+            });
             builder.AddApplicationPart(asm);
         }
 
