@@ -7,7 +7,7 @@ namespace WikiLibs.Auth
     {
         public IAuthProvider GetAuthenticator(string serviceName)
         {
-            throw new NotImplementedException();
+            return (null);
         }
 
         public string Refresh(string uid)
