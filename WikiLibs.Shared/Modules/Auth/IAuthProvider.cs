@@ -37,7 +37,8 @@ namespace WikiLibs.Shared.Modules.Auth
 
         /// <summary>
         /// Handles email verification
-        /// Should save the user to database if successfull
+        /// Throws InvalidCredentials in case of invalid code
+        /// Throws ResourceNotFound if no user is associated to that code
         /// </summary>
         /// <param name="code">verification code</param>
         Task LegacyVerifyEmail(string code);

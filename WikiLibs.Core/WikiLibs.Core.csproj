@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\WikiLibs.Admin\WikiLibs.Admin.csproj" />
     <ProjectReference Include="..\WikiLibs.API\WikiLibs.API.csproj" />
+    <ProjectReference Include="..\WikiLibs.Auth\WikiLibs.Auth.csproj" />
     <ProjectReference Include="..\WikiLibs.Data\WikiLibs.Data.csproj" />
     <ProjectReference Include="..\WikiLibs.Models\WikiLibs.Models.csproj" />
     <ProjectReference Include="..\WikiLibs.Shared\WikiLibs.Shared.csproj" />

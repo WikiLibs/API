@@ -31,7 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Auth", "WikiLibs.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Admin", "WikiLibs.Admin\WikiLibs.Admin.csproj", "{C830E6CA-4F13-44B2-8400-807F4A36C149}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiLibs.Users", "WikiLibs.Users\WikiLibs.Users.csproj", "{0C00551F-38F1-459C-9CB8-B8CD25662CBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Users", "WikiLibs.Users\WikiLibs.Users.csproj", "{0C00551F-38F1-459C-9CB8-B8CD25662CBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiLibs.Smtp", "WikiLibs.Smtp\WikiLibs.Smtp.csproj", "{35F883C3-CF87-4269-9005-25ED96BB39D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,10 @@ Global
 		{0C00551F-38F1-459C-9CB8-B8CD25662CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C00551F-38F1-459C-9CB8-B8CD25662CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C00551F-38F1-459C-9CB8-B8CD25662CBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35F883C3-CF87-4269-9005-25ED96BB39D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35F883C3-CF87-4269-9005-25ED96BB39D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35F883C3-CF87-4269-9005-25ED96BB39D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35F883C3-CF87-4269-9005-25ED96BB39D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

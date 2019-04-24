@@ -13,6 +13,7 @@ namespace WikiLibs.Shared
         Task<DataModel> DeleteAsync(DataModel mdl);
         Task<DataModel> DeleteAsync(KeyType key);
         Task<DataModel> GetAsync(KeyType key);
+        Task<int> SaveChanges();
     }
 
     public interface ICRUDOperations<DataModel> : ICRUDOperations<DataModel, long>
