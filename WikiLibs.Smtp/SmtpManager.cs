@@ -7,7 +7,7 @@ using WikiLibs.Shared.Modules;
 
 namespace WikiLibs.Smtp
 {
-    [Module(typeof(ISmtpManager))]
+    [Module(Interface = typeof(ISmtpManager))]
     public class SmtpManager : ISmtpManager
     {
         private readonly Config _config;

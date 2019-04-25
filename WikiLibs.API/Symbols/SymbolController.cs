@@ -14,12 +14,12 @@ namespace WikiLibs.API.Symbols
     [Route("/symbol/")]
     public class SymbolController : Controller
     {
-        private ISymbolManager _symmgr;
-        private IUser _user;
+        private readonly ISymbolManager _symmgr;
+        private readonly IUser _user;
 
-        public SymbolController(IModuleManager mgr, IUser usr)
+        public SymbolController(ISymbolManager mgr, IUser usr)
         {
-            _symmgr = mgr.GetModule<ISymbolManager>();
+            _symmgr = mgr;
             _user = usr;
         }
 

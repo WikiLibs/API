@@ -10,7 +10,7 @@ using WikiLibs.Shared.Attributes;
 
 namespace WikiLibs.Symbols
 {
-    [Module(typeof(ISymbolManager))]
+    [Module(Interface = typeof(ISymbolManager))]
     public class SymbolManager : BaseCRUDOperations<Data.Context, Symbol>, ISymbolManager
     {
         private Config _cfg;

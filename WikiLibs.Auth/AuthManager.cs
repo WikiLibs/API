@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using WikiLibs.Shared.Attributes;
+using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Modules.Auth;
 using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Auth
 {
-    [Module(typeof(IAuthManager))]
+    [Module(Interface = typeof(IAuthManager))]
     public class AuthManager : IAuthManager
     {
         private Dictionary<string, IAuthProvider> _providers = new Dictionary<string, IAuthProvider>();

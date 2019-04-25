@@ -11,11 +11,11 @@ namespace WikiLibs.API.Symbols
     [Route("/search/")]
     public class SearchController : Controller
     {
-        private ISymbolManager _symmgr;
+        private readonly ISymbolManager _symmgr;
 
-        public SearchController(IModuleManager mdmgr)
+        public SearchController(ISymbolManager mgr)
         {
-            _symmgr = mdmgr.GetModule<ISymbolManager>();
+            _symmgr = mgr;
         }
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]

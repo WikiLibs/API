@@ -27,7 +27,7 @@ namespace WikiLibs.Core
         public void ConfigureServices(IServiceCollection services)
         {
             var modules = new List<string>();
-            var mgr = new ModuleManager();
+            var collection = new ModuleCollection();
 
             IMvcBuilder builder = services.AddMvc(o =>
             {
@@ -42,17 +42,10 @@ namespace WikiLibs.Core
               });
             Configuration.Bind("Modules", modules);
             foreach (var s in modules)
-                mgr.LoadModule(builder, s);
-            mgr.LoadAll(Configuration);
+                collection.Add(ModuleHelper.InjectModule(services, Configuration, builder, s));
             services.AddDbContext<Data.Context>(o => o.UseLazyLoadingProxies()
                                                       .UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddHttpContextAccessor();
-            services.AddScoped<IModuleManager>(o =>
-            {
-                var factory = o.GetService<ILoggerFactory>();
-                Data.Context ctx = o.GetService<Data.Context>();
-                return (new ModuleManager(mgr, ctx, factory));
-            });
             services.AddScoped<IUser>(o => new StandardUser(o.GetService<IHttpContextAccessor>(), o.GetService<Data.Context>()));
             services.AddCors(o =>
                 o.AddPolicy("AllowAll", p =>
@@ -62,7 +55,9 @@ namespace WikiLibs.Core
                 )
             );
 
-            var jwtCfg = new Auth.Config();
+            services.AddSingleton<IModuleCollection>(collection);
+
+            /*var jwtCfg = new Auth.Config();
             Configuration.Bind("WikiLibs.Auth", jwtCfg);
 
             services.AddAuthentication(o =>
@@ -83,7 +78,7 @@ namespace WikiLibs.Core
                     ValidateAudience = true,
                     ValidAudience = jwtCfg.Internal.TokenAudiance
                 };
-            });
+            });*/
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory)
@@ -99,9 +94,18 @@ namespace WikiLibs.Core
 
             using (var scope = app.ApplicationServices.CreateScope())
             {
-                var mdMgr = scope.ServiceProvider.GetService<IModuleManager>();
+                /*var mdMgr = scope.ServiceProvider.GetService<IModuleManager>();
                 Data.Context ctx = scope.ServiceProvider.GetService<Data.Context>();
-                ((ModuleManager)mdMgr).CallModuleInitializers(factory, ctx, env);
+                ((ModuleManager)mdMgr).CallModuleInitializers(factory, ctx, env);*/
+                var collection = scope.ServiceProvider.GetService<IModuleCollection>();
+                foreach (var module in collection)
+                {
+                    var info = (ModuleInfoInternal)module;
+                    if (info.Initializer == null || info.ModuleInterface == null)
+                        continue;
+                    var mdInstance = scope.ServiceProvider.GetService(info.ModuleInterface);
+                    ModuleHelper.AttemptCallModuleInitializer(env, info, mdInstance);
+                }
             }
         }
     }

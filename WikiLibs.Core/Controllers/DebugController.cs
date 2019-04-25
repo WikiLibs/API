@@ -16,14 +16,14 @@ namespace WikiLibs.Core.Controllers
     public class DebugController : Controller
     {
         private readonly ApplicationPartManager _partManager;
-        private readonly IModuleManager _modules;
+        private readonly IModuleCollection _modules;
         private readonly IAdminManager _admin;
 
-        public DebugController(ApplicationPartManager partManager, IModuleManager mgr)
+        public DebugController(ApplicationPartManager partManager, IModuleCollection mgr, IAdminManager admin)
         {
             _partManager = partManager;
             _modules = mgr;
-            _admin = mgr.GetModule<IAdminManager>();
+            _admin = admin;
         }
 
         private string GetCPUId()
@@ -87,7 +87,7 @@ namespace WikiLibs.Core.Controllers
                     Threads = Environment.ProcessorCount
                 },
                 Controllers = controllers,
-                Modules = _modules.GetModules()
+                Modules = _modules.ToList()
             };
             return (Json(dbgView, new Newtonsoft.Json.JsonSerializerSettings()
             {

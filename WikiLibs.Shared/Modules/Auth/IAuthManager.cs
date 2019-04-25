@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WikiLibs.Shared.Modules.Auth
 {
-    public interface IAuthManager
+    public interface IAuthManager : IModule
     {
         IAuthProvider GetAuthenticator(string serviceName);
 
