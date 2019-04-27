@@ -9,6 +9,12 @@ namespace WikiLibs.Core.Controllers
 {
     public class DebugView
     {
+        public class ModuleView
+        {
+            public string Name { get; set; }
+            public string Version { get; set; }
+        }
+
         public class HostView
         {
             public string Framework { get; set; }
@@ -22,7 +28,7 @@ namespace WikiLibs.Core.Controllers
         public string Version { get; set; }
         public HostView Host { get; set; }
         public string DevKey { get; set; }
-        public ICollection<ModuleInfo> Modules { get; set; }
+        public ICollection<ModuleView> Modules { get; set; }
         public ICollection<TypeInfo> Controllers { get; set; }
     }
 }

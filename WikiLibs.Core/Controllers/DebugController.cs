@@ -87,7 +87,11 @@ namespace WikiLibs.Core.Controllers
                     Threads = Environment.ProcessorCount
                 },
                 Controllers = controllers,
-                Modules = _modules.ToList()
+                Modules = _modules.AsQueryable().Select(item => new DebugView.ModuleView()
+                {
+                    Name = item.Name,
+                    Version = item.Version
+                }).ToList()
             };
             return (Json(dbgView, new Newtonsoft.Json.JsonSerializerSettings()
             {
