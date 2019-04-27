@@ -1,14 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 using WikiLibs.Data.Models;
 using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Modules.Auth;
-using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Auth
 {
@@ -16,13 +10,13 @@ namespace WikiLibs.Auth
     {
         private readonly IUserManager _userManager;
         private readonly ISmtpManager _smtpManager;
-        private readonly Config _config;
+        private readonly AuthManager _manager;
 
-        public AuthProviderInternal(IModuleManager mgr, Config cfg)
+        public AuthProviderInternal(IUserManager umgr, ISmtpManager smgr, AuthManager manager)
         {
-            _userManager = mgr.GetModule<IUserManager>();
-            _smtpManager = mgr.GetModule<ISmtpManager>();
-            _config = cfg;
+            _userManager = umgr;
+            _smtpManager = smgr;
+            _manager = manager;
         }
 
         public string GetConnectionString()
@@ -30,24 +24,6 @@ namespace WikiLibs.Auth
             return (null);
         }
 
-        private string GenToken(string uuid)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config.Internal.TokenSecret);
-            var desc = new SecurityTokenDescriptor
-            {
-                Issuer = _config.Internal.TokenIssuer,
-                Audience = _config.Internal.TokenAudiance,
-                Expires = DateTime.UtcNow.AddMinutes(_config.Internal.TokenLifeMinutes),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature),
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, uuid)
-                })
-            };
-            var token = handler.CreateToken(desc);
-            return (handler.WriteToken(token));
-        }
 
         public async Task<string> LegacyLogin(string email, string pass)
         {
@@ -55,7 +31,7 @@ namespace WikiLibs.Auth
 
             if (usr == null || usr.Confirmation != null)
                 throw new InvalidCredentials();
-            return (GenToken(usr.Id));
+            return (_manager.GenToken(usr.Id));
         }
 
         public async Task LegacyRegister(User usr)

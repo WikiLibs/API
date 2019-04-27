@@ -10,6 +10,7 @@ namespace WikiLibs.Shared.Service
         public string Version { get; set; }
     }
 
+    [Obsolete]
     public interface IModuleManager
     {
         T GetModule<T>() where T : IModule;

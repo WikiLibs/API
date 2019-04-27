@@ -34,9 +34,8 @@ namespace WikiLibs.Core.Filters
                     ResourceType = typeof(Data.Models.APIKey)
                 };
             }
-            var mdmgr = (IModuleManager)context.HttpContext.RequestServices
-                .GetService(typeof(IModuleManager));
-            var adminmgr = mdmgr.GetModule<IAdminManager>();
+            var adminmgr = (IAdminManager)context.HttpContext.RequestServices
+                .GetService(typeof(IAdminManager));
             string auth = context.HttpContext.Request.Headers["Authorization"];
             if (auth == null || auth == "" || !adminmgr.APIKeyManager.Exists(auth))
             {

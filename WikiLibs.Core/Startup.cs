@@ -56,29 +56,6 @@ namespace WikiLibs.Core
             );
 
             services.AddSingleton<IModuleCollection>(collection);
-
-            /*var jwtCfg = new Auth.Config();
-            Configuration.Bind("WikiLibs.Auth", jwtCfg);
-
-            services.AddAuthentication(o =>
-            {
-                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(o =>
-            {
-                o.RequireHttpsMetadata = false;
-                o.SaveToken = false;
-                o.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(jwtCfg.Internal.TokenSecret)),
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtCfg.Internal.TokenIssuer,
-                    ValidateLifetime = true,
-                    ValidateAudience = true,
-                    ValidAudience = jwtCfg.Internal.TokenAudiance
-                };
-            });*/
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory)
