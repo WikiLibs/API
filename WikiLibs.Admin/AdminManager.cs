@@ -29,9 +29,10 @@ namespace WikiLibs.Admin
 
         public IGroupManager GroupManager => _groupManager;
 
-        [ModuleInitializer(Debug = true)]
+        [ModuleInitializer(Debug = true, Release = true)]
         public static void Initialize(AdminManager manager)
         {
+#if DEBUG
             if (!manager._context.APIKeys.Any(x => x.Description == "[WIKILIBS_SUPER_DEV_API_KEY]"))
             {
                 manager.APIKeyManager.PostAsync(new Data.Models.APIKey()
@@ -46,6 +47,28 @@ namespace WikiLibs.Admin
             var key = manager._context.APIKeys.FirstOrDefault(x => x.Description == "[WIKILIBS_SUPER_DEV_API_KEY]");
             manager._logger.LogWarning("Development API Key : " + key.Id);
             manager._logger.LogWarning("This development key is intended for development purposes, it has ALL flags enabled and will never expire");
+#endif
+            if (!manager._context.Groups.Any(x => x.Name == "Default"))
+            {
+                var g = new Data.Models.Group()
+                {
+                    Name = "Default"
+                };
+                manager.GroupManager.PostAsync(g);
+            }
+            if (!manager._context.Groups.Any(x => x.Name == "Admin"))
+            {
+                var g = new Data.Models.Group()
+                {
+                    Name = "Admin"
+                };
+                g.Permissions.Add(new Data.Models.Permission()
+                {
+                    Group = g,
+                    Perm = "*"
+                });
+                manager.GroupManager.PostAsync(g);
+            }
         }
     }
 }

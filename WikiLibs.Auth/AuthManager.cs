@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules;
+using WikiLibs.Shared.Modules.Admin;
 using WikiLibs.Shared.Modules.Auth;
 
 namespace WikiLibs.Auth
@@ -18,10 +19,12 @@ namespace WikiLibs.Auth
     {
         private Dictionary<string, IAuthProvider> _providers = new Dictionary<string, IAuthProvider>();
         private readonly Config _config;
+        public Data.Models.Group DefaultGroup { get; }
 
-        public AuthManager(IUserManager umgr, ISmtpManager smgr, Config cfg)
+        public AuthManager(IAdminManager admin, IUserManager umgr, ISmtpManager smgr, Config cfg)
         {
             _config = cfg;
+            DefaultGroup = admin.GroupManager.Get(cfg.DefaultGroupName);
             _providers["internal"] = new AuthProviderInternal(umgr, smgr, this);
         }
 

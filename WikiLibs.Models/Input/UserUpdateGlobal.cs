@@ -15,7 +15,7 @@ namespace WikiLibs.Models.Input
         public string ProfileMsg { get; set; }
         public string Pseudo { get; set; }
         public int Points { get; set; }
-        public string Group { get; set; }
+        public int Group { get; set; }
 
         public override User CreatePatch(in User current)
         {

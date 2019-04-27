@@ -17,5 +17,6 @@ namespace WikiLibs.Auth
         }
 
         public CInternal Internal { get; set; }
+        public string DefaultGroupName { get; set; }
     }
 }

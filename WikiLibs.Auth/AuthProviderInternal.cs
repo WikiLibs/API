@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using WikiLibs.Data.Models;
 using WikiLibs.Shared.Modules;
+using WikiLibs.Shared.Modules.Admin;
 using WikiLibs.Shared.Modules.Auth;
 
 namespace WikiLibs.Auth
@@ -36,6 +37,7 @@ namespace WikiLibs.Auth
 
         public async Task LegacyRegister(User usr)
         {
+            usr.Group = _manager.DefaultGroup;
             usr.Id = new Guid().ToString();
             usr.Confirmation = new Guid().ToString().Replace("{", "").Replace("-", "")
                 + "."
