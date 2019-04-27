@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using WikiLibs.Data;
 using WikiLibs.Data.Models;
 using WikiLibs.Shared;
+using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules;
 
 namespace WikiLibs.Users
 {
+    [Module(Interface = typeof(IUserManager))]
     public class UserManager : BaseCRUDOperations<Context, User, string>, IUserManager
     {
         public UserManager(Context ctx) : base(ctx)
