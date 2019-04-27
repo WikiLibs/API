@@ -228,5 +228,28 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("raw pointer", Context.Symbols.First().Prototypes.First().Parameters.Last().Description);
             Assert.AreEqual("void *bad", Context.Symbols.First().Prototypes.First().Parameters.Last().Data);
         }
+
+        [Test, Order(7)]
+        public async Task GetSymbol()
+        {
+            var controller = new Symbols.SymbolController(Manager, FakeUser);
+
+            await PostTestSymbol(controller);
+            var res = controller.GetSymbol("C/TestLib/TestFunc") as JsonResult;
+            var obj = res.Value as Models.Output.Symbol;
+            Assert.AreEqual("C", obj.Lang);
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Path);
+            Assert.AreEqual("function", obj.Type);
+            Assert.AreEqual(1, obj.Prototypes.Length);
+            Assert.AreEqual(5, obj.Prototypes[0].Parameters.Length);
+        }
+
+        [Test, Order(8)]
+        public void GetSymbol_Error_NonExistant()
+        {
+            var controller = new Symbols.SymbolController(Manager, FakeUser);
+
+            Assert.Throws<Shared.Exceptions.ResourceNotFound>(() => controller.GetSymbol("crap"));
+        }
     }
 }
