@@ -43,7 +43,9 @@ namespace WikiLibs.API.Symbols
                     ResourceType = typeof(Data.Models.Symbol),
                     MissingPermission = Permissions.CREATE_SYMBOL
                 };
-            var mdl = await _symmgr.PostAsync(sym.CreateModel());
+            var data = sym.CreateModel();
+            data.User = _user.User;
+            var mdl = await _symmgr.PostAsync(data);
             return (Json(Models.Output.Symbol.CreateModel(mdl)));
         }
 

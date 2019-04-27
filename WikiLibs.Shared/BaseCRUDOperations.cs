@@ -62,7 +62,7 @@ namespace WikiLibs.Shared
 
         public virtual async Task<DataModel> GetAsync(KeyType key)
         {
-            var mdl = await Set.FindAsync(typeof(DataModel), new object[] { key });
+            var mdl = await Set.FindAsync(new object[] { key });
 
             if (mdl == null)
                 throw new Exceptions.ResourceNotFound()

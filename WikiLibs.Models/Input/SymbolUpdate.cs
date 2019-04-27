@@ -43,9 +43,10 @@ namespace WikiLibs.Models.Input
             };
             if (Prototypes != null)
             {
-                foreach (var proto in Prototypes)
+                for (int i = 0; i != Prototypes.Length; ++i)
                 {
-                    var old = current.Prototypes.Where(p1 => p1.Data == proto.Proto).FirstOrDefault();
+                    var proto = Prototypes[i];
+                    var old = i < current.Prototypes.Count ? current.Prototypes.ElementAt(i) : null;
                     var p = new Data.Models.Prototype
                     {
                         Id = old != null ? old.Id : 0,
@@ -55,9 +56,10 @@ namespace WikiLibs.Models.Input
                     };
                     if (proto.Parameters != null)
                     {
-                        foreach (var par in proto.Parameters)
+                        for (int j = 0; j != proto.Parameters.Length; ++j)
                         {
-                            var oldParam = old != null ? old.Parameters.Where(p1 => p1.Data == par.Proto).FirstOrDefault() : null;
+                            var par = proto.Parameters[j];
+                            var oldParam = (old != null && j < old.Parameters.Count) ? old.Parameters.ElementAt(j) : null;
                             var param = new PrototypeParam()
                             {
                                 Id = oldParam != null ? oldParam.Id : 0,
@@ -70,11 +72,24 @@ namespace WikiLibs.Models.Input
                         }
                     }
                     else
-                        p.Parameters = old.Parameters;
+                    {
+                        foreach (var par in old.Parameters)
+                        {
+                            p.Parameters.Add(new PrototypeParam()
+                            {
+                                Data = par.Data,
+                                Description = par.Description,
+                                Id = par.Id,
+                                Path = par.Path,
+                                Prototype = p
+                            });
+                        }
+                    }
+                    sym.Prototypes.Add(p);
                 }
             }
             else
-                sym.Prototypes = current.Prototypes;
+                sym.Prototypes = null;
             if (Symbols != null)
             {
                 foreach (var sref in Symbols)

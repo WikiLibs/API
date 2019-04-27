@@ -71,6 +71,7 @@ namespace WikiLibs.Models.Input
                     };
                     p.Parameters.Add(param);
                 }
+                sym.Prototypes.Add(p);
             }
             foreach (var sref in Symbols)
             {
