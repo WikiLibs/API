@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WikiLibs.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,12 +12,15 @@ namespace WikiLibs.Data.Migrations
                 name: "APIKeys",
                 columns: table => new
                 {
-                    Key = table.Column<string>(nullable: false),
-                    Description = table.Column<string>(nullable: true)
+                    Id = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    Flags = table.Column<int>(nullable: false),
+                    UseNum = table.Column<int>(nullable: false),
+                    ExpirationDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_APIKeys", x => x.Key);
+                    table.PrimaryKey("PK_APIKeys", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -71,11 +74,12 @@ namespace WikiLibs.Data.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UUID = table.Column<string>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     Icon = table.Column<string>(nullable: true),
                     EMail = table.Column<string>(nullable: true),
+                    Confirmation = table.Column<string>(nullable: true),
                     Private = table.Column<bool>(nullable: false),
                     ProfileMsg = table.Column<string>(nullable: true),
                     Points = table.Column<int>(nullable: false),
@@ -86,7 +90,7 @@ namespace WikiLibs.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.UUID);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Users_Groups_GroupId",
                         column: x => x.GroupId,
@@ -102,7 +106,7 @@ namespace WikiLibs.Data.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Path = table.Column<string>(nullable: true),
-                    UserUUID = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true),
                     Lang = table.Column<string>(nullable: true),
                     Type = table.Column<string>(nullable: true),
                     CreationDate = table.Column<DateTime>(nullable: false),
@@ -112,10 +116,10 @@ namespace WikiLibs.Data.Migrations
                 {
                     table.PrimaryKey("PK_Symbols", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Symbols_Users_UserUUID",
-                        column: x => x.UserUUID,
+                        name: "FK_Symbols_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UUID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -128,7 +132,7 @@ namespace WikiLibs.Data.Migrations
                     SymbolId = table.Column<long>(nullable: false),
                     Code = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    UserUUID = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     LastModificationDate = table.Column<DateTime>(nullable: false)
                 },
@@ -142,10 +146,10 @@ namespace WikiLibs.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Examples_Users_UserUUID",
-                        column: x => x.UserUUID,
+                        name: "FK_Examples_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UUID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -218,9 +222,9 @@ namespace WikiLibs.Data.Migrations
                 column: "SymbolId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Examples_UserUUID",
+                name: "IX_Examples_UserId",
                 table: "Examples",
-                column: "UserUUID");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Permissions_GroupId",
@@ -243,9 +247,9 @@ namespace WikiLibs.Data.Migrations
                 column: "SymbolId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Symbols_UserUUID",
+                name: "IX_Symbols_UserId",
                 table: "Symbols",
-                column: "UserUUID");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_GroupId",
