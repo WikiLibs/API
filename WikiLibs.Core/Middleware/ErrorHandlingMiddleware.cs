@@ -19,11 +19,13 @@ namespace WikiLibs.Core.Middleware
             public string Route { get; set; }
         }
 
-        private RequestDelegate _next;
+        private readonly RequestDelegate _next;
+        private readonly TelemetryClient _telemetryClient;
 
-        public ErrorHandlingMiddleware(RequestDelegate next)
+        public ErrorHandlingMiddleware(RequestDelegate next, TelemetryClient client)
         {
             _next = next;
+            _telemetryClient = client;
         }
 
         private string GenObjectString(JsonErrorResult res)
@@ -36,7 +38,6 @@ namespace WikiLibs.Core.Middleware
 
         public async Task Invoke(HttpContext ctx)
         {
-            var client = (TelemetryClient)ctx.RequestServices.GetService(typeof(TelemetryClient));
             JsonErrorResult res = null;
 
             try
@@ -101,6 +102,7 @@ namespace WikiLibs.Core.Middleware
             }
             catch (Exception ex)
             {
+                _telemetryClient.TrackException(ex);
                 res = new JsonErrorResult()
                 {
                     Code = "500:Internal",
@@ -112,7 +114,6 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 500;
                 await ctx.Response.WriteAsync(GenObjectString(res));
-                client.TrackException(ex);
             }
         }
     }
