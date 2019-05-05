@@ -18,9 +18,6 @@ namespace WikiLibs.Core.Controllers
         public class HostView
         {
             public string Framework { get; set; }
-            public string CPUName { get; set; }
-            public int CPUCount { get; set; }
-            public int Cores { get; set; }
             public int Threads { get; set; }
         }
 
