@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -35,6 +36,7 @@ namespace WikiLibs.Core.Middleware
 
         public async Task Invoke(HttpContext ctx)
         {
+            var client = (TelemetryClient)ctx.RequestServices.GetService(typeof(TelemetryClient));
             JsonErrorResult res = null;
 
             try
@@ -110,6 +112,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 500;
                 await ctx.Response.WriteAsync(GenObjectString(res));
+                client.TrackException(ex);
             }
         }
     }
