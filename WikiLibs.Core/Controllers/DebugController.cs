@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Management;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -24,36 +23,6 @@ namespace WikiLibs.Core.Controllers
             _partManager = partManager;
             _modules = mgr;
             _admin = admin;
-        }
-
-        private string GetCPUId()
-        {
-            ManagementClass mgt = new ManagementClass("Win32_Processor");
-            ManagementObjectCollection procs = mgt.GetInstances();
-
-            if (procs == null)
-                return ("Unknown");
-            foreach (ManagementObject item in procs)
-                return item.Properties["Name"].Value.ToString();
-            return ("Unknown");
-        }
-
-        private int GetCPUCount()
-        {
-            int count = 0;
-
-            foreach (var item in new ManagementObjectSearcher("Select * from Win32_ComputerSystem").Get())
-                count += int.Parse(item["NumberOfProcessors"].ToString());
-            return (count);
-        }
-
-        private int GetCores()
-        {
-            int count = 0;
-
-            foreach (var item in new ManagementObjectSearcher("Select * from Win32_Processor").Get())
-                count += int.Parse(item["NumberOfCores"].ToString());
-            return (count);
         }
 
         [HttpGet]
@@ -81,9 +50,6 @@ namespace WikiLibs.Core.Controllers
                 Host = new DebugView.HostView()
                 {
                     Framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,
-                    CPUName = GetCPUId(),
-                    CPUCount = GetCPUCount(),
-                    Cores = GetCores(),
                     Threads = Environment.ProcessorCount
                 },
                 Controllers = controllers,
