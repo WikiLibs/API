@@ -23,7 +23,6 @@ namespace WikiLibs.API.Tests.Helper
         [TearDown]
         public virtual void Teardown()
         {
-            Context.Database.EnsureDeleted();
             Context = null;
             FakeUser = null;
             Manager = null;

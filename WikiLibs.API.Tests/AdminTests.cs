@@ -132,5 +132,101 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(key, res.First().Id);
             Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, res.First().Flags);
         }
+
+        public async Task PostTestGroup()
+        {
+            await Manager.GroupManager.PostAsync(new GroupCreate()
+            {
+                Name = "TestGroup",
+                Permissions = new string[]
+                {
+                    "perm1",
+                    "perm2",
+                    "perm3",
+                    "perm4"
+                }
+            }.CreateModel());
+        }
+
+        [Test]
+        public async Task PostGroup()
+        {
+            await PostTestGroup();
+
+            Assert.AreEqual(3, Context.Groups.Count());
+            Assert.AreEqual(5, Context.Permissions.Count());
+        }
+
+        [Test]
+        public async Task PostGroup_Error_Dupe()
+        {
+            await PostTestGroup();
+
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => PostTestGroup());
+        }
+
+        [Test]
+        public async Task PatchGroup()
+        {
+            await PostTestGroup();
+            var mdl = await Manager.GroupManager.GetAsync(3);
+
+            await Manager.GroupManager.PatchAsync(3, new GroupUpdate()
+            {
+                Permissions = new string[]
+                {
+                    "perm1",
+                    "perm3",
+                }
+            }.CreatePatch(mdl));
+            Assert.AreEqual(3, Context.Groups.Count());
+            Assert.AreEqual(3, Context.Permissions.Count());
+            mdl = await Manager.GroupManager.GetAsync(3);
+            Assert.AreEqual(2, mdl.Permissions.Count());
+            Assert.AreEqual("TestGroup", mdl.Name);
+        }
+
+        [Test]
+        public async Task DeleteGroup()
+        {
+            await PostTestGroup();
+
+            Assert.AreEqual(3, Context.Groups.Count());
+            await Manager.GroupManager.DeleteAsync(3);
+            Assert.AreEqual(2, Context.Groups.Count());
+            Assert.AreEqual(1, Context.Permissions.Count());
+        }
+
+        [Test]
+        public void DeleteGroup_Error_NonExistant()
+        {
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => Manager.GroupManager.DeleteAsync(1000 /* In test no more than 999 groups may be created as we are using an InMemoryDB */));
+        }
+
+        [Test]
+        public async Task GetGroup()
+        {
+            await PostTestGroup();
+
+            Assert.Throws<Shared.Exceptions.ResourceNotFound>(() => Manager.GroupManager.Get("doesnotexist"));
+            var mdl = Manager.GroupManager.Get("TestGroup");
+            Assert.AreEqual("TestGroup", mdl.Name);
+            Assert.AreEqual(new string[]
+            {
+                "perm1",
+                "perm2",
+                "perm3",
+                "perm4"
+            }, mdl.Permissions.Select(o => o.Perm).ToArray());
+            Assert.AreEqual(3, mdl.Id);
+        }
+
+        [Test]
+        public async Task GetAllGroups()
+        {
+            await PostTestGroup();
+
+            Assert.AreEqual(3, Manager.GroupManager.GetAll().Count());
+        }
     }
 }
