@@ -8,7 +8,7 @@ using WikiLibs.Shared.Service;
 
 namespace WikiLibs.API.Symbols
 {
-    [Route("/search/")]
+    [Route("/search")]
     public class SearchController : Controller
     {
         private readonly ISymbolManager _symmgr;

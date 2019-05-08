@@ -11,7 +11,7 @@ using WikiLibs.Shared.Service;
 namespace WikiLibs.API.Symbols
 {
     [Authorize]
-    [Route("/symbol/")]
+    [Route("/symbol")]
     public class SymbolController : Controller
     {
         private readonly ISymbolManager _symmgr;
