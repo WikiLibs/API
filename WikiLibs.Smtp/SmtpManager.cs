@@ -19,13 +19,15 @@ namespace WikiLibs.Smtp
 
         public void SendEmailMessage(EmailMessage msg)
         {
-            SmtpClient client = new SmtpClient(_config.Host + _config.Port);
+            SmtpClient client = new SmtpClient(_config.Host);
+            client.Port = _config.Port;
             client.UseDefaultCredentials = false;
             client.Credentials = new NetworkCredential(_config.Username, _config.Password);
             MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(_config.From);
+            mailMessage.From = new MailAddress(_config.FromEmail, _config.FromName);
             mailMessage.To.Add(msg.To);
             mailMessage.Body = msg.Body;
+            mailMessage.IsBodyHtml = true;
             mailMessage.Subject = "WikiLibs - " + msg.Subject;
             client.Send(mailMessage);
         }
