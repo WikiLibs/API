@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -11,6 +10,7 @@ using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Modules.Admin;
 using WikiLibs.Shared.Modules.Auth;
+using WikiLibs.Shared.Modules.Smtp;
 
 namespace WikiLibs.Auth
 {
@@ -58,11 +58,8 @@ namespace WikiLibs.Auth
         }
 
         [ModuleConfigurator]
-        public static void SetupJWTAuth(IServiceCollection services, IConfiguration cfg)
+        public static void SetupJWTAuth(IServiceCollection services, Config jwtCfg)
         {
-            var jwtCfg = new Config();
-            cfg.Bind("WikiLibs.Auth", jwtCfg);
-
             services.AddAuthentication(o =>
             {
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using WikiLibs.Data.Models;
 using WikiLibs.Shared.Modules;
-using WikiLibs.Shared.Modules.Admin;
 using WikiLibs.Shared.Modules.Auth;
+using WikiLibs.Shared.Modules.Smtp;
 
 namespace WikiLibs.Auth
 {
@@ -46,12 +46,12 @@ namespace WikiLibs.Auth
                 + DateTime.UtcNow.Millisecond.ToString();
             usr.RegistrationDate = DateTime.UtcNow;
             await _userManager.PostAsync(usr);
-            _smtpManager.SendEmailMessage(new EmailMessage()
+            /*_smtpManager.SendAsync(new EmailMessage()
             {
                 Body = "Please confirm your email address using this code: '" + usr.Confirmation + "'",
                 Subject = "Email confirmation required",
                 To = usr.EMail
-            });
+            });*/
         }
 
         public Task LegacyReset(string email)

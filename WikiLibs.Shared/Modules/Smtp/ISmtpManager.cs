@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WikiLibs.Shared.Modules
+namespace WikiLibs.Shared.Modules.Smtp
 {
     public struct EmailMessage
     {
@@ -14,6 +14,6 @@ namespace WikiLibs.Shared.Modules
 
     public interface ISmtpManager : IModule
     {
-        void SendEmailMessage(EmailMessage msg);
+        Task SendAsync(Mail msg);
     }
 }

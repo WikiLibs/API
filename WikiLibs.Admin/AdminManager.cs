@@ -54,7 +54,7 @@ namespace WikiLibs.Admin
                 {
                     Name = "Default"
                 };
-                manager.GroupManager.PostAsync(g);
+                manager.GroupManager.PostAsync(g).Wait();
             }
             if (!manager._context.Groups.Any(x => x.Name == "Admin"))
             {
@@ -67,7 +67,7 @@ namespace WikiLibs.Admin
                     Group = g,
                     Perm = "*"
                 });
-                manager.GroupManager.PostAsync(g);
+                manager.GroupManager.PostAsync(g).Wait();
             }
         }
     }
