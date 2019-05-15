@@ -15,7 +15,6 @@ namespace WikiLibs.API.Tests.Helper
         {
             LastSendEmail = msg;
             ++SentEmailCount;
-            Console.WriteLine("EMAIL > " + msg.Subject);
             return (Task.CompletedTask);
         }
     }

@@ -80,6 +80,23 @@ namespace WikiLibs.Auth
                 };
             usr.Pass = Guid.NewGuid().ToString();
             await _userManager.SaveChanges();
+            await _smtpManager.SendAsync(new Mail()
+            {
+                Subject = "WikiLibs API Server",
+                Template = "UserReset",
+                Model = new Shared.Modules.Smtp.Models.UserReset()
+                {
+                    NewPassword = usr.Pass
+                },
+                Recipients = new List<Recipient>()
+                {
+                    new Recipient()
+                    {
+                        Email = usr.EMail,
+                        Name = usr.FirstName + " " + usr.LastName
+                    }
+                }
+            });
         }
 
         public async Task LegacyVerifyEmail(string code)
