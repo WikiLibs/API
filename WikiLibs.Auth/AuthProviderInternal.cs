@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WikiLibs.Data.Models;
 using WikiLibs.Shared.Modules;
@@ -38,7 +39,7 @@ namespace WikiLibs.Auth
         public async Task LegacyRegister(User usr)
         {
             usr.Group = _manager.DefaultGroup;
-            usr.Id = new Guid().ToString();
+            usr.Id = Guid.NewGuid().ToString();
             usr.Confirmation = new Guid().ToString().Replace("{", "").Replace("-", "")
                 + "."
                 + usr.Id.Replace("{", "")
@@ -46,12 +47,24 @@ namespace WikiLibs.Auth
                 + DateTime.UtcNow.Millisecond.ToString();
             usr.RegistrationDate = DateTime.UtcNow;
             await _userManager.PostAsync(usr);
-            /*_smtpManager.SendAsync(new EmailMessage()
+            await _smtpManager.SendAsync(new Mail()
             {
-                Body = "Please confirm your email address using this code: '" + usr.Confirmation + "'",
-                Subject = "Email confirmation required",
-                To = usr.EMail
-            });*/
+                Subject = "WikiLibs API Server",
+                Template = "UserRegistration",
+                Model = new Shared.Modules.Smtp.Models.UserRegistration()
+                {
+                    ConfirmCode = usr.Confirmation,
+                    UserName = usr.FirstName + " " + usr.LastName
+                },
+                Recipients = new List<Recipient>()
+                {
+                    new Recipient()
+                    {
+                        Email = usr.EMail,
+                        Name = usr.FirstName + " " + usr.LastName
+                    }
+                }
+            });
         }
 
         public Task LegacyReset(string email)

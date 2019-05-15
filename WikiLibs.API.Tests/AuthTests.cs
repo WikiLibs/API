@@ -1,9 +1,16 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Mvc;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using WikiLibs.Admin;
+using WikiLibs.API.Auth;
 using WikiLibs.API.Tests.Helper;
 using WikiLibs.Auth;
+using WikiLibs.Shared.Modules.Auth;
+using WikiLibs.Users;
 
 namespace WikiLibs.API.Tests
 {
@@ -13,13 +20,87 @@ namespace WikiLibs.API.Tests
         public override void Setup()
         {
             base.Setup();
-            //Manager = new AuthManager();
+            Manager = new AuthManager(new AdminManager(Context, null), new UserManager(Context), Smtp, new Config()
+            {
+                DefaultGroupName = "Default",
+                Internal = new Config.CInternal()
+                {
+                    TokenAudiance = "localhost",
+                    TokenIssuer = "localhost",
+                    TokenLifeMinutes = 5,
+                    TokenSecret = "TEST_DEVELOPMENT_SECRET"
+                }
+            });
+        }
+
+        public async Task PostTestUser(InternalController controller)
+        {
+            await controller.Register(new Models.Input.UserCreate()
+            {
+                Email = "test@test.com",
+                Password = "thisIsATest",
+                FirstName = "Test",
+                LastName = "Test",
+                Private = false,
+                Pseudo = "pseudo",
+                ProfileMsg = "This is a testing account"
+            });
         }
 
         [Test, Order(1)]
-        public void BasicAuth()
+        public async Task BasicAuth()
         {
-            //var controller
+            var controller = new InternalController(Manager);
+
+            var res = await controller.Login(new Models.Input.Auth.Login()
+            {
+                Email = "dev@localhost",
+                Password = "dev"
+            }) as JsonResult;
+            var token = res.Value as string;
+            Assert.IsNotNull(token);
+        }
+
+        [Test, Order(2)]
+        public void BasicAuth_Error_Invalid()
+        {
+            var controller = new InternalController(Manager);
+
+            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Login(new Models.Input.Auth.Login()
+            {
+                Email = "dev@localhost123456789",
+                Password = "dev123456789"
+            }));
+        }
+
+        [Test, Order(3)]
+        public async Task BasicRegister()
+        {
+            var controller = new InternalController(Manager);
+
+            await PostTestUser(controller);
+            Assert.AreEqual(1, Smtp.SentEmailCount);
+            Assert.AreEqual("WikiLibs API Server", Smtp.LastSendEmail.Subject);
+            Assert.AreEqual("UserRegistration", Smtp.LastSendEmail.Template);
+            Assert.AreEqual("test@test.com", Smtp.LastSendEmail.Recipients.First().Email);
+            Assert.AreEqual(Context.Users.Last().FirstName + " " + Context.Users.Last().LastName, Smtp.LastSendEmail.Recipients.First().Name);
+            var data = Smtp.LastSendEmail.Model as Shared.Modules.Smtp.Models.UserRegistration;
+            Assert.AreEqual(Context.Users.Last().FirstName + " " + Context.Users.Last().LastName, data.UserName);
+            Assert.AreEqual(Context.Users.Last().Confirmation, data.ConfirmCode);
+            Assert.AreEqual(2, Context.Users.Count());
+            Assert.IsNotNull(Context.Users.Last().Confirmation);
+            await controller.Confirm(data.ConfirmCode);
+            Assert.AreEqual(2, Context.Users.Count());
+            Assert.IsNull(Context.Users.Last().Confirmation);
+        }
+
+        [Test, Order(4)]
+        public async Task BasicRegister_Error_Dupe()
+        {
+            var controller = new InternalController(Manager);
+
+            await PostTestUser(controller);
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => PostTestUser(controller));
         }
     }
 }

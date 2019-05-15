@@ -30,7 +30,9 @@ namespace WikiLibs.Auth
 
         public IAuthProvider GetAuthenticator(string serviceName)
         {
-            return (null);
+            if (!_providers.ContainsKey(serviceName))
+                return (null);
+            return (_providers[serviceName]);
         }
 
         public string GenToken(string uuid)

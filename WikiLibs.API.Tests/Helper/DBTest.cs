@@ -9,6 +9,7 @@ namespace WikiLibs.API.Tests.Helper
     public class DBTest<T>
         where T : class
     {
+        public TestingSmtp Smtp { get; set; }
         public Data.Context Context { get; set; }
         public T Manager { get; set; }
         public IUser FakeUser { get; set; }
@@ -18,6 +19,7 @@ namespace WikiLibs.API.Tests.Helper
         {
             Context = DbUtils.CreateFakeDB();
             FakeUser = new FakeUser(Context);
+            Smtp = new TestingSmtp();
         }
 
         [TearDown]
@@ -26,6 +28,7 @@ namespace WikiLibs.API.Tests.Helper
             Context = null;
             FakeUser = null;
             Manager = null;
+            Smtp = null;
         }
     }
 }

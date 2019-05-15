@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WikiLibs.Shared.Modules.Auth;
 
 namespace WikiLibs.Core.Middleware
 {
@@ -43,6 +44,20 @@ namespace WikiLibs.Core.Middleware
             try
             {
                 await _next(ctx);
+            }
+            catch (InvalidCredentials)
+            {
+                res = new JsonErrorResult()
+                {
+                    Code = "401:Unauthorized",
+                    Message = "Invalid credentials",
+                    Resource = "Not applicable",
+                    Route = ctx.Request.Path
+                };
+                ctx.Response.Clear();
+                ctx.Response.ContentType = "application/json";
+                ctx.Response.StatusCode = 401;
+                await ctx.Response.WriteAsync(GenObjectString(res));
             }
             catch (Shared.Exceptions.InsuficientPermission ex)
             {
