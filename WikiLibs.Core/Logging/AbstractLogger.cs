@@ -44,7 +44,8 @@ namespace WikiLibs.Core.Logging
 
                 public void Dispose()
                 {
-                    _stack.Pop();
+                    if (_stack.Count > 0)
+                        _stack.Pop();
                 }
             }
 
