@@ -121,5 +121,29 @@ namespace WikiLibs.API.Tests
             await PostTestUser(controller);
             Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => PostTestUser(controller));
         }
+
+        [Test, Order(5)]
+        public async Task BasicReset()
+        {
+            var controller = new InternalController(Manager);
+
+            //Reset development account password
+            await controller.Reset("dev@localhost");
+            Assert.AreEqual(1, Smtp.SentEmailCount);
+            Assert.AreEqual("WikiLibs API Server", Smtp.LastSendEmail.Subject);
+            Assert.AreEqual("UserReset", Smtp.LastSendEmail.Template);
+            Assert.AreEqual("dev@localhost", Smtp.LastSendEmail.Recipients.First().Email);
+            var data = Smtp.LastSendEmail.Model as Shared.Modules.Smtp.Models.UserReset;
+            Assert.AreEqual(Context.Users.Last().Pass, data.NewPassword);
+
+            //Check we can login
+            var res = await controller.Login(new Models.Input.Auth.Login()
+            {
+                Email = "dev@localhost",
+                Password = data.NewPassword
+            }) as JsonResult;
+            var token = res.Value as string;
+            Assert.IsNotNull(token);
+        }
     }
 }
