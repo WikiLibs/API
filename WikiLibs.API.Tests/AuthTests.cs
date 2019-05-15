@@ -33,6 +33,14 @@ namespace WikiLibs.API.Tests
             });
         }
 
+        [Test]
+        public async Task Basics()
+        {
+            Assert.IsNull(Manager.GetAuthenticator("doesnotexist"));
+            Assert.IsNull(Manager.GetAuthenticator("internal").GetConnectionString());
+            Assert.IsNull(await Manager.GetAuthenticator("internal").Login(null));
+        }
+
         public async Task PostTestUser(InternalController controller)
         {
             await controller.Register(new Models.Input.UserCreate()
@@ -48,7 +56,7 @@ namespace WikiLibs.API.Tests
         }
 
         [Test, Order(1)]
-        public async Task BasicAuth()
+        public async Task Auth()
         {
             var controller = new InternalController(Manager);
 
@@ -62,7 +70,7 @@ namespace WikiLibs.API.Tests
         }
 
         [Test, Order(2)]
-        public void BasicAuth_Error_Invalid()
+        public void Auth_Error_Invalid()
         {
             var controller = new InternalController(Manager);
 
@@ -74,7 +82,7 @@ namespace WikiLibs.API.Tests
         }
 
         [Test, Order(3)]
-        public async Task BasicRegister()
+        public async Task Register()
         {
             var controller = new InternalController(Manager);
 
@@ -114,7 +122,7 @@ namespace WikiLibs.API.Tests
         }
 
         [Test, Order(4)]
-        public async Task BasicRegister_Error_Dupe()
+        public async Task Register_Error_Dupe()
         {
             var controller = new InternalController(Manager);
 
@@ -123,7 +131,7 @@ namespace WikiLibs.API.Tests
         }
 
         [Test, Order(5)]
-        public async Task BasicReset()
+        public async Task Reset()
         {
             var controller = new InternalController(Manager);
 
@@ -144,6 +152,46 @@ namespace WikiLibs.API.Tests
             }) as JsonResult;
             var token = res.Value as string;
             Assert.IsNotNull(token);
+        }
+
+        [Test, Order(6)]
+        public void Reset_Error_NonExistant()
+        {
+            var controller = new InternalController(Manager);
+
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Reset("doesnotexist@doesnotexist.com"));
+        }
+
+        [Test]
+        public void Confirm_Error_Null()
+        {
+            var controller = new InternalController(Manager);
+
+            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Confirm(null));
+        }
+
+        [Test]
+        public void Confirm_Error_Invalid()
+        {
+            var controller = new InternalController(Manager);
+
+            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Confirm("abcd"));
+            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Confirm("abcd.efgh"));
+        }
+
+        [Test]
+        public void Confirm_Error_NonExistant()
+        {
+            var controller = new InternalController(Manager);
+
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Confirm("abcd.efgh.123456789"));
+            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Confirm("abcd." + new Guid().ToString() + ".123456789"));
+        }
+
+        [Test]
+        public void Refresh()
+        {
+            Assert.IsNotNull(Manager.Refresh(new Guid().ToString()));
         }
     }
 }

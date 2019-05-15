@@ -101,6 +101,8 @@ namespace WikiLibs.Auth
 
         public async Task LegacyVerifyEmail(string code)
         {
+            if (code == null)
+                throw new InvalidCredentials();
             var arr = code.Split('.');
 
             if (arr.Length != 3)
