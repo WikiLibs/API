@@ -78,6 +78,7 @@ namespace WikiLibs.API.Tests
         {
             var controller = new InternalController(Manager);
 
+            //Creation
             await PostTestUser(controller);
             Assert.AreEqual(1, Smtp.SentEmailCount);
             Assert.AreEqual("WikiLibs API Server", Smtp.LastSendEmail.Subject);
@@ -89,9 +90,27 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(Context.Users.Last().Confirmation, data.ConfirmCode);
             Assert.AreEqual(2, Context.Users.Count());
             Assert.IsNotNull(Context.Users.Last().Confirmation);
+
+            //Check we can't login
+            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Login(new Models.Input.Auth.Login()
+            {
+                Email = "test@test.com",
+                Password = "thisIsATest"
+            }));
+
+            //Confirmation
             await controller.Confirm(data.ConfirmCode);
             Assert.AreEqual(2, Context.Users.Count());
             Assert.IsNull(Context.Users.Last().Confirmation);
+
+            //Check we can login
+            var res = await controller.Login(new Models.Input.Auth.Login()
+            {
+                Email = "test@test.com",
+                Password = "thisIsATest"
+            }) as JsonResult;
+            var token = res.Value as string;
+            Assert.IsNotNull(token);
         }
 
         [Test, Order(4)]

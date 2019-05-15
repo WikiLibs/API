@@ -67,9 +67,19 @@ namespace WikiLibs.Auth
             });
         }
 
-        public Task LegacyReset(string email)
+        public async Task LegacyReset(string email)
         {
-            throw new NotImplementedException();
+            var usr = await _userManager.GetByEmailAsync(email);
+
+            if (usr == null)
+                throw new Shared.Exceptions.ResourceNotFound()
+                {
+                    ResourceId = email,
+                    ResourceName = "User",
+                    ResourceType = typeof(User)
+                };
+            usr.Pass = Guid.NewGuid().ToString();
+            await _userManager.SaveChanges();
         }
 
         public async Task LegacyVerifyEmail(string code)
