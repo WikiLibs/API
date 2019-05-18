@@ -8,8 +8,10 @@ using WikiLibs.Shared.Service;
 
 namespace WikiLibs.API.Tests.Helper
 {
-    class FakeUser : IUser
+    public class FakeUser : IUser
     {
+        private Dictionary<string, bool> _permissions = null;
+
         public FakeUser(Data.Context ctx)
         {
             if (ctx.Users.FirstOrDefault() != null)
@@ -47,7 +49,21 @@ namespace WikiLibs.API.Tests.Helper
 
         public bool HasPermission(string name)
         {
-            return (true);
+            if (_permissions == null)
+                return (true);
+            if (_permissions.ContainsKey(name) && _permissions[name])
+                return (true);
+            return (false);
+        }
+
+        public void SetPermissions(string[] perms)
+        {
+            _permissions = new Dictionary<string, bool>();
+
+            foreach (var s in perms)
+            {
+                _permissions.Add(s, true);
+            }
         }
 
         public Task Save()
