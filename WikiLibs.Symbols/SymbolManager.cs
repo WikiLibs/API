@@ -168,7 +168,7 @@ namespace WikiLibs.Symbols
 
         public PageResult<string> SearchSymbols(string path, PageOptions options)
         {
-            if (options.PageNum == 0)
+            if (options.Page == 0)
                 throw new Shared.Exceptions.InvalidResource()
                 {
                     PropertyName = "PageNum",
@@ -177,7 +177,7 @@ namespace WikiLibs.Symbols
                 };
             var data = Set.Where(sym => sym.Path.Contains(path))
                 .OrderBy(o => o.Path)
-                .Skip((options.PageNum - 1) * _cfg.GetMaxSymbols(options));
+                .Skip(((options.Page != null ? options.Page.Value : 1) - 1) * _cfg.GetMaxSymbols(options));
             bool next = data.Count() > _cfg.GetMaxSymbols(options);
             var arr = data.Take(_cfg.GetMaxSymbols(options))
                 .Select(sym => sym.Path);
@@ -186,8 +186,8 @@ namespace WikiLibs.Symbols
             {
                 Data = arr,
                 HasMorePages = next,
-                PageNum = options.PageNum,
-                PageSize = _cfg.GetMaxSymbols(options)
+                Page = options.Page != null ? options.Page.Value : 1,
+                Count = _cfg.GetMaxSymbols(options)
             });
         }
     }

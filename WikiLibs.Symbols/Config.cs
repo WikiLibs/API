@@ -13,9 +13,9 @@ namespace WikiLibs.Symbols
 
         public int GetMaxSymbols(PageOptions options)
         {
-            if (options.PageSize <= 0)
+            if (options.Count == null || options.Count.Value <= 0)
                 return (MaxSymsPerPage);
-            return (options.PageSize > MaxSymsPerPage ? MaxSymsPerPage : options.PageSize);
+            return (options.Count.Value > MaxSymsPerPage ? MaxSymsPerPage : options.Count.Value);
         }
     }
 }

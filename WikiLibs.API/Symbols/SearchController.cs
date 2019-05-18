@@ -33,15 +33,10 @@ namespace WikiLibs.API.Symbols
         }
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
-        [HttpGet("string/{page}/{*path}")]
-        public IActionResult SearchSymbols(int page, string path)
+        [HttpGet("string/{*path}")]
+        public IActionResult SearchSymbols([FromRoute]string path, [FromQuery]Shared.Helpers.PageOptions options)
         {
-            var res = _symmgr.SearchSymbols(path, new Shared.Helpers.PageOptions()
-            {
-                PageNum = page,
-                PageSize = 0
-            });
-
+            var res = _symmgr.SearchSymbols(path, options);
             return (Json(res));
         }
     }

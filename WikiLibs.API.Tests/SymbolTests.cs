@@ -309,7 +309,10 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol(symController);
-            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.SearchSymbols(0, "C/TestLib"));
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.SearchSymbols("C/TestLib", new PageOptions()
+            {
+                Page = 0
+            }));
         }
 
         [Test, Order(14)]
@@ -319,13 +322,56 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol(symController);
-            var res = controller.SearchSymbols(1, "C/TestLib/") as JsonResult;
+            var res = controller.SearchSymbols("C/TestLib/", new PageOptions()
+            {
+                Page = 1
+            }) as JsonResult;
             var obj = res.Value as PageResult<string>;
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
             Assert.IsFalse(obj.HasMorePages);
-            Assert.AreEqual(1, obj.PageNum);
-            Assert.AreEqual(15, obj.PageSize);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual(15, obj.Count);
+        }
+
+        [Test, Order(15)]
+        public async Task SearchSymbols_2()
+        {
+            var symController = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SearchController(Manager);
+
+            await PostTestSymbol(symController);
+            var res = controller.SearchSymbols("C/TestLib/", new PageOptions()
+            {
+                Page = 1,
+                Count = 0
+            }) as JsonResult;
+            var obj = res.Value as PageResult<string>;
+            Assert.AreEqual(1, obj.Data.Count());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual(15, obj.Count);
+        }
+
+        [Test, Order(16)]
+        public async Task SearchSymbols_3()
+        {
+            var symController = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SearchController(Manager);
+
+            await PostTestSymbol(symController);
+            var res = controller.SearchSymbols("C/TestLib/", new PageOptions()
+            {
+                Page = 1,
+                Count = 1
+            }) as JsonResult;
+            var obj = res.Value as PageResult<string>;
+            Assert.AreEqual(1, obj.Data.Count());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual(1, obj.Count);
         }
     }
 }
