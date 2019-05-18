@@ -92,7 +92,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
-            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(async () => await PostTestSymbol(controller));
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => PostTestSymbol(controller));
         }
 
         [Test, Order(3)]
@@ -100,7 +100,7 @@ namespace WikiLibs.API.Tests
         {
             var controller = new Symbols.SymbolController(Manager, FakeUser);
 
-            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(async () => await controller.PostSymbol(new Models.Input.SymbolCreate()
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => controller.PostSymbol(new Models.Input.SymbolCreate()
             {
                 Lang = "",
                 Path = "",
@@ -108,6 +108,14 @@ namespace WikiLibs.API.Tests
                 Symbols = new string[] { },
                 Type = ""
             }));
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(new Models.Input.SymbolCreate()
+            {
+                Lang = "",
+                Path = "",
+                Prototypes = new Models.Input.SymbolCreate.Prototype[] { },
+                Symbols = new string[] { },
+                Type = ""
+            }.CreateModel()));
         }
 
         [Test, Order(4)]
