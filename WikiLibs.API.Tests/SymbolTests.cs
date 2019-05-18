@@ -373,5 +373,21 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Page);
             Assert.AreEqual(1, obj.Count);
         }
+
+        [Test, Order(17)]
+        public async Task SearchSymbols_4()
+        {
+            var symController = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SearchController(Manager);
+
+            await PostTestSymbol(symController);
+            var res = controller.SearchSymbols("C/TestLib/", new PageOptions() { }) as JsonResult;
+            var obj = res.Value as PageResult<string>;
+            Assert.AreEqual(1, obj.Data.Count());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual(15, obj.Count);
+        }
     }
 }
