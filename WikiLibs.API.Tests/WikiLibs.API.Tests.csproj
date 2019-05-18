@@ -18,11 +18,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WikiLibs.Admin\WikiLibs.Admin.csproj" />
     <ProjectReference Include="..\WikiLibs.API\WikiLibs.API.csproj" />
+    <ProjectReference Include="..\WikiLibs.Auth\WikiLibs.Auth.csproj" />
     <ProjectReference Include="..\WikiLibs.Data\WikiLibs.Data.csproj" />
     <ProjectReference Include="..\WikiLibs.Models\WikiLibs.Models.csproj" />
     <ProjectReference Include="..\WikiLibs.Shared\WikiLibs.Shared.csproj" />
+    <ProjectReference Include="..\WikiLibs.Smtp\WikiLibs.Smtp.csproj" />
     <ProjectReference Include="..\WikiLibs.Symbols\WikiLibs.Symbols.csproj" />
+    <ProjectReference Include="..\WikiLibs.Users\WikiLibs.Users.csproj" />
   </ItemGroup>
 
 </Project>

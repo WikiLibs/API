@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WikiLibs.Data.Models;
 using WikiLibs.Shared.Modules;
-using WikiLibs.Shared.Modules.Admin;
 using WikiLibs.Shared.Modules.Auth;
+using WikiLibs.Shared.Modules.Smtp;
 
 namespace WikiLibs.Auth
 {
@@ -38,7 +39,7 @@ namespace WikiLibs.Auth
         public async Task LegacyRegister(User usr)
         {
             usr.Group = _manager.DefaultGroup;
-            usr.Id = new Guid().ToString();
+            usr.Id = Guid.NewGuid().ToString();
             usr.Confirmation = new Guid().ToString().Replace("{", "").Replace("-", "")
                 + "."
                 + usr.Id.Replace("{", "")
@@ -46,21 +47,62 @@ namespace WikiLibs.Auth
                 + DateTime.UtcNow.Millisecond.ToString();
             usr.RegistrationDate = DateTime.UtcNow;
             await _userManager.PostAsync(usr);
-            _smtpManager.SendEmailMessage(new EmailMessage()
+            await _smtpManager.SendAsync(new Mail()
             {
-                Body = "Please confirm your email address using this code: '" + usr.Confirmation + "'",
-                Subject = "Email confirmation required",
-                To = usr.EMail
+                Subject = "WikiLibs API Server",
+                Template = "UserRegistration",
+                Model = new Shared.Modules.Smtp.Models.UserRegistration()
+                {
+                    ConfirmCode = usr.Confirmation,
+                    UserName = usr.FirstName + " " + usr.LastName
+                },
+                Recipients = new List<Recipient>()
+                {
+                    new Recipient()
+                    {
+                        Email = usr.EMail,
+                        Name = usr.FirstName + " " + usr.LastName
+                    }
+                }
             });
         }
 
-        public Task LegacyReset(string email)
+        public async Task LegacyReset(string email)
         {
-            throw new NotImplementedException();
+            var usr = await _userManager.GetByEmailAsync(email);
+
+            if (usr == null)
+                throw new Shared.Exceptions.ResourceNotFound()
+                {
+                    ResourceId = email,
+                    ResourceName = "User",
+                    ResourceType = typeof(User)
+                };
+            usr.Pass = Guid.NewGuid().ToString();
+            await _userManager.SaveChanges();
+            await _smtpManager.SendAsync(new Mail()
+            {
+                Subject = "WikiLibs API Server",
+                Template = "UserReset",
+                Model = new Shared.Modules.Smtp.Models.UserReset()
+                {
+                    NewPassword = usr.Pass
+                },
+                Recipients = new List<Recipient>()
+                {
+                    new Recipient()
+                    {
+                        Email = usr.EMail,
+                        Name = usr.FirstName + " " + usr.LastName
+                    }
+                }
+            });
         }
 
         public async Task LegacyVerifyEmail(string code)
         {
+            if (code == null)
+                throw new InvalidCredentials();
             var arr = code.Split('.');
 
             if (arr.Length != 3)

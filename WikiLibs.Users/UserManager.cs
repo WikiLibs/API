@@ -57,5 +57,10 @@ namespace WikiLibs.Users
             await SaveChanges();
             return (usr);
         }
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return (await Set.FirstOrDefaultAsync(x => x.EMail == email));
+        }
     }
 }

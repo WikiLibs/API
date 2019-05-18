@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WikiLibs.Shared.Modules.Auth;
 
 namespace WikiLibs.Core.Middleware
 {
@@ -36,6 +37,11 @@ namespace WikiLibs.Core.Middleware
             }));
         }
 
+        private void PutCORSHeaders(HttpContext ctx)
+        {
+            ctx.Response.Headers["Access-Control-Allow-Origin"] = "*";
+        }
+
         public async Task Invoke(HttpContext ctx)
         {
             JsonErrorResult res = null;
@@ -43,6 +49,21 @@ namespace WikiLibs.Core.Middleware
             try
             {
                 await _next(ctx);
+            }
+            catch (InvalidCredentials)
+            {
+                res = new JsonErrorResult()
+                {
+                    Code = "401:Unauthorized",
+                    Message = "Invalid credentials",
+                    Resource = "Not applicable",
+                    Route = ctx.Request.Path
+                };
+                ctx.Response.Clear();
+                ctx.Response.ContentType = "application/json";
+                ctx.Response.StatusCode = 401;
+                PutCORSHeaders(ctx);
+                await ctx.Response.WriteAsync(GenObjectString(res));
             }
             catch (Shared.Exceptions.InsuficientPermission ex)
             {
@@ -56,6 +77,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.Clear();
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 403;
+                PutCORSHeaders(ctx);
                 await ctx.Response.WriteAsync(GenObjectString(res));
             }
             catch (Shared.Exceptions.InvalidResource ex)
@@ -70,6 +92,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.Clear();
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 400;
+                PutCORSHeaders(ctx);
                 await ctx.Response.WriteAsync(GenObjectString(res));
             }
             catch (Shared.Exceptions.ResourceAlreadyExists ex)
@@ -84,6 +107,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.Clear();
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 409;
+                PutCORSHeaders(ctx);
                 await ctx.Response.WriteAsync(GenObjectString(res));
             }
             catch (Shared.Exceptions.ResourceNotFound ex)
@@ -98,6 +122,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.Clear();
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 404;
+                PutCORSHeaders(ctx);
                 await ctx.Response.WriteAsync(GenObjectString(res));
             }
             catch (Exception ex)
@@ -113,6 +138,7 @@ namespace WikiLibs.Core.Middleware
                 ctx.Response.Clear();
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 500;
+                PutCORSHeaders(ctx);
                 await ctx.Response.WriteAsync(GenObjectString(res));
             }
         }

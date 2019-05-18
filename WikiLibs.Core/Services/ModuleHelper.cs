@@ -24,12 +24,13 @@ namespace WikiLibs.Core.Services
 
     static class ModuleHelper
     {
-        private static void InjectModuleConfs(IServiceCollection services, string name, Type cfgClass, IConfiguration cfg)
+        private static object InjectModuleConfs(IServiceCollection services, string name, Type cfgClass, IConfiguration cfg)
         {
             object instance = Activator.CreateInstance(cfgClass);
 
             cfg.Bind(name, instance);
             services.AddSingleton(cfgClass, instance);
+            return (instance);
         }
 
         private static void AttemptLocateInitializer(Type mainClass, ref ModuleInfoInternal infos)
@@ -50,6 +51,7 @@ namespace WikiLibs.Core.Services
             ModuleInfoInternal info = new ModuleInfoInternal() { Name = path };
             Type cfgClass = null;
             Type moduleClass = null;
+            object config = null;
 
             if (!inf.Exists)
                 return (null);
@@ -76,9 +78,9 @@ namespace WikiLibs.Core.Services
                 throw new ArgumentException("Cannot bind module : incorrect base class");
             builder.AddApplicationPart(asm);
             if (cfgClass != null)
-                InjectModuleConfs(services, info.Name, cfgClass, cfg);
+                config = InjectModuleConfs(services, info.Name, cfgClass, cfg);
             AttemptLocateInitializer(moduleClass, ref info);
-            info.ModuleInterface = InjectService(services, cfg, moduleClass, info.ModuleInterface);
+            info.ModuleInterface = InjectService(services, config, moduleClass, info.ModuleInterface);
             return (info);
         }
 
@@ -96,14 +98,19 @@ namespace WikiLibs.Core.Services
             }
         }
 
-        private static Type InjectService(IServiceCollection services, IConfiguration cfg, Type moduleClass, Type moduleInterface)
+        private static Type InjectService(IServiceCollection services, object config, Type moduleClass, Type moduleInterface)
         {
             if (moduleInterface == typeof(IModule)) // API module no actual shared code
                 return (null);
             foreach (var method in moduleClass.GetMethods())
             {
                 if (method.IsStatic && method.IsPublic && method.GetCustomAttribute<Shared.Attributes.ModuleConfigurator>() != null)
-                    method.Invoke(null, new object[] { services, cfg });
+                {
+                    if (config == null)
+                        method.Invoke(null, new object[] { services });
+                    else
+                        method.Invoke(null, new object[] { services, config });
+                }
             }
             services.AddScoped(moduleInterface, moduleClass);
             return (moduleInterface);

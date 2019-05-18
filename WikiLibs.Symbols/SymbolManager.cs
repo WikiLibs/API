@@ -38,6 +38,7 @@ namespace WikiLibs.Symbols
             if (!Set.Any(sy => sy.Path.StartsWith(libl)))
                 Context.InfoTable.RemoveRange(Context.InfoTable.Where(sy =>
                     sy.Type == EInfoType.LIB && sy.Data == libl));
+            await SaveChanges();
             return (sym);
         }
 
@@ -167,9 +168,16 @@ namespace WikiLibs.Symbols
 
         public PageResult<string> SearchSymbols(string path, PageOptions options)
         {
+            if (options.PageNum == 0)
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    PropertyName = "PageNum",
+                    ResourceName = "Symbol",
+                    ResourceType = typeof(Symbol)
+                };
             var data = Set.Where(sym => sym.Path.Contains(path))
                 .OrderBy(o => o.Path)
-                .Skip(options.PageNum * _cfg.GetMaxSymbols(options));
+                .Skip((options.PageNum - 1) * _cfg.GetMaxSymbols(options));
             bool next = data.Count() > _cfg.GetMaxSymbols(options);
             var arr = data.Take(_cfg.GetMaxSymbols(options))
                 .Select(sym => sym.Path);
@@ -179,7 +187,7 @@ namespace WikiLibs.Symbols
                 Data = arr,
                 HasMorePages = next,
                 PageNum = options.PageNum,
-                PageSize = options.PageSize
+                PageSize = _cfg.GetMaxSymbols(options)
             });
         }
     }

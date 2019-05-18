@@ -19,7 +19,7 @@ namespace WikiLibs.API.Auth
         }
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Authentication)]
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Models.Input.Auth.Login mdl)
         {
             var token = await _internal.LegacyLogin(mdl.Email, mdl.Password);
@@ -27,7 +27,7 @@ namespace WikiLibs.API.Auth
         }
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Registration)]
-        [HttpPost]
+        [HttpPost("reset")]
         public async Task<IActionResult> Reset([FromBody] string email)
         {
             await _internal.LegacyReset(email);
@@ -35,10 +35,17 @@ namespace WikiLibs.API.Auth
         }
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Registration)]
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Models.Input.UserCreate mdl)
         {
             await _internal.LegacyRegister(mdl.CreateModel());
+            return (Ok());
+        }
+
+        [HttpGet("confirm/{*code}")]
+        public async Task<IActionResult> Confirm([FromRoute] string code)
+        {
+            await _internal.LegacyVerifyEmail(code);
             return (Ok());
         }
     }

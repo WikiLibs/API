@@ -19,7 +19,15 @@ namespace WikiLibs.Admin
 
         public Group Get(string name)
         {
-            return (Set.FirstOrDefault(x => x.Name == name));
+            var mdl = Set.FirstOrDefault(x => x.Name == name);
+            if (mdl == null)
+                throw new Shared.Exceptions.ResourceNotFound()
+                {
+                    ResourceId = name,
+                    ResourceName = name,
+                    ResourceType = typeof(Group)
+                };
+            return (mdl);
         }
 
         public IQueryable<Group> GetAll()
@@ -45,14 +53,18 @@ namespace WikiLibs.Admin
         {
             var group = await GetAsync(key);
 
-            foreach (var p in group.Permissions)
-                Context.Remove(p);
-            foreach (var p in mdl.Permissions)
-                group.Permissions.Add(new Permission()
-                {
-                    Group = group,
-                    Perm = p.Perm
-                });
+            if (mdl.Permissions != null)
+            {
+                foreach (var p in group.Permissions)
+                    Context.Remove(p);
+                foreach (var p in mdl.Permissions)
+                    group.Permissions.Add(new Permission()
+                    {
+                        Group = group,
+                        Perm = p.Perm
+                    });
+            }
+            group.Name = mdl.Name;
             await SaveChanges();
             return (group);
         }

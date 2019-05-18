@@ -11,7 +11,7 @@ using WikiLibs.Shared.Service;
 namespace WikiLibs.API.Symbols
 {
     [Authorize]
-    [Route("/symbol/")]
+    [Route("/symbol")]
     public class SymbolController : Controller
     {
         private readonly ISymbolManager _symmgr;
@@ -65,7 +65,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpDelete("{*path}")]
-        public IActionResult DeleteSymbol([Required, FromRoute] string path)
+        public async Task<IActionResult> DeleteSymbol([Required, FromRoute] string path)
         {
             if (!_user.HasPermission(Permissions.DELETE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
@@ -75,7 +75,7 @@ namespace WikiLibs.API.Symbols
                     ResourceType = typeof(Data.Models.Symbol),
                     MissingPermission = Permissions.DELETE_SYMBOL
                 };
-            _symmgr.DeleteAsync(_symmgr.Get(path));
+            await _symmgr.DeleteAsync(_symmgr.Get(path));
             return (Ok());
         }
     }

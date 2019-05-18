@@ -1,0 +1,23 @@
+﻿@using WikiLibs.Shared.Modules.Smtp.Models
+@model UserRegistration
+<html>
+<head>
+
+</head>
+<body>
+	<h1>User registration email</h1>
+	<p>
+		Hello <strong>@Model.UserName</strong>,
+		<br />
+		<br />
+		This email was sent automaticaly by WikiLibs API Server to inform you of your registration.
+		<br />
+		Please confirm your email address using this code <strong>@Model.ConfirmCode</strong>
+		<br />
+		<br />
+		Thanks by advance,
+		<br />
+		WikiLibs API Server
+	</p>
+</body>
+</html>
