@@ -3,16 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs", "WikiLibs\WikiLibs.csproj", "{3285B592-6FF1-417B-9308-517AABF2069E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{FA2FEADA-EF06-4258-AF58-54E22F65E9FB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManager", "UserManager\UserManager.csproj", "{F4552AF8-8D47-4A75-A7B9-A843ACBEA581}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminManager", "AdminManager\AdminManager.csproj", "{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymbolManager", "SymbolManager\SymbolManager.csproj", "{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Data", "WikiLibs.Data\WikiLibs.Data.csproj", "{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Core", "WikiLibs.Core\WikiLibs.Core.csproj", "{4B748472-1E3D-4AD8-A67A-D8255AA726BA}"
@@ -35,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Users", "WikiLibs.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Smtp", "WikiLibs.Smtp\WikiLibs.Smtp.csproj", "{35F883C3-CF87-4269-9005-25ED96BB39D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiLibs.API.Tests", "WikiLibs.API.Tests\WikiLibs.API.Tests.csproj", "{6ECD1185-9A00-4D1F-A273-13EE39B7F6DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.API.Tests", "WikiLibs.API.Tests\WikiLibs.API.Tests.csproj", "{6ECD1185-9A00-4D1F-A273-13EE39B7F6DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,26 +33,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3285B592-6FF1-417B-9308-517AABF2069E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3285B592-6FF1-417B-9308-517AABF2069E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3285B592-6FF1-417B-9308-517AABF2069E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3285B592-6FF1-417B-9308-517AABF2069E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA2FEADA-EF06-4258-AF58-54E22F65E9FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA2FEADA-EF06-4258-AF58-54E22F65E9FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA2FEADA-EF06-4258-AF58-54E22F65E9FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA2FEADA-EF06-4258-AF58-54E22F65E9FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4552AF8-8D47-4A75-A7B9-A843ACBEA581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4552AF8-8D47-4A75-A7B9-A843ACBEA581}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4552AF8-8D47-4A75-A7B9-A843ACBEA581}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4552AF8-8D47-4A75-A7B9-A843ACBEA581}.Release|Any CPU.Build.0 = Release|Any CPU
-		{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Release|Any CPU.Build.0 = Release|Any CPU
 		{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}.Release|Any CPU.ActiveCfg = Release|Any CPU

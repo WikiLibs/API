@@ -6,7 +6,7 @@ namespace WikiLibs.Shared.Helpers
 {
     public class PageOptions
     {
-        public int PageNum { get; set; }
-        public int PageSize { get; set; }
+        public int? Page { get; set; }
+        public int? Count { get; set; }
     }
 }

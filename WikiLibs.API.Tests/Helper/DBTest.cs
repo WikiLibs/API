@@ -9,16 +9,16 @@ namespace WikiLibs.API.Tests.Helper
     public class DBTest<T>
         where T : class
     {
-        public TestingSmtp Smtp { get; set; }
-        public Data.Context Context { get; set; }
+        public TestingSmtp Smtp { get; private set; }
+        public Data.Context Context { get; private set; }
         public T Manager { get; set; }
-        public IUser FakeUser { get; set; }
+        public FakeUser User { get; private set; }
 
         [SetUp]
         public virtual void Setup()
         {
             Context = DbUtils.CreateFakeDB();
-            FakeUser = new FakeUser(Context);
+            User = new FakeUser(Context);
             Smtp = new TestingSmtp();
         }
 
@@ -26,7 +26,7 @@ namespace WikiLibs.API.Tests.Helper
         public virtual void Teardown()
         {
             Context = null;
-            FakeUser = null;
+            User = null;
             Manager = null;
             Smtp = null;
         }

@@ -73,7 +73,7 @@ namespace WikiLibs.API.Tests
         [Test, Order(1)]
         public async Task PostSymbol()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
             var res = await PostTestSymbol(controller);
 
             Assert.AreEqual(1, Context.Symbols.Count());
@@ -85,22 +85,22 @@ namespace WikiLibs.API.Tests
         [Test, Order(2)]
         public async Task PostSymbol_Error_Dupe()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(1, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
-            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(async () => await PostTestSymbol(controller));
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => PostTestSymbol(controller));
         }
 
         [Test, Order(3)]
         public void PostSymbol_Error_Invalid()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
 
-            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(async () => await controller.PostSymbol(new Models.Input.SymbolCreate()
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => controller.PostSymbol(new Models.Input.SymbolCreate()
             {
                 Lang = "",
                 Path = "",
@@ -108,12 +108,20 @@ namespace WikiLibs.API.Tests
                 Symbols = new string[] { },
                 Type = ""
             }));
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(new Models.Input.SymbolCreate()
+            {
+                Lang = "",
+                Path = "C/TestLib/NonValidFunc",
+                Prototypes = new Models.Input.SymbolCreate.Prototype[] { },
+                Symbols = new string[] { },
+                Type = ""
+            }.CreateModel()));
         }
 
         [Test, Order(4)]
         public async Task PatchSymbol_Easy()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
             await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.SymbolUpdate()
@@ -130,7 +138,7 @@ namespace WikiLibs.API.Tests
         [Test, Order(5)]
         public async Task PatchSymbol_Complex()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
             await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.SymbolUpdate()
@@ -160,7 +168,7 @@ namespace WikiLibs.API.Tests
         [Test, Order(5)]
         public async Task PatchSymbol_Complex_1()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
             await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.SymbolUpdate()
@@ -186,7 +194,7 @@ namespace WikiLibs.API.Tests
         [Test, Order(6)]
         public async Task PatchSymbol_Complex_2()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
             await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.SymbolUpdate()
@@ -233,7 +241,7 @@ namespace WikiLibs.API.Tests
         [Test, Order(7)]
         public async Task GetSymbol()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
             var res = controller.GetSymbol("C/TestLib/TestFunc") as JsonResult;
@@ -248,7 +256,7 @@ namespace WikiLibs.API.Tests
         [Test, Order(8)]
         public void GetSymbol_Error_NonExistant()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             Assert.Throws<Shared.Exceptions.ResourceNotFound>(() => 
             controller.GetSymbol("crap"));
@@ -257,7 +265,7 @@ namespace WikiLibs.API.Tests
         [Test, Order(9)]
         public void DeleteSymbol_Error_NonExistant()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.DeleteSymbol("crap"));
         }
@@ -265,7 +273,7 @@ namespace WikiLibs.API.Tests
         [Test, Order(10)]
         public async Task DeleteSymbol()
         {
-            var controller = new Symbols.SymbolController(Manager, FakeUser);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
             Assert.AreEqual(1, Context.Symbols.Count());
@@ -279,7 +287,7 @@ namespace WikiLibs.API.Tests
         [Test, Order(11)]
         public async Task SearchLangs()
         {
-            var symController = new Symbols.SymbolController(Manager, FakeUser);
+            var symController = new Symbols.SymbolController(Manager, User);
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol(symController);
@@ -292,7 +300,7 @@ namespace WikiLibs.API.Tests
         [Test, Order(12)]
         public async Task SearchLibs()
         {
-            var symController = new Symbols.SymbolController(Manager, FakeUser);
+            var symController = new Symbols.SymbolController(Manager, User);
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol(symController);
@@ -305,27 +313,103 @@ namespace WikiLibs.API.Tests
         [Test, Order(13)]
         public async Task SearchSymbols_Error_Invalid()
         {
-            var symController = new Symbols.SymbolController(Manager, FakeUser);
+            var symController = new Symbols.SymbolController(Manager, User);
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol(symController);
-            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.SearchSymbols(0, "C/TestLib"));
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.SearchSymbols("C/TestLib", new PageOptions()
+            {
+                Page = 0
+            }));
         }
 
         [Test, Order(14)]
         public async Task SearchSymbols()
         {
-            var symController = new Symbols.SymbolController(Manager, FakeUser);
+            var symController = new Symbols.SymbolController(Manager, User);
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol(symController);
-            var res = controller.SearchSymbols(1, "C/TestLib/") as JsonResult;
+            var res = controller.SearchSymbols("C/TestLib/", new PageOptions()
+            {
+                Page = 1
+            }) as JsonResult;
             var obj = res.Value as PageResult<string>;
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
             Assert.IsFalse(obj.HasMorePages);
-            Assert.AreEqual(1, obj.PageNum);
-            Assert.AreEqual(15, obj.PageSize);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual(15, obj.Count);
+        }
+
+        [Test, Order(15)]
+        public async Task SearchSymbols_2()
+        {
+            var symController = new Symbols.SymbolController(Manager, User);
+            var controller = new Symbols.SearchController(Manager);
+
+            await PostTestSymbol(symController);
+            var res = controller.SearchSymbols("C/TestLib/", new PageOptions()
+            {
+                Page = 1,
+                Count = 0
+            }) as JsonResult;
+            var obj = res.Value as PageResult<string>;
+            Assert.AreEqual(1, obj.Data.Count());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual(15, obj.Count);
+        }
+
+        [Test, Order(16)]
+        public async Task SearchSymbols_3()
+        {
+            var symController = new Symbols.SymbolController(Manager, User);
+            var controller = new Symbols.SearchController(Manager);
+
+            await PostTestSymbol(symController);
+            var res = controller.SearchSymbols("C/TestLib/", new PageOptions()
+            {
+                Page = 1,
+                Count = 1
+            }) as JsonResult;
+            var obj = res.Value as PageResult<string>;
+            Assert.AreEqual(1, obj.Data.Count());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual(1, obj.Count);
+        }
+
+        [Test, Order(17)]
+        public async Task SearchSymbols_4()
+        {
+            var symController = new Symbols.SymbolController(Manager, User);
+            var controller = new Symbols.SearchController(Manager);
+
+            await PostTestSymbol(symController);
+            var res = controller.SearchSymbols("C/TestLib/", new PageOptions() { }) as JsonResult;
+            var obj = res.Value as PageResult<string>;
+            Assert.AreEqual(1, obj.Data.Count());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual(15, obj.Count);
+        }
+
+        [Test, Order(18)]
+        public void Permissions()
+        {
+            User.SetPermissions(new string[] { });
+            var controller = new Symbols.SymbolController(Manager, User);
+
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => PostTestSymbol(controller));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.SymbolUpdate()
+            {
+                Type = "enum"
+            }));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteSymbol("C/TestLib/TestFunc"));
         }
     }
 }
