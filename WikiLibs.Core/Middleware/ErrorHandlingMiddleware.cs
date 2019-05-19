@@ -12,7 +12,7 @@ namespace WikiLibs.Core.Middleware
 {
     public class ErrorHandlingMiddleware
     {
-        class JsonErrorResult
+        public class JsonErrorResult
         {
             public string Code { get; set; }
             public string Message { get; set; }

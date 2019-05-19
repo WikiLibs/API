@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
+using Swashbuckle.AspNetCore.Swagger;
+using WikiLibs.Core.Filters;
 using WikiLibs.Core.Services;
 using WikiLibs.Shared.Service;
 
@@ -56,6 +59,28 @@ namespace WikiLibs.Core
             );
 
             services.AddSingleton<IModuleCollection>(collection);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "WikiLibs API", Version = Assembly.GetExecutingAssembly().GetName().Version.ToString() });
+                c.CustomSchemaIds(x => x.Assembly.IsDynamic ? "Dynamic." + x.FullName : x.FullName);
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
+                c.AddSecurityDefinition("APIKey", new ApiKeyScheme()
+                {
+                    Description = "API Key scheme. Example: \"Authorization: {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
+                c.OperationFilter<AuthorizationSwagger>();
+                c.OperationFilter<ErrorMiddlewareSwagger>();
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory)
@@ -63,11 +88,15 @@ namespace WikiLibs.Core
             app.UseMiddleware<Middleware.ErrorHandlingMiddleware>();
             if (!env.IsDevelopment())
                 app.UseHsts();
+            else
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WikiLibs API"));
+            }
             app.UseHttpsRedirection();
             app.UseCors("AllowAll");
-            app.UseMvc();
-
             app.UseAuthentication();
+            app.UseMvc();
 
             using (var scope = app.ApplicationServices.CreateScope())
             {

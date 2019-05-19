@@ -27,7 +27,7 @@ namespace WikiLibs.API.Symbols
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("lang/{*name}")]
-        public IActionResult AllLibs(string name)
+        public IActionResult AllLibs([FromRoute]string name)
         {
             return (Json(_symmgr.GetFirstLibs(name)));
         }
