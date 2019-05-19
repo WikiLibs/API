@@ -6,7 +6,7 @@ using WikiLibs.Data.Models;
 
 namespace WikiLibs.Models.Output
 {
-    public class Symbol : GetModel<Symbol, Data.Models.Symbol>
+    public class Symbol : GetModel<Symbol, Data.Models.Symbols.Symbol>
     {
         public class Prototype
         {
@@ -32,7 +32,7 @@ namespace WikiLibs.Models.Output
         public Prototype[] Prototypes { get; set; }
         public string[] Symbols { get; set; }
 
-        public override void Map(in Data.Models.Symbol model)
+        public override void Map(in Data.Models.Symbols.Symbol model)
         {
             UserId = model.User.Id;
             Date = model.LastModificationDate.ToString();

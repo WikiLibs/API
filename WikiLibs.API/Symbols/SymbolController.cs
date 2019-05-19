@@ -40,7 +40,7 @@ namespace WikiLibs.API.Symbols
                 {
                     ResourceName = sym.Path,
                     ResourceId = sym.Path,
-                    ResourceType = typeof(Data.Models.Symbol),
+                    ResourceType = typeof(Data.Models.Symbols.Symbol),
                     MissingPermission = Permissions.CREATE_SYMBOL
                 };
             var data = sym.CreateModel();
@@ -57,7 +57,7 @@ namespace WikiLibs.API.Symbols
                 {
                     ResourceName = path,
                     ResourceId = path,
-                    ResourceType = typeof(Data.Models.Symbol),
+                    ResourceType = typeof(Data.Models.Symbols.Symbol),
                     MissingPermission = Permissions.UPDATE_SYMBOL
                 };
             var mdl = await _symmgr.PatchAsync(_symmgr.Get(path).Id, sym.CreatePatch(_symmgr.Get(path)));
@@ -72,7 +72,7 @@ namespace WikiLibs.API.Symbols
                 {
                     ResourceName = path,
                     ResourceId = path,
-                    ResourceType = typeof(Data.Models.Symbol),
+                    ResourceType = typeof(Data.Models.Symbols.Symbol),
                     MissingPermission = Permissions.DELETE_SYMBOL
                 };
             await _symmgr.DeleteAsync(_symmgr.Get(path));

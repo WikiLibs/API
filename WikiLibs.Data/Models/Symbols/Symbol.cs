@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WikiLibs.Data.Models
+namespace WikiLibs.Data.Models.Symbols
 {
     public class Symbol : Model
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WikiLibs.Shared.Modules;
-using WikiLibs.Data.Models;
+using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Shared;
 using System.Threading.Tasks;
 using WikiLibs.Shared.Helpers;

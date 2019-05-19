@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using WikiLibs.Data.Models;
+using WikiLibs.Data.Models.Symbols;
 
 namespace WikiLibs.Data
 {

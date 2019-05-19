@@ -1,4 +1,5 @@
 ﻿using System;
+using WikiLibs.Data.Models.Symbols;
 
 namespace WikiLibs.Data.Models
 {
@@ -10,6 +11,7 @@ namespace WikiLibs.Data.Models
         public virtual User User { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
+        public ExampleState State { get; set; }
     }
 
     public enum ExampleState
