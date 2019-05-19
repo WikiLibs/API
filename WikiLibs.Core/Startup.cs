@@ -100,9 +100,6 @@ namespace WikiLibs.Core
 
             using (var scope = app.ApplicationServices.CreateScope())
             {
-                /*var mdMgr = scope.ServiceProvider.GetService<IModuleManager>();
-                Data.Context ctx = scope.ServiceProvider.GetService<Data.Context>();
-                ((ModuleManager)mdMgr).CallModuleInitializers(factory, ctx, env);*/
                 var collection = scope.ServiceProvider.GetService<IModuleCollection>();
                 foreach (var module in collection)
                 {
