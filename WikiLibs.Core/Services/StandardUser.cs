@@ -28,6 +28,8 @@ namespace WikiLibs.Core.Services
         {
             if (_perms == null)
                 return (false);
+            if (!_perms.ContainsKey(name))
+                return (false);
             return (_perms[name]);
         }
 

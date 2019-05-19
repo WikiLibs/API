@@ -40,7 +40,7 @@ namespace WikiLibs.Auth
         {
             usr.Group = _manager.DefaultGroup;
             usr.Id = Guid.NewGuid().ToString();
-            usr.Confirmation = new Guid().ToString().Replace("{", "").Replace("-", "")
+            usr.Confirmation = Guid.NewGuid().ToString().Replace("{", "").Replace("-", "")
                 + "."
                 + usr.Id.Replace("{", "")
                 + "."
