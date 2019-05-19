@@ -10,7 +10,7 @@ using WikiLibs.Data;
 namespace WikiLibs.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20190519151224_AddExamples")]
+    [Migration("20190519162116_AddExamples")]
     partial class AddExamples
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,7 @@ namespace WikiLibs.Data.Migrations
                     b.ToTable("APIKeys");
                 });
 
-            modelBuilder.Entity("WikiLibs.Data.Models.Example", b =>
+            modelBuilder.Entity("WikiLibs.Data.Models.Examples.Example", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -51,9 +51,7 @@ namespace WikiLibs.Data.Migrations
 
                     b.Property<DateTime>("LastModificationDate");
 
-                    b.Property<int>("State");
-
-                    b.Property<long?>("SymbolId");
+                    b.Property<long>("SymbolId");
 
                     b.Property<string>("UserId");
 
@@ -66,7 +64,7 @@ namespace WikiLibs.Data.Migrations
                     b.ToTable("Examples");
                 });
 
-            modelBuilder.Entity("WikiLibs.Data.Models.ExampleCodeLine", b =>
+            modelBuilder.Entity("WikiLibs.Data.Models.Examples.ExampleCodeLine", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,13 +74,38 @@ namespace WikiLibs.Data.Migrations
 
                     b.Property<string>("Data");
 
-                    b.Property<long?>("ExampleId");
+                    b.Property<long>("ExampleId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ExampleId");
 
                     b.ToTable("ExampleCodeLines");
+                });
+
+            modelBuilder.Entity("WikiLibs.Data.Models.Examples.ExampleRequest", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long?>("ApplyToId");
+
+                    b.Property<DateTime>("CreationDate");
+
+                    b.Property<long?>("DataId");
+
+                    b.Property<string>("Message");
+
+                    b.Property<int>("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplyToId");
+
+                    b.HasIndex("DataId");
+
+                    b.ToTable("ExampleRequests");
                 });
 
             modelBuilder.Entity("WikiLibs.Data.Models.Group", b =>
@@ -248,22 +271,35 @@ namespace WikiLibs.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("WikiLibs.Data.Models.Example", b =>
+            modelBuilder.Entity("WikiLibs.Data.Models.Examples.Example", b =>
                 {
                     b.HasOne("WikiLibs.Data.Models.Symbols.Symbol", "Symbol")
                         .WithMany("Examples")
-                        .HasForeignKey("SymbolId");
+                        .HasForeignKey("SymbolId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WikiLibs.Data.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("WikiLibs.Data.Models.ExampleCodeLine", b =>
+            modelBuilder.Entity("WikiLibs.Data.Models.Examples.ExampleCodeLine", b =>
                 {
-                    b.HasOne("WikiLibs.Data.Models.Example", "Example")
+                    b.HasOne("WikiLibs.Data.Models.Examples.Example", "Example")
                         .WithMany("Code")
-                        .HasForeignKey("ExampleId");
+                        .HasForeignKey("ExampleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WikiLibs.Data.Models.Examples.ExampleRequest", b =>
+                {
+                    b.HasOne("WikiLibs.Data.Models.Examples.Example", "ApplyTo")
+                        .WithMany()
+                        .HasForeignKey("ApplyToId");
+
+                    b.HasOne("WikiLibs.Data.Models.Examples.Example", "Data")
+                        .WithMany()
+                        .HasForeignKey("DataId");
                 });
 
             modelBuilder.Entity("WikiLibs.Data.Models.Permission", b =>

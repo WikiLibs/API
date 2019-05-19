@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using WikiLibs.Data.Models;
+using WikiLibs.Data.Models.Examples;
 using WikiLibs.Data.Models.Symbols;
 
 namespace WikiLibs.Data
@@ -14,6 +15,7 @@ namespace WikiLibs.Data
         public DbSet<Info> InfoTable { get; set; }
 
         public DbSet<Example> Examples { get; set; }
+        public DbSet<ExampleRequest> ExampleRequests { get; set; }
         public DbSet<ExampleCodeLine> ExampleCodeLines { get; set; }
 
         public DbSet<User> Users { get; set; }
