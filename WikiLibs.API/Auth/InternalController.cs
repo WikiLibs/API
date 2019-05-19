@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Shared.Attributes;
@@ -20,7 +21,8 @@ namespace WikiLibs.API.Auth
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Authentication)]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Models.Input.Auth.Login mdl)
+        [ProducesResponseType(200, Type = typeof(string))]
+        public async Task<IActionResult> Login([FromBody, Required] Models.Input.Auth.Login mdl)
         {
             var token = await _internal.LegacyLogin(mdl.Email, mdl.Password);
             return (Json(token));
@@ -28,7 +30,7 @@ namespace WikiLibs.API.Auth
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Registration)]
         [HttpPost("reset")]
-        public async Task<IActionResult> Reset([FromBody] string email)
+        public async Task<IActionResult> Reset([FromBody, Required] string email)
         {
             await _internal.LegacyReset(email);
             return (Ok());
@@ -36,7 +38,7 @@ namespace WikiLibs.API.Auth
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Registration)]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Models.Input.UserCreate mdl)
+        public async Task<IActionResult> Register([FromBody, Required] Models.Input.UserCreate mdl)
         {
             await _internal.LegacyRegister(mdl.CreateModel());
             return (Ok());
