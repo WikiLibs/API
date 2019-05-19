@@ -95,9 +95,8 @@ namespace WikiLibs.Core
             }
             app.UseHttpsRedirection();
             app.UseCors("AllowAll");
-            app.UseMvc();
-
             app.UseAuthentication();
+            app.UseMvc();
 
             using (var scope = app.ApplicationServices.CreateScope())
             {
