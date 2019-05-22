@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WikiLibs.Shared.Modules
+namespace WikiLibs.Shared.Modules.Examples
 {
     public interface IExampleRequestManager : ICRUDOperations<Data.Models.Examples.ExampleRequest>
     {
