@@ -7,9 +7,10 @@ namespace WikiLibs.Data.Models.Examples
 {
     public class ExampleCodeLine : Model
     {
-        [Required]
-        public virtual Example Example { get; set; }
+        public long ExampleId { get; set; }
         public string Data { get; set; }
         public string Comment { get; set; }
+
+        public virtual Example Example { get; set; }
     }
 }

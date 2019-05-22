@@ -8,9 +8,30 @@ namespace WikiLibs.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Symbols_Users_UserId",
+                table: "Symbols");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Users_Groups_GroupId",
+                table: "Users");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Users_GroupId",
+                table: "Users");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Symbols_UserId",
+                table: "Symbols");
+
             migrationBuilder.DropColumn(
                 name: "Code",
                 table: "Examples");
+
+            migrationBuilder.AddColumn<long>(
+                name: "RequestId",
+                table: "Examples",
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "ExampleCodeLines",
@@ -59,8 +80,22 @@ namespace WikiLibs.Data.Migrations
                         column: x => x.DataId,
                         principalTable: "Examples",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_GroupId",
+                table: "Users",
+                column: "GroupId",
+                unique: true,
+                filter: "[GroupId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Symbols_UserId",
+                table: "Symbols",
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExampleCodeLines_ExampleId",
@@ -70,26 +105,92 @@ namespace WikiLibs.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ExampleRequests_ApplyToId",
                 table: "ExampleRequests",
-                column: "ApplyToId");
+                column: "ApplyToId",
+                unique: true,
+                filter: "[ApplyToId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExampleRequests_DataId",
                 table: "ExampleRequests",
-                column: "DataId");
+                column: "DataId",
+                unique: true,
+                filter: "[DataId] IS NOT NULL");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Symbols_Users_UserId",
+                table: "Symbols",
+                column: "UserId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Users_Groups_GroupId",
+                table: "Users",
+                column: "GroupId",
+                principalTable: "Groups",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Symbols_Users_UserId",
+                table: "Symbols");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Users_Groups_GroupId",
+                table: "Users");
+
             migrationBuilder.DropTable(
                 name: "ExampleCodeLines");
 
             migrationBuilder.DropTable(
                 name: "ExampleRequests");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Users_GroupId",
+                table: "Users");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Symbols_UserId",
+                table: "Symbols");
+
+            migrationBuilder.DropColumn(
+                name: "RequestId",
+                table: "Examples");
+
             migrationBuilder.AddColumn<string>(
                 name: "Code",
                 table: "Examples",
                 nullable: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_GroupId",
+                table: "Users",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Symbols_UserId",
+                table: "Symbols",
+                column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Symbols_Users_UserId",
+                table: "Symbols",
+                column: "UserId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Users_Groups_GroupId",
+                table: "Users",
+                column: "GroupId",
+                principalTable: "Groups",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
     }
 }

@@ -7,11 +7,14 @@ namespace WikiLibs.Data.Models.Examples
 {
     public class ExampleRequest : Model
     {
-        public virtual Example Data { get; set; }
-        public virtual Example ApplyTo { get; set; }
+        public long? DataId { get; set; }
+        public long? ApplyToId { get; set; }
         public string Message { get; set; }
         public DateTime CreationDate { get; set; }
         public ExampleRequestType Type { get; set; }
+
+        public virtual Example Data { get; set; }
+        public virtual Example ApplyTo { get; set; }
     }
 
     public enum ExampleRequestType

@@ -10,14 +10,14 @@ using WikiLibs.Data;
 namespace WikiLibs.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20190519162116_AddExamples")]
+    [Migration("20190522181202_AddExamples")]
     partial class AddExamples
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -50,6 +50,8 @@ namespace WikiLibs.Data.Migrations
                     b.Property<string>("Description");
 
                     b.Property<DateTime>("LastModificationDate");
+
+                    b.Property<long?>("RequestId");
 
                     b.Property<long>("SymbolId");
 
@@ -101,9 +103,13 @@ namespace WikiLibs.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplyToId");
+                    b.HasIndex("ApplyToId")
+                        .IsUnique()
+                        .HasFilter("[ApplyToId] IS NOT NULL");
 
-                    b.HasIndex("DataId");
+                    b.HasIndex("DataId")
+                        .IsUnique()
+                        .HasFilter("[DataId] IS NOT NULL");
 
                     b.ToTable("ExampleRequests");
                 });
@@ -213,7 +219,9 @@ namespace WikiLibs.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Symbols");
                 });
@@ -266,7 +274,9 @@ namespace WikiLibs.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("GroupId")
+                        .IsUnique()
+                        .HasFilter("[GroupId] IS NOT NULL");
 
                     b.ToTable("Users");
                 });
@@ -294,12 +304,14 @@ namespace WikiLibs.Data.Migrations
             modelBuilder.Entity("WikiLibs.Data.Models.Examples.ExampleRequest", b =>
                 {
                     b.HasOne("WikiLibs.Data.Models.Examples.Example", "ApplyTo")
-                        .WithMany()
-                        .HasForeignKey("ApplyToId");
+                        .WithOne()
+                        .HasForeignKey("WikiLibs.Data.Models.Examples.ExampleRequest", "ApplyToId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("WikiLibs.Data.Models.Examples.Example", "Data")
-                        .WithMany()
-                        .HasForeignKey("DataId");
+                        .WithOne("Request")
+                        .HasForeignKey("WikiLibs.Data.Models.Examples.ExampleRequest", "DataId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("WikiLibs.Data.Models.Permission", b =>
@@ -329,8 +341,9 @@ namespace WikiLibs.Data.Migrations
             modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Symbol", b =>
                 {
                     b.HasOne("WikiLibs.Data.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithOne()
+                        .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("WikiLibs.Data.Models.Symbols.SymbolRef", b =>
@@ -344,8 +357,9 @@ namespace WikiLibs.Data.Migrations
             modelBuilder.Entity("WikiLibs.Data.Models.User", b =>
                 {
                     b.HasOne("WikiLibs.Data.Models.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId");
+                        .WithOne()
+                        .HasForeignKey("WikiLibs.Data.Models.User", "GroupId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 #pragma warning restore 612, 618
         }

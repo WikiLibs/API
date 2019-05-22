@@ -1,10 +1,30 @@
-﻿DECLARE @var0 sysname;
+﻿ALTER TABLE [Symbols] DROP CONSTRAINT [FK_Symbols_Users_UserId];
+
+GO
+
+ALTER TABLE [Users] DROP CONSTRAINT [FK_Users_Groups_GroupId];
+
+GO
+
+DROP INDEX [IX_Users_GroupId] ON [Users];
+
+GO
+
+DROP INDEX [IX_Symbols_UserId] ON [Symbols];
+
+GO
+
+DECLARE @var0 sysname;
 SELECT @var0 = [d].[name]
 FROM [sys].[default_constraints] [d]
 INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
 WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Examples]') AND [c].[name] = N'Code');
 IF @var0 IS NOT NULL EXEC(N'ALTER TABLE [Examples] DROP CONSTRAINT [' + @var0 + '];');
 ALTER TABLE [Examples] DROP COLUMN [Code];
+
+GO
+
+ALTER TABLE [Examples] ADD [RequestId] bigint NULL;
 
 GO
 
@@ -28,8 +48,16 @@ CREATE TABLE [ExampleRequests] (
     [Type] int NOT NULL,
     CONSTRAINT [PK_ExampleRequests] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_ExampleRequests_Examples_ApplyToId] FOREIGN KEY ([ApplyToId]) REFERENCES [Examples] ([Id]) ON DELETE NO ACTION,
-    CONSTRAINT [FK_ExampleRequests_Examples_DataId] FOREIGN KEY ([DataId]) REFERENCES [Examples] ([Id]) ON DELETE NO ACTION
+    CONSTRAINT [FK_ExampleRequests_Examples_DataId] FOREIGN KEY ([DataId]) REFERENCES [Examples] ([Id]) ON DELETE SET NULL
 );
+
+GO
+
+CREATE UNIQUE INDEX [IX_Users_GroupId] ON [Users] ([GroupId]) WHERE [GroupId] IS NOT NULL;
+
+GO
+
+CREATE UNIQUE INDEX [IX_Symbols_UserId] ON [Symbols] ([UserId]) WHERE [UserId] IS NOT NULL;
 
 GO
 
@@ -37,16 +65,24 @@ CREATE INDEX [IX_ExampleCodeLines_ExampleId] ON [ExampleCodeLines] ([ExampleId])
 
 GO
 
-CREATE INDEX [IX_ExampleRequests_ApplyToId] ON [ExampleRequests] ([ApplyToId]);
+CREATE UNIQUE INDEX [IX_ExampleRequests_ApplyToId] ON [ExampleRequests] ([ApplyToId]) WHERE [ApplyToId] IS NOT NULL;
 
 GO
 
-CREATE INDEX [IX_ExampleRequests_DataId] ON [ExampleRequests] ([DataId]);
+CREATE UNIQUE INDEX [IX_ExampleRequests_DataId] ON [ExampleRequests] ([DataId]) WHERE [DataId] IS NOT NULL;
+
+GO
+
+ALTER TABLE [Symbols] ADD CONSTRAINT [FK_Symbols_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE SET NULL;
+
+GO
+
+ALTER TABLE [Users] ADD CONSTRAINT [FK_Users_Groups_GroupId] FOREIGN KEY ([GroupId]) REFERENCES [Groups] ([Id]) ON DELETE SET NULL;
 
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20190519162116_AddExamples', N'2.1.8-servicing-32085');
+VALUES (N'20190522181202_AddExamples', N'2.1.4-rtm-31024');
 
 GO
 

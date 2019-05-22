@@ -7,8 +7,9 @@ namespace WikiLibs.Data.Models.Symbols
 {
     public class SymbolRef : Model
     {
-        [Required]
-        public virtual Symbol Symbol { get; set; }
+        public long SymbolId { get; set; }
         public string Path { get; set; }
+
+        public virtual Symbol Symbol { get; set; }
     }
 }
