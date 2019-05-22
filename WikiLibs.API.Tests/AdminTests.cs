@@ -198,6 +198,26 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public void DeleteInternalGroup()
+        {
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => Manager.GroupManager.DeleteAsync(Manager.GroupManager.DefaultGroup));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => Manager.GroupManager.DeleteAsync(Manager.GroupManager.AdminGroup));
+        }
+
+        [Test]
+        public async Task DeleteUsedGroup()
+        {
+            await PostTestGroup();
+
+            Assert.AreEqual(3, Context.Groups.Count());
+            Context.Users.First().GroupId = Manager.GroupManager.Get("TestGroup").Id;
+            Assert.AreEqual(Manager.GroupManager.Get("TestGroup").Id, Context.Users.First().GroupId);
+            await Manager.GroupManager.DeleteAsync(Manager.GroupManager.Get("TestGroup").Id);
+            Assert.AreEqual(2, Context.Groups.Count());
+            Assert.AreEqual(Manager.GroupManager.DefaultGroup.Id, Context.Users.First().GroupId);
+        }
+
+        [Test]
         public void DeleteGroup_Error_NonExistant()
         {
             Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => Manager.GroupManager.DeleteAsync(1000 /* In test no more than 999 groups may be created as we are using an InMemoryDB */));
@@ -227,6 +247,15 @@ namespace WikiLibs.API.Tests
             await PostTestGroup();
 
             Assert.AreEqual(3, Manager.GroupManager.GetAll().Count());
+        }
+
+        [Test]
+        public void InternalGroups()
+        {
+            Assert.IsNotNull(Manager.GroupManager.DefaultGroup);
+            Assert.IsNotNull(Manager.GroupManager.AdminGroup);
+            Assert.AreEqual("Default", Manager.GroupManager.DefaultGroup.Name);
+            Assert.AreEqual("Admin", Manager.GroupManager.AdminGroup.Name);
         }
     }
 }
