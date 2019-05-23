@@ -10,7 +10,7 @@ using WikiLibs.Shared.Modules.Examples;
 
 namespace WikiLibs.Examples
 {
-    class ExampleManager : BaseCRUDOperations<Context, Example>, IExampleManager
+    public class ExampleManager : BaseCRUDOperations<Context, Example>, IExampleManager
     {
         public ExampleManager(Context ctx) : base(ctx)
         {
@@ -27,6 +27,13 @@ namespace WikiLibs.Examples
                 throw new Shared.Exceptions.InvalidResource()
                 {
                     PropertyName = "User",
+                    ResourceName = mdl.Description,
+                    ResourceType = typeof(Example)
+                };
+            if (mdl.Symbol == null)
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    PropertyName = "Symbol",
                     ResourceName = mdl.Description,
                     ResourceType = typeof(Example)
                 };
