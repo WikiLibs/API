@@ -103,6 +103,11 @@ namespace WikiLibs.Data
                     .HasForeignKey<Example>(e => e.RequestId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
+                builder.HasOne(e => e.User)
+                    .WithOne()
+                    .HasForeignKey<Example>(e => e.UserId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
             modelBuilder.Entity<ExampleCodeLine>(builder =>
             {
@@ -124,6 +129,7 @@ namespace WikiLibs.Data
                     .HasForeignKey<ExampleRequest>(e => e.ApplyToId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
+                builder.HasIndex(e => e.ApplyToId).IsUnique(false);
             });
             #endregion
         }

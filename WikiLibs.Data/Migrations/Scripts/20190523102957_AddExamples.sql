@@ -1,4 +1,8 @@
-﻿ALTER TABLE [Symbols] DROP CONSTRAINT [FK_Symbols_Users_UserId];
+﻿ALTER TABLE [Examples] DROP CONSTRAINT [FK_Examples_Users_UserId];
+
+GO
+
+ALTER TABLE [Symbols] DROP CONSTRAINT [FK_Symbols_Users_UserId];
 
 GO
 
@@ -11,6 +15,10 @@ DROP INDEX [IX_Users_GroupId] ON [Users];
 GO
 
 DROP INDEX [IX_Symbols_UserId] ON [Symbols];
+
+GO
+
+DROP INDEX [IX_Examples_UserId] ON [Examples];
 
 GO
 
@@ -61,15 +69,23 @@ CREATE UNIQUE INDEX [IX_Symbols_UserId] ON [Symbols] ([UserId]) WHERE [UserId] I
 
 GO
 
+CREATE UNIQUE INDEX [IX_Examples_UserId] ON [Examples] ([UserId]) WHERE [UserId] IS NOT NULL;
+
+GO
+
 CREATE INDEX [IX_ExampleCodeLines_ExampleId] ON [ExampleCodeLines] ([ExampleId]);
 
 GO
 
-CREATE UNIQUE INDEX [IX_ExampleRequests_ApplyToId] ON [ExampleRequests] ([ApplyToId]) WHERE [ApplyToId] IS NOT NULL;
+CREATE INDEX [IX_ExampleRequests_ApplyToId] ON [ExampleRequests] ([ApplyToId]);
 
 GO
 
 CREATE UNIQUE INDEX [IX_ExampleRequests_DataId] ON [ExampleRequests] ([DataId]) WHERE [DataId] IS NOT NULL;
+
+GO
+
+ALTER TABLE [Examples] ADD CONSTRAINT [FK_Examples_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE SET NULL;
 
 GO
 
@@ -82,7 +98,7 @@ ALTER TABLE [Users] ADD CONSTRAINT [FK_Users_Groups_GroupId] FOREIGN KEY ([Group
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20190522181202_AddExamples', N'2.1.4-rtm-31024');
+VALUES (N'20190523102957_AddExamples', N'2.1.11-servicing-32099');
 
 GO
 

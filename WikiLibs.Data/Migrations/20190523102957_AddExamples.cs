@@ -9,6 +9,10 @@ namespace WikiLibs.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
+                name: "FK_Examples_Users_UserId",
+                table: "Examples");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Symbols_Users_UserId",
                 table: "Symbols");
 
@@ -23,6 +27,10 @@ namespace WikiLibs.Data.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_Symbols_UserId",
                 table: "Symbols");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Examples_UserId",
+                table: "Examples");
 
             migrationBuilder.DropColumn(
                 name: "Code",
@@ -98,6 +106,13 @@ namespace WikiLibs.Data.Migrations
                 filter: "[UserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Examples_UserId",
+                table: "Examples",
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ExampleCodeLines_ExampleId",
                 table: "ExampleCodeLines",
                 column: "ExampleId");
@@ -105,9 +120,7 @@ namespace WikiLibs.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ExampleRequests_ApplyToId",
                 table: "ExampleRequests",
-                column: "ApplyToId",
-                unique: true,
-                filter: "[ApplyToId] IS NOT NULL");
+                column: "ApplyToId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExampleRequests_DataId",
@@ -115,6 +128,14 @@ namespace WikiLibs.Data.Migrations
                 column: "DataId",
                 unique: true,
                 filter: "[DataId] IS NOT NULL");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Examples_Users_UserId",
+                table: "Examples",
+                column: "UserId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Symbols_Users_UserId",
@@ -135,6 +156,10 @@ namespace WikiLibs.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Examples_Users_UserId",
+                table: "Examples");
+
             migrationBuilder.DropForeignKey(
                 name: "FK_Symbols_Users_UserId",
                 table: "Symbols");
@@ -157,6 +182,10 @@ namespace WikiLibs.Data.Migrations
                 name: "IX_Symbols_UserId",
                 table: "Symbols");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Examples_UserId",
+                table: "Examples");
+
             migrationBuilder.DropColumn(
                 name: "RequestId",
                 table: "Examples");
@@ -175,6 +204,19 @@ namespace WikiLibs.Data.Migrations
                 name: "IX_Symbols_UserId",
                 table: "Symbols",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Examples_UserId",
+                table: "Examples",
+                column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Examples_Users_UserId",
+                table: "Examples",
+                column: "UserId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Symbols_Users_UserId",

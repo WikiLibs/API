@@ -10,14 +10,14 @@ using WikiLibs.Data;
 namespace WikiLibs.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20190522181202_AddExamples")]
+    [Migration("20190523102957_AddExamples")]
     partial class AddExamples
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -61,7 +61,9 @@ namespace WikiLibs.Data.Migrations
 
                     b.HasIndex("SymbolId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Examples");
                 });
@@ -103,9 +105,7 @@ namespace WikiLibs.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplyToId")
-                        .IsUnique()
-                        .HasFilter("[ApplyToId] IS NOT NULL");
+                    b.HasIndex("ApplyToId");
 
                     b.HasIndex("DataId")
                         .IsUnique()
@@ -289,8 +289,9 @@ namespace WikiLibs.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WikiLibs.Data.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithOne()
+                        .HasForeignKey("WikiLibs.Data.Models.Examples.Example", "UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("WikiLibs.Data.Models.Examples.ExampleCodeLine", b =>
