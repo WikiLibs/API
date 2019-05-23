@@ -18,12 +18,22 @@ namespace WikiLibs.Examples
 
         public IQueryable<Example> GetForSymbolAsync(int symbol)
         {
-            throw new NotImplementedException();
+            return (Set.Where(e => e.SymbolId == symbol).Where(e => e.RequestId == null));
         }
 
-        public override Task<Example> PatchAsync(long key, Example mdl)
+        public override async Task<Example> PatchAsync(long key, Example mdl)
         {
-            throw new NotImplementedException();
+            var ex = await GetAsync(key);
+
+            ex.LastModificationDate = mdl.LastModificationDate;
+            ex.Description = mdl.Description;
+            Context.RemoveRange(ex.Code);
+            foreach (var code in mdl.Code)
+            {
+                ex.Code.Add(code);
+            }
+            await SaveChanges();
+            return (ex);
         }
     }
 }
