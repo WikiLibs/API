@@ -39,10 +39,13 @@ namespace WikiLibs.Examples
 
             ex.LastModificationDate = mdl.LastModificationDate;
             ex.Description = mdl.Description;
-            Context.RemoveRange(ex.Code);
-            foreach (var code in mdl.Code)
+            if (mdl.Code != null)
             {
-                ex.Code.Add(code);
+                Context.RemoveRange(ex.Code);
+                foreach (var code in mdl.Code)
+                {
+                    ex.Code.Add(code);
+                }
             }
             await SaveChanges();
             return (ex);
