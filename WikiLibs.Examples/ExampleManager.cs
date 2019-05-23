@@ -21,6 +21,18 @@ namespace WikiLibs.Examples
             return (Set.Where(e => e.SymbolId == symbol).Where(e => e.RequestId == null));
         }
 
+        public override async Task<Example> PostAsync(Example mdl)
+        {
+            if (mdl.User == null)
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    PropertyName = "User",
+                    ResourceName = mdl.Description,
+                    ResourceType = typeof(Example)
+                };
+            return await base.PostAsync(mdl);
+        }
+
         public override async Task<Example> PatchAsync(long key, Example mdl)
         {
             var ex = await GetAsync(key);
