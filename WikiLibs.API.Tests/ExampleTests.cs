@@ -184,5 +184,24 @@ namespace WikiLibs.API.Tests
             }.CreatePatch(Context.Examples.First()));
             Assert.AreEqual("test", Context.Examples.First().Description);
         }
+
+        [Test]
+        public async Task Delete()
+        {
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            }), User));
+            await PostTestExample(sym);
+
+            Assert.AreEqual(1, Context.Examples.Count());
+            Assert.AreEqual(3, Context.ExampleCodeLines.Count());
+            Assert.AreEqual("This is a test example", Context.Examples.First().Description);
+
+            await Manager.DeleteAsync(Context.Examples.First());
+
+            Assert.AreEqual(0, Context.Examples.Count());
+            Assert.AreEqual(0, Context.ExampleCodeLines.Count());
+        }
     }
 }
