@@ -16,7 +16,7 @@ namespace WikiLibs.Examples
         {
         }
 
-        public IQueryable<Example> GetForSymbolAsync(int symbol)
+        public IQueryable<Example> GetForSymbolAsync(long symbol)
         {
             return (Set.Where(e => e.SymbolId == symbol).Where(e => e.RequestId == null));
         }

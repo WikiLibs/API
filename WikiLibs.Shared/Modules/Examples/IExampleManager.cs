@@ -7,6 +7,6 @@ namespace WikiLibs.Shared.Modules.Examples
 {
     public interface IExampleManager : ICRUDOperations<Data.Models.Examples.Example>
     {
-        IQueryable<Data.Models.Examples.Example> GetForSymbolAsync(int symbol);
+        IQueryable<Data.Models.Examples.Example> GetForSymbolAsync(long symbol);
     }
 }
