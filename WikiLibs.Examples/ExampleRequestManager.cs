@@ -10,7 +10,7 @@ using WikiLibs.Shared.Modules.Examples;
 
 namespace WikiLibs.Examples
 {
-    class ExampleRequestManager : BaseCRUDOperations<Context, ExampleRequest>, IExampleRequestManager
+    public class ExampleRequestManager : BaseCRUDOperations<Context, ExampleRequest>, IExampleRequestManager
     {
         public ExampleRequestManager(Context ctx) : base(ctx)
         {
