@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using WikiLibs.API.Tests.Helper;
 using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Examples;
-using WikiLibs.Models.Input;
+using WikiLibs.Models.Input.Symbols;
+using WikiLibs.Models.Input.Examples;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Symbols;
 

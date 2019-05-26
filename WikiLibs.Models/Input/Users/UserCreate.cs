@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using WikiLibs.Data.Models;
 
-namespace WikiLibs.Models.Input
+namespace WikiLibs.Models.Input.Users
 {
     public class UserCreate : PostModel<UserCreate, User>
     {

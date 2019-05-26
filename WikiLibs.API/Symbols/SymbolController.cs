@@ -35,7 +35,7 @@ namespace WikiLibs.API.Symbols
 
         [HttpPost]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
-        public async Task<IActionResult> PostSymbol([FromBody, Required] Models.Input.SymbolCreate sym)
+        public async Task<IActionResult> PostSymbol([FromBody, Required] Models.Input.Symbols.SymbolCreate sym)
         {
             if (!_user.HasPermission(Permissions.CREATE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
@@ -53,7 +53,7 @@ namespace WikiLibs.API.Symbols
 
         [HttpPatch("{*path}")]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
-        public async Task<IActionResult> PatchSymbol([FromRoute] string path, [FromBody, Required] Models.Input.SymbolUpdate sym)
+        public async Task<IActionResult> PatchSymbol([FromRoute] string path, [FromBody, Required] Models.Input.Symbols.SymbolUpdate sym)
         {
             if (!_user.HasPermission(Permissions.UPDATE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()

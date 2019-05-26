@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace WikiLibs.Data.Models.Examples
@@ -19,8 +20,11 @@ namespace WikiLibs.Data.Models.Examples
 
     public enum ExampleRequestType
     {
+        [EnumMember(Value = "POST")]
         POST = 1,
+        [EnumMember(Value = "PATCH")]
         PATCH = 2,
+        [EnumMember(Value = "DELETE")]
         DELETE = 3
     }
 }

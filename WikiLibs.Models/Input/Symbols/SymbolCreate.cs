@@ -6,7 +6,7 @@ using System.Text;
 using WikiLibs.Data.Models;
 using WikiLibs.Data.Models.Symbols;
 
-namespace WikiLibs.Models.Input
+namespace WikiLibs.Models.Input.Symbols
 {
     public class SymbolCreate : PostModel<SymbolCreate, Symbol>
     {

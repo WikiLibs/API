@@ -24,40 +24,40 @@ namespace WikiLibs.API.Tests
 
         private async Task<IActionResult> PostTestSymbol(Symbols.SymbolController controller)
         {
-            var res = await controller.PostSymbol(new Models.Input.SymbolCreate()
+            var res = await controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
             {
                 Lang = "C",
                 Path = "C/TestLib/TestFunc",
                 Type = "function",
-                Prototypes = new Models.Input.SymbolCreate.Prototype[]
+                Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[]
                 {
-                    new Models.Input.SymbolCreate.Prototype()
+                    new Models.Input.Symbols.SymbolCreate.Prototype()
                     {
                         Description = "This is a test function",
                         Proto = "void TestFunc(int a, const int b, int c, int d, void *bad)",
-                        Parameters = new Models.Input.SymbolCreate.Prototype.Parameter[]
+                        Parameters = new Models.Input.Symbols.SymbolCreate.Prototype.Parameter[]
                         {
-                            new Models.Input.SymbolCreate.Prototype.Parameter()
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
                             {
                                 Description = "a",
                                 Proto = "int a"
                             },
-                            new Models.Input.SymbolCreate.Prototype.Parameter()
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
                             {
                                 Description = "b",
                                 Proto = "const int b"
                             },
-                            new Models.Input.SymbolCreate.Prototype.Parameter()
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
                             {
                                 Description = "c",
                                 Proto = "int c"
                             },
-                            new Models.Input.SymbolCreate.Prototype.Parameter()
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
                             {
                                 Description = "d",
                                 Proto = "int d"
                             },
-                            new Models.Input.SymbolCreate.Prototype.Parameter()
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
                             {
                                 Description = "bad raw pointer",
                                 Proto = "void *bad"
@@ -100,19 +100,19 @@ namespace WikiLibs.API.Tests
         {
             var controller = new Symbols.SymbolController(Manager, User);
 
-            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => controller.PostSymbol(new Models.Input.SymbolCreate()
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
             {
                 Lang = "",
                 Path = "",
-                Prototypes = new Models.Input.SymbolCreate.Prototype[] { },
+                Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[] { },
                 Symbols = new string[] { },
                 Type = ""
             }));
-            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(new Models.Input.SymbolCreate()
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(new Models.Input.Symbols.SymbolCreate()
             {
                 Lang = "",
                 Path = "C/TestLib/NonValidFunc",
-                Prototypes = new Models.Input.SymbolCreate.Prototype[] { },
+                Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[] { },
                 Symbols = new string[] { },
                 Type = ""
             }.CreateModel()));
@@ -124,7 +124,7 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
-            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.SymbolUpdate()
+            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "test"
             });
@@ -141,16 +141,16 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
-            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.SymbolUpdate()
+            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "test",
-                Prototypes = new Models.Input.SymbolUpdate.Prototype[]
+                Prototypes = new Models.Input.Symbols.SymbolUpdate.Prototype[]
                 {
-                    new Models.Input.SymbolUpdate.Prototype()
+                    new Models.Input.Symbols.SymbolUpdate.Prototype()
                     {
                         Description = "This is a test function",
                         Proto = "void TestFunc()",
-                        Parameters = new Models.Input.SymbolUpdate.Prototype.Parameter[]
+                        Parameters = new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter[]
                         {
                         }
                     }
@@ -171,12 +171,12 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
-            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.SymbolUpdate()
+            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "test",
-                Prototypes = new Models.Input.SymbolUpdate.Prototype[]
+                Prototypes = new Models.Input.Symbols.SymbolUpdate.Prototype[]
                 {
-                    new Models.Input.SymbolUpdate.Prototype()
+                    new Models.Input.Symbols.SymbolUpdate.Prototype()
                     {
                         Description = "This is a test function 123456789"
                     }
@@ -197,29 +197,29 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
-            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.SymbolUpdate()
+            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "test",
-                Prototypes = new Models.Input.SymbolUpdate.Prototype[]
+                Prototypes = new Models.Input.Symbols.SymbolUpdate.Prototype[]
                 {
-                    new Models.Input.SymbolUpdate.Prototype()
+                    new Models.Input.Symbols.SymbolUpdate.Prototype()
                     {
                         Description = "This is a test function 123456789",
-                        Parameters = new Models.Input.SymbolUpdate.Prototype.Parameter[]
+                        Parameters = new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter[]
                         {
-                            new Models.Input.SymbolUpdate.Prototype.Parameter()
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
                             {
                             },
-                            new Models.Input.SymbolUpdate.Prototype.Parameter()
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
                             {
                             },
-                            new Models.Input.SymbolUpdate.Prototype.Parameter()
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
                             {
                             },
-                            new Models.Input.SymbolUpdate.Prototype.Parameter()
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
                             {
                             },
-                            new Models.Input.SymbolUpdate.Prototype.Parameter()
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
                             {
                                 Description = "raw pointer"
                             }
@@ -405,7 +405,7 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SymbolController(Manager, User);
 
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => PostTestSymbol(controller));
-            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.SymbolUpdate()
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "enum"
             }));

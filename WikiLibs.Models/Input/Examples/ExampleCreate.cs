@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using WikiLibs.Data.Models.Examples;
 
-namespace WikiLibs.Models.Input
+namespace WikiLibs.Models.Input.Examples
 {
     public class ExampleCreate : PostModel<ExampleCreate, Example>
     {
