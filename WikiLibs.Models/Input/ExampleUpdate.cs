@@ -15,7 +15,6 @@ namespace WikiLibs.Models.Input
         }
 
         public CodeLine[] Code { get; set; }
-        public string Message { get; set; }
         public string Description { get; set; }
 
         public override Example CreatePatch(in Example current)

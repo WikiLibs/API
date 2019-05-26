@@ -8,8 +8,8 @@ namespace WikiLibs.Shared.Modules.Examples
 {
     public interface IExampleRequestManager : ICRUDOperations<Data.Models.Examples.ExampleRequest>
     {
-        IQueryable<Data.Models.Examples.ExampleRequest> GetAll(int symbol);
+        IQueryable<Data.Models.Examples.ExampleRequest> GetAll(long symbol);
         IQueryable<Data.Models.Examples.ExampleRequest> GetAll();
-        Task ApplyRequest(int id);
+        Task ApplyRequest(long key);
     }
 }

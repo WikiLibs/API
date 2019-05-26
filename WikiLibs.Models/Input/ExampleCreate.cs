@@ -18,9 +18,6 @@ namespace WikiLibs.Models.Input
 
         [Required]
         public CodeLine[] Code { get; set; }
-
-        public string Message { get; set; }
-
         [Required]
         public string Description { get; set; }
 
