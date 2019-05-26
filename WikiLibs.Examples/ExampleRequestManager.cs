@@ -81,6 +81,28 @@ namespace WikiLibs.Examples
 
         public override async Task<ExampleRequest> PostAsync(ExampleRequest mdl)
         {
+            if (mdl.Type == ExampleRequestType.POST && (mdl.Data == null || mdl.ApplyToId != null))
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    PropertyName = "POST",
+                    ResourceName = mdl.Data.Description,
+                    ResourceType = typeof(ExampleRequest)
+                };
+            if (mdl.Type == ExampleRequestType.PATCH && (mdl.Data == null || mdl.ApplyToId == null))
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    PropertyName = "PATCH",
+                    ResourceName = mdl.Data.Description,
+                    ResourceType = typeof(ExampleRequest)
+                };
+            if (mdl.Type == ExampleRequestType.DELETE && (mdl.Data != null || mdl.ApplyToId == null))
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    PropertyName = "DELETE",
+                    ResourceName = mdl.Data.Description,
+                    ResourceType = typeof(ExampleRequest)
+                };
+
             if (mdl.Data != null)
             {
                 if (mdl.Data.User == null)
