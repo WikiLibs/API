@@ -24,6 +24,7 @@ namespace WikiLibs.Models.Output
             public Parameter[] Parameters { get; set; }
         }
 
+        public long Id { get; set; }
         public string UserId { get; set; }
         public string Date { get; set; }
         public string Lang { get; set; }
@@ -34,6 +35,7 @@ namespace WikiLibs.Models.Output
 
         public override void Map(in Data.Models.Symbols.Symbol model)
         {
+            Id = model.Id;
             UserId = model.User.Id;
             Date = model.LastModificationDate.ToString();
             Lang = model.Lang;
