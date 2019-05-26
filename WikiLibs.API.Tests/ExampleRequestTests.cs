@@ -118,6 +118,10 @@ namespace WikiLibs.API.Tests
             Assert.IsNotNull(Context.ExampleRequests.First().Data);
             Assert.IsNotNull(Context.Examples.First().Request);
             Assert.IsNotNull(Context.Examples.First().RequestId);
+            Assert.AreEqual(Context.ExampleRequests.First().Id, Context.Examples.First().RequestId.Value);
+            Assert.AreEqual(Context.ExampleRequests.First(), Context.Examples.First().Request);
+            Assert.AreEqual(Context.Examples.First().Id, Context.ExampleRequests.First().DataId);
+            Assert.AreEqual(Context.Examples.First(), Context.ExampleRequests.First().Data);
         }
     }
 }

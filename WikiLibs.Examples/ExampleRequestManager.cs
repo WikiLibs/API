@@ -119,8 +119,12 @@ namespace WikiLibs.Examples
                         ResourceName = mdl.Data.Description,
                         ResourceType = typeof(ExampleRequest)
                     };
+                mdl.Data.Request = mdl;
             }
-            return await base.PostAsync(mdl);
+            await base.PostAsync(mdl);
+            mdl.Data.RequestId = mdl.Id;
+            await SaveChanges();
+            return (mdl);
         }
 
     }
