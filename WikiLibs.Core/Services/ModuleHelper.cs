@@ -59,7 +59,6 @@ namespace WikiLibs.Core.Services
             info.Version = asm.GetName().Version.ToString();
             foreach (Type t in asm.GetExportedTypes())
             {
-
                 if (t.GetCustomAttribute<Shared.Attributes.Module>() != null)
                 {
                     if (moduleClass != null)
