@@ -10,6 +10,6 @@ namespace WikiLibs.Shared
         public const string UPDATE_SYMBOL = "symbol.update";
         public const string DELETE_SYMBOL = "symbol.delete";
         public const string DELETE_USER = "user.delete";
-        public const string DELETE_ME = "user.me.delete"
+        public const string DELETE_ME = "user.me.delete";
     }
 }
