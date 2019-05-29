@@ -18,6 +18,9 @@ namespace WikiLibs.Models.Input
 
         public override User CreatePatch(in User current)
         {
+            // current = ancien
+            // comparé à UserUpdate 
+            // create usr à partir de update (if userUpdate == NULL alors on assigne current)
             throw new NotImplementedException();
         }
     }

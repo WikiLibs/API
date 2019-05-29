@@ -11,8 +11,9 @@ namespace WikiLibs.API
          private readonly IUser _user;
          private readonly IUserManager _ummgr;
 
-         public UserController(IUser usr) {
+         public UserController(IUser usr, IUserManager ummgr) {
              _user = usr
+             _ummgr = ummgr
          }
 
         [AllowAnonymous]
@@ -25,10 +26,8 @@ namespace WikiLibs.API
              return (Json(Models.Output.User.CreateModel(mdl)));
         }
 
-        [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(Models.Output.User))]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
-        [HttpGet]
+        [HttpGet("me")]
         public IActionResult GetMe()
         {
              var mdl = await _ummgr.GetAsync(_user.UserId);
@@ -38,15 +37,45 @@ namespace WikiLibs.API
         [HttpDelete("{uid}")]
         public async Task<IActionResult> DeleteUser([FromRoute] string uid)
         {
+            if (!_user.HasPermission(Permissions.DELETE_USER))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = uid,
+                    ResourceId = uid,
+                    ResourceType = typeof(Data.Models.User),
+                    MissingPermission = Permissions.DELETE_USER
+                };
+
             await _ummgr.DeleteAsync(_ummgr.GetAsync(uid));
             return (Ok());
         }
 
-        [HttpDelete]
+        [HttpDelete("me")]
         public async Task<IActionResult> DeleteUser()
         {
+            if (!_user.HasPermission(Permissions.DELETE_ME))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = _user.UserId,
+                    ResourceId = _user.UserId,
+                    ResourceType = typeof(Data.Models.User),
+                    MissingPermission = Permissions.DELETE_ME
+                };
+
             await _ummgr.DeleteAsync(_ummgr.GetAsync(_user.UserId));
             return (Ok());
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> PatchUser()
+        {
+
+        }
+
+        [HttpPatch("me")]
+        public async Task<IActionResult> PatchMe()
+        {
+            
         }
 
     }
