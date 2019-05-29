@@ -29,7 +29,7 @@ namespace WikiLibs.API
         [ProducesResponseType(200, Type = typeof(Models.Output.User))]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("{uid}")]
-        public IActionResult GetUser([FromRoute] string uid)
+        public async Task<IActionResult> GetUser([FromRoute] string uid)
         {
              var mdl = await _ummgr.GetAsync(uid);
              return (Json(Models.Output.User.CreateModel(mdl)));
@@ -37,7 +37,7 @@ namespace WikiLibs.API
 
         [ProducesResponseType(200, Type = typeof(Models.Output.User))]
         [HttpGet("me")]
-        public IActionResult GetMe()
+        public async Task<IActionResult> GetMe()
         {
              var mdl = await _ummgr.GetAsync(_user.UserId);
              return (Json(Models.Output.User.CreateModel(mdl)));
@@ -76,15 +76,15 @@ namespace WikiLibs.API
         }
 
         [HttpPatch]
-        public async Task<IActionResult> PatchUser()
+        public IActionResult PatchUser()
         {
-
+            return (Ok());
         }
 
         [HttpPatch("me")]
-        public async Task<IActionResult> PatchMe()
+        public IActionResult PatchMe()
         {
-            
+            return (Ok());
         }
 
     }
