@@ -55,7 +55,7 @@ namespace WikiLibs.API
                     MissingPermission = Permissions.DELETE_USER
                 };
 
-            await _ummgr.DeleteAsync(_ummgr.GetAsync(uid));
+            await _ummgr.DeleteAsync(uid);
             return (Ok());
         }
 
@@ -71,7 +71,7 @@ namespace WikiLibs.API
                     MissingPermission = Permissions.DELETE_ME
                 };
 
-            await _ummgr.DeleteAsync(_ummgr.GetAsync(_user.UserId));
+            await _ummgr.DeleteAsync(_user.UserId);
             return (Ok());
         }
 
