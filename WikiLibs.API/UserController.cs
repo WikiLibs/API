@@ -12,8 +12,8 @@ namespace WikiLibs.API
          private readonly IUserManager _ummgr;
 
          public UserController(IUser usr, IUserManager ummgr) {
-             _user = usr
-             _ummgr = ummgr
+             _user = usr;
+             _ummgr = ummgr;
          }
 
         [AllowAnonymous]
