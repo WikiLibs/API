@@ -18,7 +18,6 @@ namespace WikiLibs.Models.Input
                 public string Proto { get; set; }
                 [Required]
                 public string Description { get; set; }
-                [Required]
                 public string Path { get; set; }
             }
 
