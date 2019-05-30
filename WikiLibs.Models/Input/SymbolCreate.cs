@@ -16,7 +16,6 @@ namespace WikiLibs.Models.Input
                 [Required]
                 [JsonProperty(PropertyName = "prototype")]
                 public string Proto { get; set; }
-                [Required]
                 public string Description { get; set; }
                 public string Path { get; set; }
             }
@@ -24,7 +23,6 @@ namespace WikiLibs.Models.Input
             [Required]
             [JsonProperty(PropertyName = "prototype")]
             public string Proto { get; set; }
-            [Required]
             public string Description { get; set; }
             [Required]
             public Parameter[] Parameters { get; set; }
