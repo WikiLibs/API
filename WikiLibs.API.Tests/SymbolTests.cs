@@ -298,6 +298,19 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
             Assert.AreEqual(0, Context.SymbolRefs.Count());
+            await controller.PatchSymbol("C/TestLib/Test", new Models.Input.Symbols.SymbolUpdate()
+            {
+                Type = "test",
+                Symbols = new string[]
+                {
+                    "C/TestLib/TestFunc"
+                }
+            });
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(2, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolRefs.Count());
         }
 
         [Test]
