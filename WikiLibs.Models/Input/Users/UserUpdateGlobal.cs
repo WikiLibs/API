@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using WikiLibs.Data.Models;
 
-namespace WikiLibs.Models.Input
+namespace WikiLibs.Models.Input.Users
 {
     public class UserUpdateGlobal : PatchModel<UserUpdateGlobal, User>
     {

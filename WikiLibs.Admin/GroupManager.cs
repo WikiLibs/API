@@ -13,6 +13,10 @@ namespace WikiLibs.Admin
 {
     class GroupManager : BaseCRUDOperations<Context, Group>, IGroupManager
     {
+        public Group DefaultGroup => Get("Default");
+
+        public Group AdminGroup => Get("Admin");
+
         public GroupManager(Context ctx) : base(ctx)
         {
         }
@@ -67,6 +71,20 @@ namespace WikiLibs.Admin
             group.Name = mdl.Name;
             await SaveChanges();
             return (group);
+        }
+
+        public override async Task<Group> DeleteAsync(Group mdl)
+        {
+            if (mdl.Id == DefaultGroup.Id || mdl.Id == AdminGroup.Id)
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceId = mdl.Id.ToString(),
+                    ResourceName = "INTERNAL:" + mdl.Name,
+                    ResourceType = typeof(Group)
+                };
+            foreach (var usr in Context.Users.Where(u => u.GroupId == mdl.Id))
+                usr.GroupId = DefaultGroup.Id;
+            return await base.DeleteAsync(mdl);
         }
     }
 }

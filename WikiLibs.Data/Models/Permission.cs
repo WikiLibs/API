@@ -9,8 +9,9 @@ namespace WikiLibs.Data.Models
 {
     public class Permission : Model
     {
-        [Required]
-        public virtual Group Group { get; set; }
+        public long GroupId { get; set; }
         public string Perm { get; set; }
+
+        public virtual Group Group { get; set; }
     }
 }

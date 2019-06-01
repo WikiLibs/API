@@ -5,9 +5,9 @@ using WikiLibs.Shared.Helpers;
 
 namespace WikiLibs.Shared.Modules
 {
-    public interface ISymbolManager : IModule, ICRUDOperations<Data.Models.Symbol>
+    public interface ISymbolManager : IModule, ICRUDOperations<Data.Models.Symbols.Symbol>
     {
-        Data.Models.Symbol Get(string path);
+        Data.Models.Symbols.Symbol Get(string path);
         PageResult<string> SearchSymbols(string path, PageOptions options);
         string[] GetFirstLangs();
         string[] GetFirstLibs(string lang);

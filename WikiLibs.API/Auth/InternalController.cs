@@ -38,7 +38,7 @@ namespace WikiLibs.API.Auth
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Registration)]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody, Required] Models.Input.UserCreate mdl)
+        public async Task<IActionResult> Register([FromBody, Required] Models.Input.Users.UserCreate mdl)
         {
             await _internal.LegacyRegister(mdl.CreateModel());
             return (Ok());

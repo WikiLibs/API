@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WikiLibs.Data.Models;
+using WikiLibs.Data.Models.Symbols;
 
-namespace WikiLibs.Models.Input
+namespace WikiLibs.Models.Input.Symbols
 {
     public class SymbolUpdate : PatchModel<SymbolUpdate, Symbol>
     {
@@ -47,7 +48,7 @@ namespace WikiLibs.Models.Input
                 {
                     var proto = Prototypes[i];
                     var old = i < current.Prototypes.Count ? current.Prototypes.ElementAt(i) : null;
-                    var p = new Data.Models.Prototype
+                    var p = new Data.Models.Symbols.Prototype
                     {
                         Id = old != null ? old.Id : 0,
                         Data = proto.Proto != null ? proto.Proto : old.Data,
@@ -103,7 +104,7 @@ namespace WikiLibs.Models.Input
                 }
             }
             else
-                sym.Symbols = current.Symbols;
+                sym.Symbols = null;
             return (sym);
         }
     }

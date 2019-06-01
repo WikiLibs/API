@@ -43,7 +43,7 @@ namespace WikiLibs.API.Tests
 
         public async Task PostTestUser(InternalController controller)
         {
-            await controller.Register(new Models.Input.UserCreate()
+            await controller.Register(new Models.Input.Users.UserCreate()
             {
                 Email = "test@test.com",
                 Password = "thisIsATest",

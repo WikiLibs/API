@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using WikiLibs.Data.Models;
+using WikiLibs.Data.Models.Symbols;
 
-namespace WikiLibs.Models.Input
+namespace WikiLibs.Models.Input.Symbols
 {
     public class SymbolCreate : PostModel<SymbolCreate, Symbol>
     {
@@ -51,7 +52,7 @@ namespace WikiLibs.Models.Input
             };
             foreach (var proto in Prototypes)
             {
-                var p = new Data.Models.Prototype
+                var p = new Data.Models.Symbols.Prototype
                 {
                     Data = proto.Proto,
                     Description = proto.Description,

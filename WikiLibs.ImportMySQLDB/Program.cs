@@ -68,7 +68,7 @@ namespace WikiLibs.ImportMySQLDB
             newctx.SaveChanges();
             foreach (var sym in oldctx.Symbols)
             {
-                var newSym = new Data.Models.Symbol()
+                var newSym = new Data.Models.Symbols.Symbol()
                 {
                     Path = sym.Path,
                     Lang = sym.Lang,
@@ -79,7 +79,7 @@ namespace WikiLibs.ImportMySQLDB
                 };
                 foreach (var proto in JsonConvert.DeserializeObject<API.Entities.Symbol.Prototype[]>(sym.Prototypes))
                 {
-                    var newProto = new Data.Models.Prototype()
+                    var newProto = new Data.Models.Symbols.Prototype()
                     {
                         Description = proto.Description,
                         Symbol = newSym,
@@ -87,7 +87,7 @@ namespace WikiLibs.ImportMySQLDB
                     };
                     foreach (var param in proto.Parameters)
                     {
-                        var newParam = new Data.Models.PrototypeParam()
+                        var newParam = new Data.Models.Symbols.PrototypeParam()
                         {
                             Description = param.Description,
                             Data = param.Proto,
@@ -100,7 +100,7 @@ namespace WikiLibs.ImportMySQLDB
                 }
                 foreach (var symref in JsonConvert.DeserializeObject<string[]>(sym.Symbols))
                 {
-                    var newSymRef = new Data.Models.SymbolRef()
+                    var newSymRef = new Data.Models.Symbols.SymbolRef()
                     {
                         Path = symref,
                         Symbol = newSym
@@ -112,10 +112,10 @@ namespace WikiLibs.ImportMySQLDB
             newctx.SaveChanges();
             foreach (var info in oldctx.InfoTable)
             {
-                var newInfo = new Data.Models.Info()
+                var newInfo = new Data.Models.Symbols.Info()
                 {
                     Data = info.Data,
-                    Type = (Data.Models.EInfoType)info.Type
+                    Type = (Data.Models.Symbols.EInfoType)info.Type
                 };
                 newctx.InfoTable.Add(newInfo);
             }

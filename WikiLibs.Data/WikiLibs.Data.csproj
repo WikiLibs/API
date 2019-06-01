@@ -10,6 +10,14 @@
     <Compile Remove="Migrations\20190420100215_DbRefactor.cs" />
     <Compile Remove="Migrations\20190420123047_APIKeySecurity.cs" />
     <Compile Remove="Migrations\20190424175439_AddUserEmailConfirmation.cs" />
+    <Compile Remove="Migrations\20190519151224_AddExamples.cs" />
+    <Compile Remove="Migrations\20190519160209_AddExamples.cs" />
+    <Compile Remove="Migrations\20190519162116_AddExamples.cs" />
+    <Compile Remove="Migrations\20190522175856_AddExamples.cs" />
+    <Compile Remove="Migrations\20190522181202_AddExamples.cs" />
+    <Compile Remove="Migrations\20190522181202_AddExamples.Designer.cs" />
+    <Compile Remove="Migrations\20190523102257_AddExamples.cs" />
+    <Compile Remove="Migrations\20190523102257_AddExamples.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

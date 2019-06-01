@@ -35,14 +35,14 @@ namespace WikiLibs.API.Symbols
 
         [HttpPost]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
-        public async Task<IActionResult> PostSymbol([FromBody, Required] Models.Input.SymbolCreate sym)
+        public async Task<IActionResult> PostSymbol([FromBody, Required] Models.Input.Symbols.SymbolCreate sym)
         {
             if (!_user.HasPermission(Permissions.CREATE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
                     ResourceName = sym.Path,
                     ResourceId = sym.Path,
-                    ResourceType = typeof(Data.Models.Symbol),
+                    ResourceType = typeof(Data.Models.Symbols.Symbol),
                     MissingPermission = Permissions.CREATE_SYMBOL
                 };
             var data = sym.CreateModel();
@@ -53,14 +53,14 @@ namespace WikiLibs.API.Symbols
 
         [HttpPatch("{*path}")]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
-        public async Task<IActionResult> PatchSymbol([FromRoute] string path, [FromBody, Required] Models.Input.SymbolUpdate sym)
+        public async Task<IActionResult> PatchSymbol([FromRoute] string path, [FromBody, Required] Models.Input.Symbols.SymbolUpdate sym)
         {
             if (!_user.HasPermission(Permissions.UPDATE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
                     ResourceName = path,
                     ResourceId = path,
-                    ResourceType = typeof(Data.Models.Symbol),
+                    ResourceType = typeof(Data.Models.Symbols.Symbol),
                     MissingPermission = Permissions.UPDATE_SYMBOL
                 };
             var mdl = await _symmgr.PatchAsync(_symmgr.Get(path).Id, sym.CreatePatch(_symmgr.Get(path)));
@@ -75,7 +75,7 @@ namespace WikiLibs.API.Symbols
                 {
                     ResourceName = path,
                     ResourceId = path,
-                    ResourceType = typeof(Data.Models.Symbol),
+                    ResourceType = typeof(Data.Models.Symbols.Symbol),
                     MissingPermission = Permissions.DELETE_SYMBOL
                 };
             await _symmgr.DeleteAsync(_symmgr.Get(path));
