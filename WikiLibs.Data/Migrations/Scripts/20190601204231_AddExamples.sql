@@ -14,14 +14,6 @@ DROP INDEX [IX_Users_GroupId] ON [Users];
 
 GO
 
-DROP INDEX [IX_Symbols_UserId] ON [Symbols];
-
-GO
-
-DROP INDEX [IX_Examples_UserId] ON [Examples];
-
-GO
-
 DECLARE @var0 sysname;
 SELECT @var0 = [d].[name]
 FROM [sys].[default_constraints] [d]
@@ -65,14 +57,6 @@ CREATE UNIQUE INDEX [IX_Users_GroupId] ON [Users] ([GroupId]) WHERE [GroupId] IS
 
 GO
 
-CREATE UNIQUE INDEX [IX_Symbols_UserId] ON [Symbols] ([UserId]) WHERE [UserId] IS NOT NULL;
-
-GO
-
-CREATE UNIQUE INDEX [IX_Examples_UserId] ON [Examples] ([UserId]) WHERE [UserId] IS NOT NULL;
-
-GO
-
 CREATE INDEX [IX_ExampleCodeLines_ExampleId] ON [ExampleCodeLines] ([ExampleId]);
 
 GO
@@ -98,7 +82,7 @@ ALTER TABLE [Users] ADD CONSTRAINT [FK_Users_Groups_GroupId] FOREIGN KEY ([Group
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20190523102957_AddExamples', N'2.1.11-servicing-32099');
+VALUES (N'20190601204231_AddExamples', N'2.1.8-servicing-32085');
 
 GO
 
