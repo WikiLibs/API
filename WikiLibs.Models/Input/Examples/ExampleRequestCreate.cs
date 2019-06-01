@@ -21,7 +21,7 @@ namespace WikiLibs.Models.Input.Examples
             {
                 ApplyToId = ApplyTo,
                 CreationDate = DateTime.UtcNow,
-                Data = Data.CreateModel(),
+                Data = Data != null ? Data.CreateModel() : null,
                 Message = Message,
                 Type = Method
             });

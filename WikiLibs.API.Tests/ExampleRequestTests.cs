@@ -283,5 +283,83 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("This is a test", res.First().Message);
             Assert.AreEqual("This is a test example", res.First().Data.Description);
         }
+
+        [Test]
+        public async Task ApplyRequest_POST()
+        {
+            //POST request
+            await PostTestExampleRequest();
+            Assert.AreEqual(1, Context.Examples.Count());
+            Assert.IsNotNull(Context.Examples.First().Request);
+            await Manager.ApplyRequest(Context.ExampleRequests.First().Id);
+            Assert.AreEqual(1, Context.Examples.Count());
+            Assert.IsNull(Context.Examples.First().Request);
+        }
+
+        [Test]
+        public async Task ApplyRequest_PATCH()
+        {
+            //POST request
+            await PostTestExampleRequest();
+            Assert.AreEqual(1, Context.ExampleRequests.Count());
+            await Manager.ApplyRequest(Context.ExampleRequests.First().Id);
+            Assert.AreEqual(0, Context.ExampleRequests.Count());
+            Assert.AreEqual(1, Context.Examples.Count());
+            Assert.IsNull(Context.Examples.First().Request);
+            Assert.AreEqual(3, Context.ExampleCodeLines.Count());
+            Assert.AreEqual("This is a test example", Context.Examples.First().Description);
+            var ex = new ExampleRequestCreate()
+            {
+                Message = "Patching an example",
+                Method = Data.Models.Examples.ExampleRequestType.PATCH,
+                ApplyTo = 1,
+                Data = new ExampleCreate()
+                {
+                    Description = "This has been updated",
+                    Code = new ExampleCreate.CodeLine[]
+                    {
+                        new ExampleCreate.CodeLine()
+                        {
+                            Data = "void main() { }",
+                            Comment = "inline main function"
+                        }
+                    }
+                }
+            }.CreateModel();
+            ex.Data.Symbol = Context.Symbols.First();
+            ex.Data.User = User.User;
+            await Manager.PostAsync(ex);
+            Assert.AreEqual(1, Context.ExampleRequests.Count());
+            Assert.IsNull(Context.Examples.First().Request);
+            Assert.IsNotNull(Context.Examples.Last().Request);
+            await Manager.ApplyRequest(Context.ExampleRequests.First().Id);
+            Assert.AreEqual(0, Context.ExampleRequests.Count());
+            Assert.AreEqual("This has been updated", Context.Examples.First().Description);
+            Assert.AreEqual(1, Context.ExampleCodeLines.Count());
+            Assert.AreEqual("void main() { }", Context.Examples.First().Code.First().Data);
+            Assert.AreEqual("inline main function", Context.Examples.First().Code.First().Comment);
+        }
+
+        [Test]
+        public async Task ApplyRequest_DELETE()
+        {
+            //POST request
+            await PostTestExampleRequest();
+            Assert.AreEqual(1, Context.Examples.Count());
+            Assert.IsNotNull(Context.Examples.First().Request);
+            await Manager.ApplyRequest(Context.ExampleRequests.First().Id);
+            Assert.AreEqual(1, Context.Examples.Count());
+            Assert.IsNull(Context.Examples.First().Request);
+            await Manager.PostAsync(new ExampleRequestCreate()
+            {
+                ApplyTo = 1,
+                Method = Data.Models.Examples.ExampleRequestType.DELETE,
+                Message = "Delete the useless example, it's only a test anyway"
+            }.CreateModel());
+            await Manager.ApplyRequest(Context.ExampleRequests.First().Id);
+            Assert.AreEqual(0, Context.Examples.Count());
+            Assert.AreEqual(0, Context.ExampleRequests.Count());
+            Assert.AreEqual(0, Context.ExampleCodeLines.Count());
+        }
     }
 }

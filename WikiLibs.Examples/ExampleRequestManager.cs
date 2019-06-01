@@ -122,7 +122,8 @@ namespace WikiLibs.Examples
                 mdl.Data.Request = mdl;
             }
             await base.PostAsync(mdl);
-            mdl.Data.RequestId = mdl.Id;
+            if (mdl.Data != null)
+                mdl.Data.RequestId = mdl.Id;
             await SaveChanges();
             return (mdl);
         }
