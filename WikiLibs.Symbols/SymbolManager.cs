@@ -132,36 +132,15 @@ namespace WikiLibs.Symbols
                     Context.Add(proto);
                 }
             }
-            //Partial patch algorithm is IMPOSSIBLE in C# due to C# inability to modify lists while iterating
-            /*foreach (var proto in s.Prototypes)
+            if (sym.Symbols != null)
             {
-                var edit = sym.Prototypes.Where(p => p.Id == proto.Id).SingleOrDefault();
-                if (edit == null)
+                Context.RemoveRange(s.Symbols);
+                foreach (var r in sym.Symbols)
                 {
-                    Context.Remove(proto);
-                    continue;
+                    r.Id = 0;
+                    Context.Add(r);
                 }
-                proto.Data = edit.Data;
-                proto.Description = edit.Description;
-                foreach (var param in proto.Parameters)
-                {
-                    var edit1 = edit.Parameters.Where(p => p.Id == param.Id).SingleOrDefault();
-                    if (edit1 == null)
-                    {
-                        Context.Remove(param);
-                        continue;
-                    }
-                    param.Path = edit1.Path;
-                    param.Description = edit1.Description;
-                    param.Data = edit1.Data;
-                    foreach (var toRm in edit.Parameters.Where(p => p.Id == param.Id).ToList())
-                        edit.Parameters.Remove(toRm);
-                }
-                foreach (var toRm in sym.Prototypes.Where(p => p.Id == proto.Id).ToList())
-                    sym.Prototypes.Remove(toRm);
             }
-            foreach (var proto in sym.Prototypes)
-                s.Prototypes.Add(proto);*/
             await SaveChanges();
             return (s);
         }

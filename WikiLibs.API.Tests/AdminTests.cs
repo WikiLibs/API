@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Castle.Core.Logging;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace WikiLibs.API.Tests
         public override void Setup()
         {
             base.Setup();
-            Manager = new AdminManager(Context, null);
+            Manager = new AdminManager(Context, LogUtils.FakeLogger<AdminManager>());
         }
 
         private async Task<string> PostTestAPIKey()
@@ -30,6 +31,18 @@ namespace WikiLibs.API.Tests
                 UseNum = 2
             });
             return (mdl.Id);
+        }
+
+        [Test]
+        public void CheckAdminModuleInitializer()
+        {
+            AdminManager.Initialize(Manager);
+
+            Assert.AreEqual(2, Context.Groups.Count());
+            Assert.AreEqual(1, Context.APIKeys.Count());
+            Assert.AreEqual("Default", Context.Groups.First().Name);
+            Assert.AreEqual("Admin", Context.Groups.Last().Name);
+            Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.APIKeys.First().Description);
         }
 
         [Test]

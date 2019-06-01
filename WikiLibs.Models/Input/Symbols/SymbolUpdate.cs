@@ -104,7 +104,7 @@ namespace WikiLibs.Models.Input.Symbols
                 }
             }
             else
-                sym.Symbols = current.Symbols;
+                sym.Symbols = null;
             return (sym);
         }
     }
