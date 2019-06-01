@@ -63,6 +63,7 @@ namespace WikiLibs.Data
                     .HasForeignKey<Symbol>(e => e.UserId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
+                builder.HasIndex(e => e.UserId).IsUnique(false);
             });
             modelBuilder.Entity<Prototype>(builder =>
             {
@@ -108,6 +109,7 @@ namespace WikiLibs.Data
                     .HasForeignKey<Example>(e => e.UserId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
+                builder.HasIndex(e => e.UserId).IsUnique(false);
             });
             modelBuilder.Entity<ExampleCodeLine>(builder =>
             {

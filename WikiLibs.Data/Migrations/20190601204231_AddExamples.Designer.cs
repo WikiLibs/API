@@ -10,14 +10,14 @@ using WikiLibs.Data;
 namespace WikiLibs.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20190523102957_AddExamples")]
+    [Migration("20190601204231_AddExamples")]
     partial class AddExamples
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
+                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -61,9 +61,7 @@ namespace WikiLibs.Data.Migrations
 
                     b.HasIndex("SymbolId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Examples");
                 });
@@ -219,9 +217,7 @@ namespace WikiLibs.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Symbols");
                 });

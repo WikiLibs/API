@@ -24,14 +24,6 @@ namespace WikiLibs.Data.Migrations
                 name: "IX_Users_GroupId",
                 table: "Users");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Symbols_UserId",
-                table: "Symbols");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Examples_UserId",
-                table: "Examples");
-
             migrationBuilder.DropColumn(
                 name: "Code",
                 table: "Examples");
@@ -99,20 +91,6 @@ namespace WikiLibs.Data.Migrations
                 filter: "[GroupId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Symbols_UserId",
-                table: "Symbols",
-                column: "UserId",
-                unique: true,
-                filter: "[UserId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Examples_UserId",
-                table: "Examples",
-                column: "UserId",
-                unique: true,
-                filter: "[UserId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ExampleCodeLines_ExampleId",
                 table: "ExampleCodeLines",
                 column: "ExampleId");
@@ -178,14 +156,6 @@ namespace WikiLibs.Data.Migrations
                 name: "IX_Users_GroupId",
                 table: "Users");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Symbols_UserId",
-                table: "Symbols");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Examples_UserId",
-                table: "Examples");
-
             migrationBuilder.DropColumn(
                 name: "RequestId",
                 table: "Examples");
@@ -199,16 +169,6 @@ namespace WikiLibs.Data.Migrations
                 name: "IX_Users_GroupId",
                 table: "Users",
                 column: "GroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Symbols_UserId",
-                table: "Symbols",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Examples_UserId",
-                table: "Examples",
-                column: "UserId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Examples_Users_UserId",
