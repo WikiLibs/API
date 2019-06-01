@@ -26,7 +26,8 @@ namespace WikiLibs.Models.Output
 
         public long Id { get; set; }
         public string UserId { get; set; }
-        public string Date { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime LastModificationDate { get; set; }
         public string Lang { get; set; }
         public string Type { get; set; }
         public string Path { get; set; }
@@ -37,7 +38,8 @@ namespace WikiLibs.Models.Output
         {
             Id = model.Id;
             UserId = model.User.Id;
-            Date = model.LastModificationDate.ToString();
+            LastModificationDate = model.LastModificationDate;
+            CreationDate = model.CreationDate;
             Lang = model.Lang;
             Type = model.Type;
             Path = model.Path;

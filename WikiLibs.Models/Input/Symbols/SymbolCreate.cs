@@ -17,16 +17,13 @@ namespace WikiLibs.Models.Input.Symbols
                 [Required]
                 [JsonProperty(PropertyName = "prototype")]
                 public string Proto { get; set; }
-                [Required]
                 public string Description { get; set; }
-                [Required]
                 public string Path { get; set; }
             }
 
             [Required]
             [JsonProperty(PropertyName = "prototype")]
             public string Proto { get; set; }
-            [Required]
             public string Description { get; set; }
             [Required]
             public Parameter[] Parameters { get; set; }
