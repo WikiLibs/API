@@ -18,7 +18,7 @@ namespace WikiLibs.Models.Input.Examples
                 ApplyToId = current.ApplyToId,
                 CreationDate = current.CreationDate,
                 DataId = null,
-                Data = Data != null ? Data.CreatePatch(current.Data) : current.Data,
+                Data = current.Data == null ? null : (Data != null ? Data.CreatePatch(current.Data) : new ExampleUpdate().CreatePatch(current.Data)),
                 Id = current.Id,
                 Message = Message != null ? Message : current.Message
             });

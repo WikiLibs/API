@@ -72,8 +72,7 @@ namespace WikiLibs.API.Tests
             return (Context.Symbols.First());
         }
 
-        [Test]
-        public async Task Post()
+        private async Task PostTestExampleRequest()
         {
             var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
             {
@@ -109,6 +108,12 @@ namespace WikiLibs.API.Tests
             ex.Data.Symbol = sym;
             ex.Data.User = User.User;
             await Manager.PostAsync(ex);
+        }
+
+        [Test]
+        public async Task Post()
+        {
+            await PostTestExampleRequest();
 
             Assert.AreEqual(1, Context.Examples.Count());
             Assert.AreEqual(3, Context.ExampleCodeLines.Count());
@@ -122,6 +127,161 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(Context.ExampleRequests.First(), Context.Examples.First().Request);
             Assert.AreEqual(Context.Examples.First().Id, Context.ExampleRequests.First().DataId);
             Assert.AreEqual(Context.Examples.First(), Context.ExampleRequests.First().Data);
+        }
+
+        [Test]
+        public async Task Post_Error_Invalid()
+        {
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            }), User));
+            var ex = new ExampleRequestCreate()
+            {
+                Message = "This is a test",
+                Method = Data.Models.Examples.ExampleRequestType.POST,
+                Data = new ExampleCreate()
+                {
+                    Description = "This is a test example",
+                    Code = new ExampleCreate.CodeLine[]
+                    {
+                        new ExampleCreate.CodeLine()
+                        {
+                            Data = "void main()",
+                            Comment = ""
+                        },
+                        new ExampleCreate.CodeLine()
+                        {
+                            Data = "{",
+                            Comment = ""
+                        },
+                        new ExampleCreate.CodeLine()
+                        {
+                            Data = "}",
+                            Comment = ""
+                        }
+                    }
+                }
+            }.CreateModel();
+            ex.Data.Symbol = sym;
+            ex.Data.User = User.User;
+
+            //Invalid POST
+            var old = ex.Data;
+            ex.Data = null;
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(ex));
+            ex.Data = old;
+            ex.ApplyToId = 1;
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(ex));
+            ex.ApplyToId = null;
+            ex.Data.Symbol = null;
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(ex));
+            ex.Data.User = null;
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(ex));
+
+            //Invalid PATCH
+            ex.Type = Data.Models.Examples.ExampleRequestType.PATCH;
+            old = ex.Data;
+            ex.Data = null;
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(ex));
+            ex.Data = old;
+            ex.ApplyToId = null;
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(ex));
+
+            //Invalid DELETE
+            ex.Type = Data.Models.Examples.ExampleRequestType.DELETE;
+            ex.ApplyToId = 1;
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(ex));
+            ex.Data = null;
+            ex.ApplyToId = null;
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(ex));
+        }
+
+        [Test]
+        public async Task Patch()
+        {
+            await PostTestExampleRequest();
+
+            await Manager.PatchAsync(1, new ExampleRequestUpdate()
+            {
+                Message = "An updated message"
+            }.CreatePatch(Context.ExampleRequests.First()));
+            Assert.AreEqual(1, Context.ExampleRequests.Count());
+            Assert.AreEqual(1, Context.Examples.Count());
+            Assert.AreEqual(3, Context.ExampleCodeLines.Count());
+            Assert.AreEqual("An updated message", Context.ExampleRequests.First().Message);
+        }
+
+        [Test]
+        public async Task Patch_Complex_1()
+        {
+            await PostTestExampleRequest();
+
+            await Manager.PatchAsync(1, new ExampleRequestUpdate()
+            {
+                Message = "An updated message",
+                Data = new ExampleUpdate()
+                {
+                    Description = "Updated"
+                }
+            }.CreatePatch(Context.ExampleRequests.First()));
+            Assert.AreEqual(1, Context.ExampleRequests.Count());
+            Assert.AreEqual(1, Context.Examples.Count());
+            Assert.AreEqual(3, Context.ExampleCodeLines.Count());
+            Assert.AreEqual("An updated message", Context.ExampleRequests.First().Message);
+            Assert.AreEqual("Updated", Context.ExampleRequests.First().Data.Description);
+        }
+
+        [Test]
+        public async Task Patch_Complex_2()
+        {
+            await PostTestExampleRequest();
+
+            await Manager.PatchAsync(1, new ExampleRequestUpdate()
+            {
+                Message = "An updated message",
+                Data = new ExampleUpdate()
+                {
+                    Description = "Updated",
+                    Code = new ExampleUpdate.CodeLine[]
+                    {
+                        new ExampleUpdate.CodeLine()
+                        {
+                            Comment = "test",
+                            Data = "int main() { }"
+                        }
+                    }
+                }
+            }.CreatePatch(Context.ExampleRequests.First()));
+            Assert.AreEqual(1, Context.ExampleRequests.Count());
+            Assert.AreEqual(1, Context.Examples.Count());
+            Assert.AreEqual(1, Context.ExampleCodeLines.Count());
+            Assert.AreEqual("An updated message", Context.ExampleRequests.First().Message);
+            Assert.AreEqual("Updated", Context.ExampleRequests.First().Data.Description);
+            Assert.AreEqual("test", Context.ExampleRequests.First().Data.Code.First().Comment);
+            Assert.AreEqual("int main() { }", Context.ExampleRequests.First().Data.Code.First().Data);
+        }
+
+        [Test]
+        public async Task GetAll()
+        {
+            await PostTestExampleRequest();
+
+            var res = Manager.GetAll();
+            Assert.AreEqual(1, res.Count());
+            Assert.AreEqual("This is a test", res.First().Message);
+            Assert.AreEqual("This is a test example", res.First().Data.Description);
+        }
+
+        [Test]
+        public async Task GetForSymbol()
+        {
+            await PostTestExampleRequest();
+
+            var res = Manager.GetAll(1);
+            Assert.AreEqual(1, res.Count());
+            Assert.AreEqual("This is a test", res.First().Message);
+            Assert.AreEqual("This is a test example", res.First().Data.Description);
         }
     }
 }

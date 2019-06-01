@@ -85,21 +85,21 @@ namespace WikiLibs.Examples
                 throw new Shared.Exceptions.InvalidResource()
                 {
                     PropertyName = "POST",
-                    ResourceName = mdl.Data.Description,
+                    ResourceName = mdl.Message,
                     ResourceType = typeof(ExampleRequest)
                 };
             if (mdl.Type == ExampleRequestType.PATCH && (mdl.Data == null || mdl.ApplyToId == null))
                 throw new Shared.Exceptions.InvalidResource()
                 {
                     PropertyName = "PATCH",
-                    ResourceName = mdl.Data.Description,
+                    ResourceName = mdl.Message,
                     ResourceType = typeof(ExampleRequest)
                 };
             if (mdl.Type == ExampleRequestType.DELETE && (mdl.Data != null || mdl.ApplyToId == null))
                 throw new Shared.Exceptions.InvalidResource()
                 {
                     PropertyName = "DELETE",
-                    ResourceName = mdl.Data.Description,
+                    ResourceName = mdl.Message,
                     ResourceType = typeof(ExampleRequest)
                 };
 
@@ -109,14 +109,14 @@ namespace WikiLibs.Examples
                     throw new Shared.Exceptions.InvalidResource()
                     {
                         PropertyName = "User",
-                        ResourceName = mdl.Data.Description,
+                        ResourceName = mdl.Message,
                         ResourceType = typeof(ExampleRequest)
                     };
                 if (mdl.Data.Symbol == null)
                     throw new Shared.Exceptions.InvalidResource()
                     {
                         PropertyName = "Symbol",
-                        ResourceName = mdl.Data.Description,
+                        ResourceName = mdl.Message,
                         ResourceType = typeof(ExampleRequest)
                     };
                 mdl.Data.Request = mdl;

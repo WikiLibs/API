@@ -113,6 +113,7 @@ namespace WikiLibs.API.Tests
 
             Assert.AreEqual(1, Context.Examples.Count());
             Assert.AreEqual(3, Context.ExampleCodeLines.Count());
+            Assert.AreEqual(3, Context.Examples.First().Code.Count());
             Assert.AreEqual("This is a test example", Context.Examples.First().Description);
         }
 
@@ -128,6 +129,8 @@ namespace WikiLibs.API.Tests
 
             Assert.AreEqual(2, Context.Examples.Count());
             Assert.AreEqual(6, Context.ExampleCodeLines.Count());
+            Assert.AreEqual(3, Context.Examples.First().Code.Count());
+            Assert.AreEqual(3, Context.Examples.Last().Code.Count());
             Assert.AreEqual("This is a test example", Context.Examples.First().Description);
         }
 
@@ -187,6 +190,34 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task Patch_Complex()
+        {
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            }), User));
+            await PostTestExample(sym);
+
+            await Manager.PatchAsync(Context.Examples.First().Id, new ExampleUpdate()
+            {
+                Description = "test",
+                Code = new ExampleUpdate.CodeLine[]
+                {
+                    new ExampleUpdate.CodeLine()
+                    {
+                        Comment = "test",
+                        Data = "int main() {}"
+                    }
+                }
+            }.CreatePatch(Context.Examples.First()));
+            Assert.AreEqual(1, Context.ExampleCodeLines.Count());
+            Assert.AreEqual(1, Context.Examples.First().Code.Count());
+            Assert.AreEqual("test", Context.Examples.First().Description);
+            Assert.AreEqual("test", Context.ExampleCodeLines.First().Comment);
+            Assert.AreEqual("int main() {}", Context.ExampleCodeLines.First().Data);
+        }
+
+        [Test]
         public async Task Delete()
         {
             var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
@@ -203,6 +234,20 @@ namespace WikiLibs.API.Tests
 
             Assert.AreEqual(0, Context.Examples.Count());
             Assert.AreEqual(0, Context.ExampleCodeLines.Count());
+        }
+
+        [Test]
+        public async Task Get()
+        {
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            }), User));
+            await PostTestExample(sym);
+
+            var res = Manager.GetForSymbolAsync(sym.Id);
+            Assert.AreEqual(1, res.Count());
+            Assert.AreEqual("This is a test example", res.First().Description);
         }
     }
 }
