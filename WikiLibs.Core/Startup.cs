@@ -88,11 +88,8 @@ namespace WikiLibs.Core
             app.UseMiddleware<Middleware.ErrorHandlingMiddleware>();
             if (!env.IsDevelopment())
                 app.UseHsts();
-            else
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WikiLibs API"));
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WikiLibs API"));
             app.UseHttpsRedirection();
             app.UseCors("AllowAll");
             app.UseAuthentication();
