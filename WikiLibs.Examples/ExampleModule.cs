@@ -7,8 +7,14 @@ namespace WikiLibs.Examples
     [Module]
     public class ExampleModule : IExampleModule
     {
-        public IExampleManager Manager => throw new NotImplementedException();
+        public IExampleManager Manager { get; }
 
-        public IExampleRequestManager RequestManager => throw new NotImplementedException();
+        public IExampleRequestManager RequestManager { get; }
+
+        public ExampleModule(Data.Context ctx)
+        {
+            Manager = new ExampleManager(ctx);
+            RequestManager = new ExampleRequestManager(ctx);
+        }
     }
 }

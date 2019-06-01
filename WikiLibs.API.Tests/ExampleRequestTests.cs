@@ -111,6 +111,15 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public void CheckExampleModule()
+        {
+            var module = new ExampleModule(Context);
+
+            Assert.IsNotNull(module.Manager);
+            Assert.IsNotNull(module.RequestManager);
+        }
+
+        [Test]
         public async Task Post()
         {
             await PostTestExampleRequest();
