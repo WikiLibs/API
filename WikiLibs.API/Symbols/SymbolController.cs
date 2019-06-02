@@ -35,7 +35,7 @@ namespace WikiLibs.API.Symbols
         [HttpGet]
         public async Task<IActionResult> GetSymbol([FromQuery] SymbolQuery query)
         {
-            if (query.Id == null && query.Path == null)
+            if (query == null || (query.Id == null && query.Path == null))
                 throw new Shared.Exceptions.InvalidResource()
                 {
                     ResourceName = "",

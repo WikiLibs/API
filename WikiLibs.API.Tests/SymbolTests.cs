@@ -526,6 +526,15 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public void Get_Error_Invalid()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { }));
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => controller.GetSymbol(null));
+        }
+
+        [Test]
         public void Delete_Error_NonExistant()
         {
             var controller = new Symbols.SymbolController(Manager, User);
