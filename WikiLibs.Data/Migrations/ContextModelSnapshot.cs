@@ -186,8 +186,6 @@ namespace WikiLibs.Data.Migrations
 
                     b.Property<long>("PrototypeId");
 
-                    b.Property<long?>("SymbolRefId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PrototypeId");

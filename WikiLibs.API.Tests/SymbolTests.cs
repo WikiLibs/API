@@ -298,7 +298,7 @@ namespace WikiLibs.API.Tests
             });
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(1, Context.Prototypes.Count());
-            Assert.AreEqual(0, Context.PrototypeParams.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
             Assert.AreEqual("test", Context.Symbols.First().Type);
             Assert.AreEqual("void TestFunc(int a, const int b, int c, int d, void *bad)", Context.Symbols.First().Prototypes.First().Data);
@@ -343,7 +343,7 @@ namespace WikiLibs.API.Tests
             });
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(1, Context.Prototypes.Count());
-            Assert.AreEqual(0, Context.PrototypeParams.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
             Assert.AreEqual("test", Context.Symbols.First().Type);
             Assert.AreEqual("void TestFunc(int a, const int b, int c, int d, void *bad)", Context.Symbols.First().Prototypes.First().Data);
@@ -386,6 +386,65 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
             Assert.AreEqual(1, Context.SymbolRefs.Count());
+        }
+
+        [Test]
+        public async Task Patch_Complex_4()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+
+            await PostTestSymbol_Complex_1(controller);
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(2, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
+            Assert.IsNotNull(Context.PrototypeParams.First().SymbolRef);
+            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
+            {
+                Prototypes = new Models.Input.Symbols.SymbolUpdate.Prototype[]
+                {
+                    new Models.Input.Symbols.SymbolUpdate.Prototype()
+                    {
+                        Description = "This is a test function",
+                        Proto = "void TestFunc(int a, const int b, int c, int d, void *bad)",
+                        Parameters = new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter[]
+                        {
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
+                            {
+                                Description = "a",
+                                Proto = "int a"
+                            },
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
+                            {
+                                Description = "b",
+                                Proto = "const int b"
+                            },
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
+                            {
+                                Description = "c",
+                                Proto = "int c"
+                            },
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
+                            {
+                                Description = "d",
+                                Proto = "int d"
+                            },
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
+                            {
+                                Description = "bad raw pointer",
+                                Proto = "void *bad"
+                            }
+                        }
+                    }
+                }
+            });
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(2, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(0, Context.PrototypeParamSymbolRefs.Count());
+            Assert.IsNull(Context.PrototypeParams.First().SymbolRef);
         }
 
         [Test]

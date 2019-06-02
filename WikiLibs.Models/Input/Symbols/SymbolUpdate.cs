@@ -66,11 +66,7 @@ namespace WikiLibs.Models.Input.Symbols
                                 Id = oldParam != null ? oldParam.Id : 0,
                                 Data = par.Proto != null ? par.Proto : oldParam.Data,
                                 Description = par.Description != null ? par.Description : oldParam.Description,
-                                SymbolRef = par.Path != null ? new PrototypeParamSymbolRef() { RefPath = par.Path } : (oldParam.SymbolRef != null ? new PrototypeParamSymbolRef()
-                                {
-                                    RefPath = oldParam.SymbolRef.RefPath,
-                                    RefId = oldParam.SymbolRef.RefId
-                                } : null),
+                                SymbolRef = par.Path != null ? new PrototypeParamSymbolRef() { RefPath = par.Path } : null,
                                 Prototype = p
                             };
                             p.Parameters.Add(param);

@@ -134,10 +134,7 @@ namespace WikiLibs.Symbols
                 foreach (var proto in sym.Prototypes)
                 {
                     foreach (var param in proto.Parameters)
-                    {
                         param.Id = 0;
-                        Context.Add(param);
-                    }
                     proto.Id = 0;
                     proto.Symbol = s;
                     Context.Add(proto);

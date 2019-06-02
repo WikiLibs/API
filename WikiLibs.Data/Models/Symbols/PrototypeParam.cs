@@ -11,7 +11,6 @@ namespace WikiLibs.Data.Models.Symbols
         public long PrototypeId { get; set; }
         public string Data { get; set; }
         public string Description { get; set; }
-        public long? SymbolRefId { get; set; }
 
         public virtual Prototype Prototype { get; set; }
         public virtual PrototypeParamSymbolRef SymbolRef { get; set; }

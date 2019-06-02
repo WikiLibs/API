@@ -81,11 +81,6 @@ namespace WikiLibs.Data
                     .HasForeignKey(e => e.PrototypeId)
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
-                builder.HasOne(e => e.SymbolRef)
-                    .WithOne()
-                    .HasForeignKey<PrototypeParam>(e => e.SymbolRefId)
-                    .IsRequired(false)
-                    .OnDelete(DeleteBehavior.SetNull);
             });
             modelBuilder.Entity<PrototypeParamSymbolRef>(builder =>
             {

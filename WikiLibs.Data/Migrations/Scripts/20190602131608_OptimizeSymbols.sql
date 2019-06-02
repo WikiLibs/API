@@ -20,10 +20,6 @@ ALTER TABLE [SymbolRefs] ADD [RefId] bigint NULL;
 
 GO
 
-ALTER TABLE [PrototypeParams] ADD [SymbolRefId] bigint NULL;
-
-GO
-
 CREATE TABLE [PrototypeParamSymbolRefs] (
     [Id] bigint NOT NULL IDENTITY,
     [PrototypeParamId] bigint NOT NULL,
@@ -53,7 +49,7 @@ ALTER TABLE [SymbolRefs] ADD CONSTRAINT [FK_SymbolRefs_Symbols_RefId] FOREIGN KE
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20190602120553_OptimizeSymbols', N'2.1.8-servicing-32085');
+VALUES (N'20190602131608_OptimizeSymbols', N'2.1.8-servicing-32085');
 
 GO
 

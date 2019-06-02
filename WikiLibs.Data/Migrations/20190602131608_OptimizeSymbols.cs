@@ -26,11 +26,6 @@ namespace WikiLibs.Data.Migrations
                 table: "SymbolRefs",
                 nullable: true);
 
-            migrationBuilder.AddColumn<long>(
-                name: "SymbolRefId",
-                table: "PrototypeParams",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "PrototypeParamSymbolRefs",
                 columns: table => new
@@ -103,10 +98,6 @@ namespace WikiLibs.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "RefId",
                 table: "SymbolRefs");
-
-            migrationBuilder.DropColumn(
-                name: "SymbolRefId",
-                table: "PrototypeParams");
 
             migrationBuilder.RenameColumn(
                 name: "RefPath",

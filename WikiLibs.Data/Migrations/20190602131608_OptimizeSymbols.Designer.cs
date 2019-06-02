@@ -10,7 +10,7 @@ using WikiLibs.Data;
 namespace WikiLibs.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20190602120553_OptimizeSymbols")]
+    [Migration("20190602131608_OptimizeSymbols")]
     partial class OptimizeSymbols
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -187,8 +187,6 @@ namespace WikiLibs.Data.Migrations
                     b.Property<string>("Description");
 
                     b.Property<long>("PrototypeId");
-
-                    b.Property<long?>("SymbolRefId");
 
                     b.HasKey("Id");
 
