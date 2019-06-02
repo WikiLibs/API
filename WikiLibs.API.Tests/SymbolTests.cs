@@ -69,6 +69,70 @@ namespace WikiLibs.API.Tests
             return (res);
         }
 
+        private async Task<IActionResult> PostTestSymbol_Complex_1(Symbols.SymbolController controller)
+        {
+            await controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
+            {
+                Path = "C/TestLib/fint",
+                Type = "typedef",
+                Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[]
+                {
+                    new Models.Input.Symbols.SymbolCreate.Prototype()
+                    {
+                        Description = "An int typedef",
+                        Proto = "typedef int fint",
+                        Parameters = new Models.Input.Symbols.SymbolCreate.Prototype.Parameter[] { }
+                    }
+                },
+                Symbols = new string[] { }
+            });
+
+            var res = await controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
+            {
+                Path = "C/TestLib/TestFunc",
+                Type = "function",
+                Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[]
+                {
+                    new Models.Input.Symbols.SymbolCreate.Prototype()
+                    {
+                        Description = "This is a test function",
+                        Proto = "void TestFunc(fint a, const int b, int c, int d, void *bad)",
+                        Parameters = new Models.Input.Symbols.SymbolCreate.Prototype.Parameter[]
+                        {
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
+                            {
+                                Description = "a",
+                                Proto = "fint a",
+                                Path = "C/TestLib/fint"
+                            },
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
+                            {
+                                Description = "b",
+                                Proto = "const int b"
+                            },
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
+                            {
+                                Description = "c",
+                                Proto = "int c"
+                            },
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
+                            {
+                                Description = "d",
+                                Proto = "int d"
+                            },
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
+                            {
+                                Description = "bad raw pointer",
+                                Proto = "void *bad"
+                            }
+                        }
+                    }
+                },
+                Symbols = new string[] { }
+            });
+            return (res);
+        }
+
         private async Task<IActionResult> PostTestSymbol_Complex(Symbols.SymbolController controller)
         {
             await PostTestSymbol(controller);
@@ -119,6 +183,19 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
             Assert.AreEqual(1, Context.SymbolRefs.Count());
+        }
+
+        [Test]
+        public async Task Post_Complex_1()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+            var res = await PostTestSymbol_Complex_1(controller);
+
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(2, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
         }
 
         [Test]
