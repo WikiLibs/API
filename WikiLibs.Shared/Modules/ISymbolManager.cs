@@ -16,6 +16,6 @@ namespace WikiLibs.Shared.Modules
         /// <summary>
         /// Call this function every time you are done pushing a set of symbols to optimize their access times by using symbol id instead of path
         /// </summary>
-        //Task OptimizeAsync();
+        Task OptimizeAsync();
     }
 }

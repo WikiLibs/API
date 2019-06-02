@@ -182,9 +182,21 @@ namespace WikiLibs.Symbols
             });
         }
 
-        //public Task OptimizeAsync()
-        //{
-            //foreach (var sref in Context.SymbolRefs.Where(e => e.RefId == null))
-        //}
+        public async Task OptimizeAsync()
+        {
+            foreach (var sref in Context.SymbolRefs.Where(e => e.RefId == null))
+            {
+                var symbol = Get(sref.RefPath);
+                if (symbol != null)
+                    sref.RefId = symbol.Id;
+            }
+            foreach (var sref in Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null))
+            {
+                var symbol = Get(sref.RefPath);
+                if (symbol != null)
+                    sref.RefId = symbol.Id;
+            }
+            await SaveChanges();
+        }
     }
 }
