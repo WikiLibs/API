@@ -11,11 +11,11 @@ namespace WikiLibs.API.Tests.Helper
         public int SentEmailCount { get; private set; } = 0;
         public Mail LastSendEmail { get; private set; } = null;
 
-        public Task SendAsync(Mail msg)
+        public Task<bool> SendAsync(Mail msg)
         {
             LastSendEmail = msg;
             ++SentEmailCount;
-            return (Task.CompletedTask);
+            return (Task.FromResult(true));
         }
     }
 }
