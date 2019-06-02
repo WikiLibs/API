@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WikiLibs.Data.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
