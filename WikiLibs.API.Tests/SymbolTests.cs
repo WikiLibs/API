@@ -196,6 +196,8 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
             Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
+            Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().PrototypeParam);
+            Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().PrototypeParamId);
         }
 
         [Test]
