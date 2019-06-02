@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WikiLibs.Data.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class OptimizeSymbols : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
