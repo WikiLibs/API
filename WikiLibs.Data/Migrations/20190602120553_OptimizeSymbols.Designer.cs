@@ -10,7 +10,7 @@ using WikiLibs.Data;
 namespace WikiLibs.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20190602095322_OptimizeSymbols")]
+    [Migration("20190602120553_OptimizeSymbols")]
     partial class OptimizeSymbols
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -252,9 +252,9 @@ namespace WikiLibs.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Path");
-
                     b.Property<long?>("RefId");
+
+                    b.Property<string>("RefPath");
 
                     b.Property<long>("SymbolId");
 

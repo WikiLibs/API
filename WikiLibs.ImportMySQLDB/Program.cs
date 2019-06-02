@@ -102,7 +102,7 @@ namespace WikiLibs.ImportMySQLDB
                 {
                     var newSymRef = new Data.Models.Symbols.SymbolRef()
                     {
-                        Path = symref,
+                        RefPath = symref,
                         Symbol = newSym
                     };
                     newSym.Symbols.Add(newSymRef);

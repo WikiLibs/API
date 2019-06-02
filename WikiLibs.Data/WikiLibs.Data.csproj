@@ -23,6 +23,7 @@
     <Compile Remove="Migrations\20190602092546_OptimizeSymbols.cs" />
     <Compile Remove="Migrations\20190602093029_OptimizeSymbols.cs" />
     <Compile Remove="Migrations\20190602093214_OptimizeSymbols.cs" />
+    <Compile Remove="Migrations\20190602095322_OptimizeSymbols.cs" />
   </ItemGroup>
 
   <ItemGroup>

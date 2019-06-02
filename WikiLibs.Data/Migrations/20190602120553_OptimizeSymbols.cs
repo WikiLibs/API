@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace WikiLibs.Data.Migrations
 {
-    [ExcludeFromCodeCoverage]
     public partial class OptimizeSymbols : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -12,6 +10,11 @@ namespace WikiLibs.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "Path",
                 table: "PrototypeParams");
+
+            migrationBuilder.RenameColumn(
+                name: "Path",
+                table: "SymbolRefs",
+                newName: "RefPath");
 
             migrationBuilder.AddColumn<string>(
                 name: "Lib",
@@ -104,6 +107,11 @@ namespace WikiLibs.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "SymbolRefId",
                 table: "PrototypeParams");
+
+            migrationBuilder.RenameColumn(
+                name: "RefPath",
+                table: "SymbolRefs",
+                newName: "Path");
 
             migrationBuilder.AddColumn<string>(
                 name: "Path",

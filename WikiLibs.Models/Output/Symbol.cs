@@ -71,7 +71,7 @@ namespace WikiLibs.Models.Output
             }
             int k = 0;
             foreach (var sref in model.Symbols)
-                Symbols[k++] = sref.Path;
+                Symbols[k++] = sref.RefPath;
         }
     }
 }

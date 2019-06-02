@@ -72,7 +72,7 @@ namespace WikiLibs.Models.Input.Symbols
             {
                 var symRef = new SymbolRef()
                 {
-                    Path = sref,
+                    RefPath = sref,
                     Symbol = sym
                 };
                 sym.Symbols.Add(symRef);

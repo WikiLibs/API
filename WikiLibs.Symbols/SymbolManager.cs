@@ -181,5 +181,10 @@ namespace WikiLibs.Symbols
                 Count = _cfg.GetMaxSymbols(options)
             });
         }
+
+        //public Task OptimizeAsync()
+        //{
+            //foreach (var sref in Context.SymbolRefs.Where(e => e.RefId == null))
+        //}
     }
 }

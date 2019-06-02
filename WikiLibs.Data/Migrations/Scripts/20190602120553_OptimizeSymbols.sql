@@ -8,6 +8,10 @@ ALTER TABLE [PrototypeParams] DROP COLUMN [Path];
 
 GO
 
+EXEC sp_rename N'[SymbolRefs].[Path]', N'RefPath', N'COLUMN';
+
+GO
+
 ALTER TABLE [Symbols] ADD [Lib] nvarchar(max) NULL;
 
 GO
@@ -49,7 +53,7 @@ ALTER TABLE [SymbolRefs] ADD CONSTRAINT [FK_SymbolRefs_Symbols_RefId] FOREIGN KE
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20190602095322_OptimizeSymbols', N'2.1.8-servicing-32085');
+VALUES (N'20190602120553_OptimizeSymbols', N'2.1.8-servicing-32085');
 
 GO
 
