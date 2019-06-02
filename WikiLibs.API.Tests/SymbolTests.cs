@@ -212,7 +212,7 @@ namespace WikiLibs.API.Tests
             Assert.IsNull(Context.SymbolRefs.First().RefId);
             Assert.IsNull(Context.SymbolRefs.First().Ref);
             Assert.IsNotNull(Context.SymbolRefs.First().RefPath);
-            await Manager.OptimizeAsync();
+            await controller.OptimizeAsync();
             Assert.IsNotNull(Context.SymbolRefs.First().RefId);
             Assert.IsNotNull(Context.SymbolRefs.First().Ref);
             Assert.IsNotNull(Context.SymbolRefs.First().RefPath);
@@ -232,7 +232,7 @@ namespace WikiLibs.API.Tests
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
-            await Manager.OptimizeAsync();
+            await controller.OptimizeAsync();
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
@@ -659,6 +659,7 @@ namespace WikiLibs.API.Tests
                 Type = "enum"
             }));
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteSymbol("C/TestLib/TestFunc"));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.OptimizeAsync());
         }
     }
 }

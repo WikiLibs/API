@@ -81,5 +81,20 @@ namespace WikiLibs.API.Symbols
             await _symmgr.DeleteAsync(_symmgr.Get(path));
             return (Ok());
         }
+
+        [HttpPatch("optimize")]
+        public async Task<IActionResult> OptimizeAsync()
+        {
+            if (!_user.HasPermission(Permissions.OPTIMIZE_SYMBOL))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = "Optimize",
+                    ResourceId = "Optimize",
+                    ResourceType = typeof(Data.Models.Symbols.Symbol),
+                    MissingPermission = Permissions.OPTIMIZE_SYMBOL
+                };
+            await _symmgr.OptimizeAsync();
+            return (Ok());
+        }
     }
 }
