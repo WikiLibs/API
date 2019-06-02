@@ -26,7 +26,6 @@ namespace WikiLibs.API.Tests
         {
             var res = await controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
             {
-                Lang = "C",
                 Path = "C/TestLib/TestFunc",
                 Type = "function",
                 Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[]
@@ -76,7 +75,6 @@ namespace WikiLibs.API.Tests
 
             var res = await controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
             {
-                Lang = "C",
                 Path = "C/TestLib/Test",
                 Type = "class",
                 Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[]
@@ -106,6 +104,8 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual("C", Context.Symbols.First().Lang);
+            Assert.AreEqual("TestLib", Context.Symbols.First().Lib);
         }
 
         [Test]
@@ -141,7 +141,6 @@ namespace WikiLibs.API.Tests
 
             Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
             {
-                Lang = "",
                 Path = "",
                 Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[] { },
                 Symbols = new string[] { },
@@ -149,7 +148,6 @@ namespace WikiLibs.API.Tests
             }));
             Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(new Models.Input.Symbols.SymbolCreate()
             {
-                Lang = "",
                 Path = "C/TestLib/NonValidFunc",
                 Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[] { },
                 Symbols = new string[] { },

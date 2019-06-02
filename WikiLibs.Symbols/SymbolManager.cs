@@ -21,20 +21,25 @@ namespace WikiLibs.Symbols
             _cfg = cfg;
         }
 
-        private string GetLibLangPath(Symbol sym)
+        private void GetLibLangFromPath(Symbol sym, out string lib, out string lang)
         {
             string[] objs = sym.Path.Split('/');
 
-            return (objs[0] + '/' + objs[1] + '/');
+            lib = objs[1];
+            lang = objs[0];
         }
 
         public override async Task<Symbol> DeleteAsync(Symbol sym)
         {
             await base.DeleteAsync(sym);
+            string lib;
+            string lang;
+            GetLibLangFromPath(sym, out lib, out lang);
+            string libl = lang + "/" + lib + "/";
+
             if (!Set.Any(sy => sy.Lang == sym.Lang))
                 Context.InfoTable.RemoveRange(Context.InfoTable.Where(sy =>
-                    sy.Type == EInfoType.LANG && sy.Data == sym.Lang));
-            string libl = GetLibLangPath(sym);
+                    sy.Type == EInfoType.LANG && sy.Data == lang));
             if (!Set.Any(sy => sy.Path.StartsWith(libl)))
                 Context.InfoTable.RemoveRange(Context.InfoTable.Where(sy =>
                     sy.Type == EInfoType.LIB && sy.Data == libl));
@@ -103,11 +108,17 @@ namespace WikiLibs.Symbols
                     ResourceType = typeof(Symbol),
                     ResourceName = sym.Path
                 };
-            string libl = GetLibLangPath(sym);
-            if (Context.InfoTable.Where(o => o.Type == EInfoType.LANG && o.Data == sym.Lang).Count() <= 0)
-                Context.InfoTable.Add(new Info { Type = EInfoType.LANG, Data = sym.Lang });
+
+            string lib;
+            string lang;
+            GetLibLangFromPath(sym, out lib, out lang);
+            string libl = lang + "/" + lib + "/";
+            if (Context.InfoTable.Where(o => o.Type == EInfoType.LANG && o.Data == lang).Count() <= 0)
+                Context.InfoTable.Add(new Info { Type = EInfoType.LANG, Data = lang });
             if (Context.InfoTable.Where(o => o.Type == EInfoType.LIB && o.Data == libl).Count() <= 0)
                 Context.InfoTable.Add(new Info { Type = EInfoType.LIB, Data = libl });
+            sym.Lib = lib;
+            sym.Lang = lang;
             return (await base.PostAsync(sym));
         }
 

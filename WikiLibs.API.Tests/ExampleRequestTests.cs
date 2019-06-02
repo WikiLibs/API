@@ -27,7 +27,6 @@ namespace WikiLibs.API.Tests
         {
             await controller.PostSymbol(new SymbolCreate()
             {
-                Lang = "C",
                 Path = "C/TestLib/TestFunc",
                 Type = "function",
                 Prototypes = new SymbolCreate.Prototype[]

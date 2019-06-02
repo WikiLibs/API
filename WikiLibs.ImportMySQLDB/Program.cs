@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using WikiLibs.Data.Models.Symbols;
 
 namespace WikiLibs.ImportMySQLDB
 {
@@ -71,7 +72,6 @@ namespace WikiLibs.ImportMySQLDB
                 var newSym = new Data.Models.Symbols.Symbol()
                 {
                     Path = sym.Path,
-                    Lang = sym.Lang,
                     CreationDate = sym.Date,
                     LastModificationDate = DateTime.UtcNow,
                     Type = sym.Type,
@@ -91,7 +91,7 @@ namespace WikiLibs.ImportMySQLDB
                         {
                             Description = param.Description,
                             Data = param.Proto,
-                            Path = param.Path,
+                            SymbolRef = param.Path != null ? new PrototypeParamSymbolRef() { RefPath = param.Path } : null,
                             Prototype = newProto
                         };
                         newProto.Parameters.Add(newParam);

@@ -29,6 +29,7 @@ namespace WikiLibs.Models.Output
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
         public string Lang { get; set; }
+        public string Lib { get; set; }
         public string Type { get; set; }
         public string Path { get; set; }
         public Prototype[] Prototypes { get; set; }
@@ -41,6 +42,7 @@ namespace WikiLibs.Models.Output
             LastModificationDate = model.LastModificationDate;
             CreationDate = model.CreationDate;
             Lang = model.Lang;
+            Lib = model.Lib;
             Type = model.Type;
             Path = model.Path;
             Symbols = new string[model.Symbols.Count];
@@ -60,7 +62,7 @@ namespace WikiLibs.Models.Output
                     Prototypes[i].Parameters[j] = new Prototype.Parameter()
                     {
                         Description = param.Description,
-                        Path = param.Path,
+                        Path = param.SymbolRef?.RefPath,
                         Proto = param.Data
                     };
                     ++j;
