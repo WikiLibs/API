@@ -278,7 +278,7 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
-            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
+            await controller.PatchSymbol(1, new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "test"
             });
@@ -295,7 +295,7 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
-            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
+            await controller.PatchSymbol(1, new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "test",
                 Prototypes = new Models.Input.Symbols.SymbolUpdate.Prototype[]
@@ -325,7 +325,7 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
-            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
+            await controller.PatchSymbol(1, new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "test",
                 Prototypes = new Models.Input.Symbols.SymbolUpdate.Prototype[]
@@ -351,7 +351,7 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
-            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
+            await controller.PatchSymbol(1, new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "test",
                 Prototypes = new Models.Input.Symbols.SymbolUpdate.Prototype[]
@@ -403,7 +403,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
             Assert.AreEqual(1, Context.SymbolRefs.Count());
-            await controller.PatchSymbol("C/TestLib/Test", new Models.Input.Symbols.SymbolUpdate()
+            await controller.PatchSymbol(2, new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "test",
                 Symbols = new string[] { }
@@ -413,7 +413,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(2, Context.InfoTable.Count());
             Assert.AreEqual(0, Context.SymbolRefs.Count());
-            await controller.PatchSymbol("C/TestLib/Test", new Models.Input.Symbols.SymbolUpdate()
+            await controller.PatchSymbol(2, new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "test",
                 Symbols = new string[]
@@ -440,7 +440,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.InfoTable.Count());
             Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
             Assert.IsNotNull(Context.PrototypeParams.First().SymbolRef);
-            await controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
+            await controller.PatchSymbol(2, new Models.Input.Symbols.SymbolUpdate()
             {
                 Prototypes = new Models.Input.Symbols.SymbolUpdate.Prototype[]
                 {
@@ -530,7 +530,7 @@ namespace WikiLibs.API.Tests
         {
             var controller = new Symbols.SymbolController(Manager, User);
 
-            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.DeleteSymbol("crap"));
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.DeleteSymbol(-1));
         }
 
         [Test]
@@ -540,7 +540,7 @@ namespace WikiLibs.API.Tests
 
             await PostTestSymbol(controller);
             Assert.AreEqual(1, Context.Symbols.Count());
-            await controller.DeleteSymbol("C/TestLib/TestFunc");
+            await controller.DeleteSymbol(1);
             Assert.AreEqual(0, Context.Symbols.Count());
             Assert.AreEqual(0, Context.Prototypes.Count());
             Assert.AreEqual(0, Context.PrototypeParams.Count());
@@ -668,11 +668,11 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SymbolController(Manager, User);
 
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => PostTestSymbol(controller));
-            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolUpdate()
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchSymbol(1, new Models.Input.Symbols.SymbolUpdate()
             {
                 Type = "enum"
             }));
-            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteSymbol("C/TestLib/TestFunc"));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteSymbol(1));
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.OptimizeAsync());
         }
     }

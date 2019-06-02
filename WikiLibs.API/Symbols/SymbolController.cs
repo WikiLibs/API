@@ -72,34 +72,34 @@ namespace WikiLibs.API.Symbols
             return (Json(Models.Output.Symbol.CreateModel(mdl)));
         }
 
-        [HttpPatch("{*path}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
-        public async Task<IActionResult> PatchSymbol([FromRoute] string path, [FromBody, Required] Models.Input.Symbols.SymbolUpdate sym)
+        public async Task<IActionResult> PatchSymbol([FromRoute] long id, [FromBody, Required] Models.Input.Symbols.SymbolUpdate sym)
         {
             if (!_user.HasPermission(Permissions.UPDATE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
-                    ResourceName = path,
-                    ResourceId = path,
+                    ResourceName = id.ToString(),
+                    ResourceId = id.ToString(),
                     ResourceType = typeof(Data.Models.Symbols.Symbol),
                     MissingPermission = Permissions.UPDATE_SYMBOL
                 };
-            var mdl = await _symmgr.PatchAsync(_symmgr.Get(path).Id, sym.CreatePatch(_symmgr.Get(path)));
+            var mdl = await _symmgr.PatchAsync(id, sym.CreatePatch(await _symmgr.GetAsync(id)));
             return (Json(Models.Output.Symbol.CreateModel(mdl)));
         }
 
-        [HttpDelete("{*path}")]
-        public async Task<IActionResult> DeleteSymbol([FromRoute] string path)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSymbol([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.DELETE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
-                    ResourceName = path,
-                    ResourceId = path,
+                    ResourceName = id.ToString(),
+                    ResourceId = id.ToString(),
                     ResourceType = typeof(Data.Models.Symbols.Symbol),
                     MissingPermission = Permissions.DELETE_SYMBOL
                 };
-            await _symmgr.DeleteAsync(_symmgr.Get(path));
+            await _symmgr.DeleteAsync(id);
             return (Ok());
         }
 
