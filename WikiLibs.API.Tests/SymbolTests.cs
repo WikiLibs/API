@@ -199,6 +199,46 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task Optimize_1()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+            var res = await PostTestSymbol_Complex(controller);
+
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(2, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolRefs.Count());
+            Assert.IsNull(Context.SymbolRefs.First().RefId);
+            Assert.IsNull(Context.SymbolRefs.First().Ref);
+            Assert.IsNotNull(Context.SymbolRefs.First().RefPath);
+            await Manager.OptimizeAsync();
+            Assert.IsNotNull(Context.SymbolRefs.First().RefId);
+            Assert.IsNotNull(Context.SymbolRefs.First().Ref);
+            Assert.IsNotNull(Context.SymbolRefs.First().RefPath);
+        }
+
+        [Test]
+        public async Task Optimize_2()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+            var res = await PostTestSymbol_Complex_1(controller);
+
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(2, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
+            Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
+            Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
+            Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+            await Manager.OptimizeAsync();
+            Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefId);
+            Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().Ref);
+            Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+        }
+
+        [Test]
         public async Task Post_Error_Dupe()
         {
             var controller = new Symbols.SymbolController(Manager, User);
