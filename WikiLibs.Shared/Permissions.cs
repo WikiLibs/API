@@ -10,6 +10,7 @@ namespace WikiLibs.Shared
         public const string CREATE_SYMBOL = "symbol.create";
         public const string UPDATE_SYMBOL = "symbol.update";
         public const string DELETE_SYMBOL = "symbol.delete";
+        public const string OPTIMIZE_SYMBOL = "symbol.optimize";
         #endregion
 
         #region EXAMPLES
