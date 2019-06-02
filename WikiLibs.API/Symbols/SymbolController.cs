@@ -23,14 +23,35 @@ namespace WikiLibs.API.Symbols
             _user = usr;
         }
 
+        public class SymbolQuery
+        {
+            public long? Id { get; set; }
+            public string Path { get; set; }
+        }
+
         [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
-        [HttpGet("{*path}")]
-        public IActionResult GetSymbol([FromRoute] string path)
+        [HttpGet]
+        public async Task<IActionResult> GetSymbol([FromQuery] SymbolQuery query)
         {
-            var sym = _symmgr.Get(path);
-            return (Json(Models.Output.Symbol.CreateModel(sym)));
+            if (query.Id == null && query.Path == null)
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    ResourceName = "",
+                    PropertyName = "Must specify at lease one query parameter",
+                    ResourceType = typeof(Data.Models.Symbols.Symbol)
+                };
+            if (query.Path != null)
+            {
+                var sym = _symmgr.Get(query.Path);
+                return (Json(Models.Output.Symbol.CreateModel(sym)));
+            }
+            else
+            {
+                var sym = await _symmgr.GetAsync(query.Id.Value);
+                return (Json(Models.Output.Symbol.CreateModel(sym)));
+            }
         }
 
         [HttpPost]

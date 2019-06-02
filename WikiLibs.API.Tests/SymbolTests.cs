@@ -488,12 +488,27 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
-        public async Task Get()
+        public async Task Get_Path()
         {
             var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol(controller);
-            var res = controller.GetSymbol("C/TestLib/TestFunc") as JsonResult;
+            var res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Path = "C/TestLib/TestFunc" }) as JsonResult;
+            var obj = res.Value as Models.Output.Symbol;
+            Assert.AreEqual("C", obj.Lang);
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Path);
+            Assert.AreEqual("function", obj.Type);
+            Assert.AreEqual(1, obj.Prototypes.Length);
+            Assert.AreEqual(5, obj.Prototypes[0].Parameters.Length);
+        }
+
+        [Test]
+        public async Task Get_Id()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+
+            await PostTestSymbol(controller);
+            var res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Id = 1 }) as JsonResult;
             var obj = res.Value as Models.Output.Symbol;
             Assert.AreEqual("C", obj.Lang);
             Assert.AreEqual("C/TestLib/TestFunc", obj.Path);
@@ -507,8 +522,7 @@ namespace WikiLibs.API.Tests
         {
             var controller = new Symbols.SymbolController(Manager, User);
 
-            Assert.Throws<Shared.Exceptions.ResourceNotFound>(() => 
-            controller.GetSymbol("crap"));
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Path = "crap" }));
         }
 
         [Test]
