@@ -15,7 +15,7 @@ namespace WikiLibs.Models.Output
                 [JsonProperty(PropertyName = "prototype")]
                 public string Proto { get; set; }
                 public string Description { get; set; }
-                public string Path { get; set; }
+                public long? Ref { get; set; }
             }
 
             [JsonProperty(PropertyName = "prototype")]
@@ -33,7 +33,7 @@ namespace WikiLibs.Models.Output
         public string Type { get; set; }
         public string Path { get; set; }
         public Prototype[] Prototypes { get; set; }
-        public string[] Symbols { get; set; }
+        public long?[] Symbols { get; set; }
 
         public override void Map(in Data.Models.Symbols.Symbol model)
         {
@@ -45,7 +45,7 @@ namespace WikiLibs.Models.Output
             Lib = model.Lib;
             Type = model.Type;
             Path = model.Path;
-            Symbols = new string[model.Symbols.Count];
+            Symbols = new long?[model.Symbols.Count];
             Prototypes = new Prototype[model.Prototypes.Count];
             int i = 0;
             foreach (var proto in model.Prototypes)
@@ -62,7 +62,7 @@ namespace WikiLibs.Models.Output
                     Prototypes[i].Parameters[j] = new Prototype.Parameter()
                     {
                         Description = param.Description,
-                        Path = param.SymbolRef?.RefPath,
+                        Ref = param.SymbolRef?.RefId,
                         Proto = param.Data
                     };
                     ++j;
@@ -71,7 +71,10 @@ namespace WikiLibs.Models.Output
             }
             int k = 0;
             foreach (var sref in model.Symbols)
-                Symbols[k++] = sref.RefPath;
+            {
+                if (sref.RefId != null)
+                    Symbols[k++] = sref.RefId;
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ namespace WikiLibs.Models.Input.Symbols
                 [JsonProperty(PropertyName = "prototype")]
                 public string Proto { get; set; }
                 public string Description { get; set; }
-                public string Path { get; set; }
+                public string Ref { get; set; }
             }
 
             [Required]
@@ -61,7 +61,7 @@ namespace WikiLibs.Models.Input.Symbols
                     {
                         Data = par.Proto,
                         Description = par.Description,
-                        SymbolRef = par.Path != null ? new PrototypeParamSymbolRef() { RefPath = par.Path } : null,
+                        SymbolRef = par.Ref != null ? new PrototypeParamSymbolRef() { RefPath = par.Ref } : null,
                         Prototype = p
                     };
                     p.Parameters.Add(param);

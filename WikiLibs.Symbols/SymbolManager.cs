@@ -153,7 +153,7 @@ namespace WikiLibs.Symbols
             return (s);
         }
 
-        public PageResult<string> SearchSymbols(string path, PageOptions options)
+        public PageResult<SymbolSearchResult> SearchSymbols(string path, PageOptions options)
         {
             options.Page = options.Page != null ? options.Page.Value : 1;
             if (options.Page == 0)
@@ -168,9 +168,14 @@ namespace WikiLibs.Symbols
                 .Skip((options.Page.Value - 1) * _cfg.GetMaxSymbols(options));
             bool next = data.Count() > _cfg.GetMaxSymbols(options);
             var arr = data.Take(_cfg.GetMaxSymbols(options))
-                .Select(sym => sym.Path);
+                .Select(sym => new SymbolSearchResult()
+                {
+                    Path = sym.Path,
+                    Id = sym.Id,
+                    Type = sym.Type
+                });
 
-            return (new PageResult<string>()
+            return (new PageResult<SymbolSearchResult>()
             {
                 Data = arr,
                 HasMorePages = next,

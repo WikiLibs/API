@@ -103,7 +103,7 @@ namespace WikiLibs.API.Tests
                             {
                                 Description = "a",
                                 Proto = "fint a",
-                                Path = "C/TestLib/fint"
+                                Ref = "C/TestLib/fint"
                             },
                             new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
                             {
@@ -608,16 +608,18 @@ namespace WikiLibs.API.Tests
             {
                 Page = 1
             }) as JsonResult;
-            var obj = res.Value as PageResult<string>;
+            var obj = res.Value as PageResult<SymbolSearchResult>;
             Assert.AreEqual(1, obj.Data.Count());
-            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
+            Assert.AreEqual(1, obj.Data.First().Id);
+            Assert.AreEqual("function", obj.Data.First().Type);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
             Assert.AreEqual(15, obj.Count);
         }
 
         [Test]
-        public async Task Search_2()
+        public async Task SearchString_2()
         {
             var symController = new Symbols.SymbolController(Manager, User);
             var controller = new Symbols.SearchController(Manager);
@@ -628,16 +630,18 @@ namespace WikiLibs.API.Tests
                 Page = 1,
                 Count = 0
             }) as JsonResult;
-            var obj = res.Value as PageResult<string>;
+            var obj = res.Value as PageResult<SymbolSearchResult>;
             Assert.AreEqual(1, obj.Data.Count());
-            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
+            Assert.AreEqual(1, obj.Data.First().Id);
+            Assert.AreEqual("function", obj.Data.First().Type);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
             Assert.AreEqual(15, obj.Count);
         }
 
         [Test]
-        public async Task Search_3()
+        public async Task SearchString_3()
         {
             var symController = new Symbols.SymbolController(Manager, User);
             var controller = new Symbols.SearchController(Manager);
@@ -648,25 +652,29 @@ namespace WikiLibs.API.Tests
                 Page = 1,
                 Count = 1
             }) as JsonResult;
-            var obj = res.Value as PageResult<string>;
+            var obj = res.Value as PageResult<SymbolSearchResult>;
             Assert.AreEqual(1, obj.Data.Count());
-            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
+            Assert.AreEqual(1, obj.Data.First().Id);
+            Assert.AreEqual("function", obj.Data.First().Type);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
             Assert.AreEqual(1, obj.Count);
         }
 
         [Test]
-        public async Task Search_4()
+        public async Task SearchString_4()
         {
             var symController = new Symbols.SymbolController(Manager, User);
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol(symController);
             var res = controller.SearchSymbols("C/TestLib/", new PageOptions() { }) as JsonResult;
-            var obj = res.Value as PageResult<string>;
+            var obj = res.Value as PageResult<SymbolSearchResult>;
             Assert.AreEqual(1, obj.Data.Count());
-            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
+            Assert.AreEqual(1, obj.Data.First().Id);
+            Assert.AreEqual("function", obj.Data.First().Type);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
             Assert.AreEqual(15, obj.Count);

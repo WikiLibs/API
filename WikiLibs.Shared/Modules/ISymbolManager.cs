@@ -6,10 +6,17 @@ using WikiLibs.Shared.Helpers;
 
 namespace WikiLibs.Shared.Modules
 {
+    public class SymbolSearchResult
+    {
+        public long Id { get; set; }
+        public string Path { get; set; }
+        public string Type { get; set; }
+    }
+
     public interface ISymbolManager : IModule, ICRUDOperations<Data.Models.Symbols.Symbol>
     {
         Data.Models.Symbols.Symbol Get(string path);
-        PageResult<string> SearchSymbols(string path, PageOptions options);
+        PageResult<SymbolSearchResult> SearchSymbols(string path, PageOptions options);
         string[] GetFirstLangs();
         string[] GetFirstLibs(string lang);
 

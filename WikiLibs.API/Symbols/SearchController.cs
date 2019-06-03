@@ -37,7 +37,7 @@ namespace WikiLibs.API.Symbols
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("string/{*path}")]
-        [ProducesResponseType(200, Type = typeof(PageResult<string>))]
+        [ProducesResponseType(200, Type = typeof(PageResult<SymbolSearchResult>))]
         public IActionResult SearchSymbols([FromRoute]string path, [FromQuery]PageOptions options)
         {
             var res = _symmgr.SearchSymbols(path, options);
