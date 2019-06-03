@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using WikiLibs.Data.Models;
+using WikiLibs.Shared.Modules;
 
 namespace WikiLibs.Models.Output
 {
@@ -15,7 +16,7 @@ namespace WikiLibs.Models.Output
                 [JsonProperty(PropertyName = "prototype")]
                 public string Proto { get; set; }
                 public string Description { get; set; }
-                public long? Ref { get; set; }
+                public SymbolReference Ref { get; set; }
             }
 
             [JsonProperty(PropertyName = "prototype")]
@@ -33,7 +34,7 @@ namespace WikiLibs.Models.Output
         public string Type { get; set; }
         public string Path { get; set; }
         public Prototype[] Prototypes { get; set; }
-        public long?[] Symbols { get; set; }
+        public List<SymbolReference> Symbols { get; set; }
 
         public override void Map(in Data.Models.Symbols.Symbol model)
         {
@@ -45,7 +46,7 @@ namespace WikiLibs.Models.Output
             Lib = model.Lib;
             Type = model.Type;
             Path = model.Path;
-            Symbols = new long?[model.Symbols.Count];
+            Symbols = new List<SymbolReference>();
             Prototypes = new Prototype[model.Prototypes.Count];
             int i = 0;
             foreach (var proto in model.Prototypes)
@@ -62,18 +63,21 @@ namespace WikiLibs.Models.Output
                     Prototypes[i].Parameters[j] = new Prototype.Parameter()
                     {
                         Description = param.Description,
-                        Ref = param.SymbolRef?.RefId,
+                        Ref = (param.SymbolRef != null && param.SymbolRef.RefId != null) ? new SymbolReference() { Id = param.SymbolRef.RefId.Value, Path = param.SymbolRef.RefPath } : null,
                         Proto = param.Data
                     };
                     ++j;
                 }
                 ++i;
             }
-            int k = 0;
             foreach (var sref in model.Symbols)
             {
                 if (sref.RefId != null)
-                    Symbols[k++] = sref.RefId;
+                    Symbols.Add(new SymbolReference()
+                    {
+                        Id = sref.RefId.Value,
+                        Path = sref.RefPath
+                    });
             }
         }
     }

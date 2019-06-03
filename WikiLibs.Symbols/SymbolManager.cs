@@ -153,7 +153,7 @@ namespace WikiLibs.Symbols
             return (s);
         }
 
-        public PageResult<SymbolSearchResult> SearchSymbols(string path, PageOptions options)
+        public PageResult<SymbolListItem> SearchSymbols(string path, PageOptions options)
         {
             options.Page = options.Page != null ? options.Page.Value : 1;
             if (options.Page == 0)
@@ -168,14 +168,14 @@ namespace WikiLibs.Symbols
                 .Skip((options.Page.Value - 1) * _cfg.GetMaxSymbols(options));
             bool next = data.Count() > _cfg.GetMaxSymbols(options);
             var arr = data.Take(_cfg.GetMaxSymbols(options))
-                .Select(sym => new SymbolSearchResult()
+                .Select(sym => new SymbolListItem()
                 {
                     Path = sym.Path,
                     Id = sym.Id,
                     Type = sym.Type
                 });
 
-            return (new PageResult<SymbolSearchResult>()
+            return (new PageResult<SymbolListItem>()
             {
                 Data = arr,
                 HasMorePages = next,
@@ -199,6 +199,12 @@ namespace WikiLibs.Symbols
                     sref.RefId = symbol.Id;
             }
             await SaveChanges();
+        }
+
+        [ModuleInitializer(Debug = true, Release = true)]
+        public static void InitSymbols(ISymbolManager mgr)
+        {
+            mgr.OptimizeAsync().Wait();
         }
     }
 }

@@ -241,6 +241,26 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task CheckInit_Optimize()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+            var res = await PostTestSymbol_Complex(controller);
+
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(2, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolRefs.Count());
+            Assert.IsNull(Context.SymbolRefs.First().RefId);
+            Assert.IsNull(Context.SymbolRefs.First().Ref);
+            Assert.IsNotNull(Context.SymbolRefs.First().RefPath);
+            SymbolManager.InitSymbols(Manager);
+            Assert.IsNotNull(Context.SymbolRefs.First().RefId);
+            Assert.IsNotNull(Context.SymbolRefs.First().Ref);
+            Assert.IsNotNull(Context.SymbolRefs.First().RefPath);
+        }
+
+        [Test]
         public async Task Post_Error_Dupe()
         {
             var controller = new Symbols.SymbolController(Manager, User);
@@ -608,7 +628,7 @@ namespace WikiLibs.API.Tests
             {
                 Page = 1
             }) as JsonResult;
-            var obj = res.Value as PageResult<SymbolSearchResult>;
+            var obj = res.Value as PageResult<SymbolListItem>;
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
             Assert.AreEqual(1, obj.Data.First().Id);
@@ -630,7 +650,7 @@ namespace WikiLibs.API.Tests
                 Page = 1,
                 Count = 0
             }) as JsonResult;
-            var obj = res.Value as PageResult<SymbolSearchResult>;
+            var obj = res.Value as PageResult<SymbolListItem>;
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
             Assert.AreEqual(1, obj.Data.First().Id);
@@ -652,7 +672,7 @@ namespace WikiLibs.API.Tests
                 Page = 1,
                 Count = 1
             }) as JsonResult;
-            var obj = res.Value as PageResult<SymbolSearchResult>;
+            var obj = res.Value as PageResult<SymbolListItem>;
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
             Assert.AreEqual(1, obj.Data.First().Id);
@@ -670,7 +690,7 @@ namespace WikiLibs.API.Tests
 
             await PostTestSymbol(symController);
             var res = controller.SearchSymbols("C/TestLib/", new PageOptions() { }) as JsonResult;
-            var obj = res.Value as PageResult<SymbolSearchResult>;
+            var obj = res.Value as PageResult<SymbolListItem>;
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
             Assert.AreEqual(1, obj.Data.First().Id);
