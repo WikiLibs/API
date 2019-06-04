@@ -13,6 +13,7 @@ namespace WikiLibs.Data.Models.Symbols
         public string Path { get; set; }
         public string UserId { get; set; }
         public string Lang { get; set; }
+        public string Lib { get; set; }
         public string Type { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }

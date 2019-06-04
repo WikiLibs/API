@@ -18,7 +18,7 @@ namespace WikiLibs.Models.Input.Symbols
                 [JsonProperty(PropertyName = "prototype")]
                 public string Proto { get; set; }
                 public string Description { get; set; }
-                public string Path { get; set; }
+                public string Ref { get; set; }
             }
 
             [Required]
@@ -32,8 +32,6 @@ namespace WikiLibs.Models.Input.Symbols
         [Required]
         public string Path { get; set; }
         [Required]
-        public string Lang { get; set; }
-        [Required]
         public string Type { get; set; }
         [Required]
         public Prototype[] Prototypes { get; set; }
@@ -46,7 +44,6 @@ namespace WikiLibs.Models.Input.Symbols
             {
                 LastModificationDate = DateTime.UtcNow,
                 CreationDate = DateTime.UtcNow,
-                Lang = Lang,
                 Path = Path,
                 Type = Type,
             };
@@ -64,7 +61,7 @@ namespace WikiLibs.Models.Input.Symbols
                     {
                         Data = par.Proto,
                         Description = par.Description,
-                        Path = par.Path,
+                        SymbolRef = par.Ref != null ? new PrototypeParamSymbolRef() { RefPath = par.Ref } : null,
                         Prototype = p
                     };
                     p.Parameters.Add(param);
@@ -75,7 +72,7 @@ namespace WikiLibs.Models.Input.Symbols
             {
                 var symRef = new SymbolRef()
                 {
-                    Path = sref,
+                    RefPath = sref,
                     Symbol = sym
                 };
                 sym.Symbols.Add(symRef);

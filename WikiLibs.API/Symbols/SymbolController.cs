@@ -23,14 +23,35 @@ namespace WikiLibs.API.Symbols
             _user = usr;
         }
 
+        public class SymbolQuery
+        {
+            public long? Id { get; set; }
+            public string Path { get; set; }
+        }
+
         [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
-        [HttpGet("{*path}")]
-        public IActionResult GetSymbol([FromRoute] string path)
+        [HttpGet]
+        public async Task<IActionResult> GetSymbol([FromQuery] SymbolQuery query)
         {
-            var sym = _symmgr.Get(path);
-            return (Json(Models.Output.Symbol.CreateModel(sym)));
+            if (query == null || (query.Id == null && query.Path == null))
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    ResourceName = "",
+                    PropertyName = "Must specify at lease one query parameter",
+                    ResourceType = typeof(Data.Models.Symbols.Symbol)
+                };
+            if (query.Path != null)
+            {
+                var sym = _symmgr.Get(query.Path);
+                return (Json(Models.Output.Symbol.CreateModel(sym)));
+            }
+            else
+            {
+                var sym = await _symmgr.GetAsync(query.Id.Value);
+                return (Json(Models.Output.Symbol.CreateModel(sym)));
+            }
         }
 
         [HttpPost]
@@ -51,34 +72,49 @@ namespace WikiLibs.API.Symbols
             return (Json(Models.Output.Symbol.CreateModel(mdl)));
         }
 
-        [HttpPatch("{*path}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
-        public async Task<IActionResult> PatchSymbol([FromRoute] string path, [FromBody, Required] Models.Input.Symbols.SymbolUpdate sym)
+        public async Task<IActionResult> PatchSymbol([FromRoute] long id, [FromBody, Required] Models.Input.Symbols.SymbolUpdate sym)
         {
             if (!_user.HasPermission(Permissions.UPDATE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
-                    ResourceName = path,
-                    ResourceId = path,
+                    ResourceName = id.ToString(),
+                    ResourceId = id.ToString(),
                     ResourceType = typeof(Data.Models.Symbols.Symbol),
                     MissingPermission = Permissions.UPDATE_SYMBOL
                 };
-            var mdl = await _symmgr.PatchAsync(_symmgr.Get(path).Id, sym.CreatePatch(_symmgr.Get(path)));
+            var mdl = await _symmgr.PatchAsync(id, sym.CreatePatch(await _symmgr.GetAsync(id)));
             return (Json(Models.Output.Symbol.CreateModel(mdl)));
         }
 
-        [HttpDelete("{*path}")]
-        public async Task<IActionResult> DeleteSymbol([FromRoute] string path)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSymbol([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.DELETE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
-                    ResourceName = path,
-                    ResourceId = path,
+                    ResourceName = id.ToString(),
+                    ResourceId = id.ToString(),
                     ResourceType = typeof(Data.Models.Symbols.Symbol),
                     MissingPermission = Permissions.DELETE_SYMBOL
                 };
-            await _symmgr.DeleteAsync(_symmgr.Get(path));
+            await _symmgr.DeleteAsync(id);
+            return (Ok());
+        }
+
+        [HttpPatch("optimize")]
+        public async Task<IActionResult> OptimizeAsync()
+        {
+            if (!_user.HasPermission(Permissions.OPTIMIZE_SYMBOL))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = "Optimize",
+                    ResourceId = "Optimize",
+                    ResourceType = typeof(Data.Models.Symbols.Symbol),
+                    MissingPermission = Permissions.OPTIMIZE_SYMBOL
+                };
+            await _symmgr.OptimizeAsync();
             return (Ok());
         }
     }

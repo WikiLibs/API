@@ -19,6 +19,13 @@
     <Compile Remove="Migrations\20190523102257_AddExamples.cs" />
     <Compile Remove="Migrations\20190523102257_AddExamples.Designer.cs" />
     <Compile Remove="Migrations\20190523102957_AddExamples.cs" />
+    <Compile Remove="Migrations\20190602091824_OptimizeSymbols.cs" />
+    <Compile Remove="Migrations\20190602092546_OptimizeSymbols.cs" />
+    <Compile Remove="Migrations\20190602093029_OptimizeSymbols.cs" />
+    <Compile Remove="Migrations\20190602093214_OptimizeSymbols.cs" />
+    <Compile Remove="Migrations\20190602095322_OptimizeSymbols.cs" />
+    <Compile Remove="Migrations\20190602120553_OptimizeSymbols.cs" />
+    <Compile Remove="Migrations\20190602130845_OptimizeSymbols.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,6 +13,7 @@ namespace WikiLibs.Data
         public DbSet<Prototype> Prototypes { get; set; }
         public DbSet<PrototypeParam> PrototypeParams { get; set; }
         public DbSet<SymbolRef> SymbolRefs { get; set; }
+        public DbSet<PrototypeParamSymbolRef> PrototypeParamSymbolRefs { get; set; }
         public DbSet<Info> InfoTable { get; set; }
         #endregion
 
@@ -81,6 +82,20 @@ namespace WikiLibs.Data
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+            modelBuilder.Entity<PrototypeParamSymbolRef>(builder =>
+            {
+                builder.HasOne(e => e.PrototypeParam)
+                    .WithOne(e => e.SymbolRef)
+                    .HasForeignKey<PrototypeParamSymbolRef>(e => e.PrototypeParamId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.Cascade);
+                builder.HasOne(e => e.Ref)
+                    .WithOne()
+                    .HasForeignKey<PrototypeParamSymbolRef>(e => e.RefId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Restrict);
+                builder.HasIndex(e => e.RefId).IsUnique(false);
+            });
             modelBuilder.Entity<SymbolRef>(builder =>
             {
                 builder.HasOne(e => e.Symbol)
@@ -88,6 +103,12 @@ namespace WikiLibs.Data
                     .HasForeignKey(e => e.SymbolId)
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
+                builder.HasOne(e => e.Ref)
+                    .WithOne()
+                    .HasForeignKey<SymbolRef>(e => e.RefId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Restrict);
+                builder.HasIndex(e => e.RefId).IsUnique(false);
             });
             #endregion
 

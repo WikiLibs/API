@@ -21,20 +21,25 @@ namespace WikiLibs.Symbols
             _cfg = cfg;
         }
 
-        private string GetLibLangPath(Symbol sym)
+        private void GetLibLangFromPath(Symbol sym, out string lib, out string lang)
         {
             string[] objs = sym.Path.Split('/');
 
-            return (objs[0] + '/' + objs[1] + '/');
+            lib = objs[1];
+            lang = objs[0];
         }
 
         public override async Task<Symbol> DeleteAsync(Symbol sym)
         {
             await base.DeleteAsync(sym);
+            string lib;
+            string lang;
+            GetLibLangFromPath(sym, out lib, out lang);
+            string libl = lang + "/" + lib + "/";
+
             if (!Set.Any(sy => sy.Lang == sym.Lang))
                 Context.InfoTable.RemoveRange(Context.InfoTable.Where(sy =>
-                    sy.Type == EInfoType.LANG && sy.Data == sym.Lang));
-            string libl = GetLibLangPath(sym);
+                    sy.Type == EInfoType.LANG && sy.Data == lang));
             if (!Set.Any(sy => sy.Path.StartsWith(libl)))
                 Context.InfoTable.RemoveRange(Context.InfoTable.Where(sy =>
                     sy.Type == EInfoType.LIB && sy.Data == libl));
@@ -103,11 +108,17 @@ namespace WikiLibs.Symbols
                     ResourceType = typeof(Symbol),
                     ResourceName = sym.Path
                 };
-            string libl = GetLibLangPath(sym);
-            if (Context.InfoTable.Where(o => o.Type == EInfoType.LANG && o.Data == sym.Lang).Count() <= 0)
-                Context.InfoTable.Add(new Info { Type = EInfoType.LANG, Data = sym.Lang });
+
+            string lib;
+            string lang;
+            GetLibLangFromPath(sym, out lib, out lang);
+            string libl = lang + "/" + lib + "/";
+            if (Context.InfoTable.Where(o => o.Type == EInfoType.LANG && o.Data == lang).Count() <= 0)
+                Context.InfoTable.Add(new Info { Type = EInfoType.LANG, Data = lang });
             if (Context.InfoTable.Where(o => o.Type == EInfoType.LIB && o.Data == libl).Count() <= 0)
                 Context.InfoTable.Add(new Info { Type = EInfoType.LIB, Data = libl });
+            sym.Lib = lib;
+            sym.Lang = lang;
             return (await base.PostAsync(sym));
         }
 
@@ -123,10 +134,7 @@ namespace WikiLibs.Symbols
                 foreach (var proto in sym.Prototypes)
                 {
                     foreach (var param in proto.Parameters)
-                    {
                         param.Id = 0;
-                        Context.Add(param);
-                    }
                     proto.Id = 0;
                     proto.Symbol = s;
                     Context.Add(proto);
@@ -145,7 +153,7 @@ namespace WikiLibs.Symbols
             return (s);
         }
 
-        public PageResult<string> SearchSymbols(string path, PageOptions options)
+        public PageResult<SymbolListItem> SearchSymbols(string path, PageOptions options)
         {
             options.Page = options.Page != null ? options.Page.Value : 1;
             if (options.Page == 0)
@@ -160,15 +168,43 @@ namespace WikiLibs.Symbols
                 .Skip((options.Page.Value - 1) * _cfg.GetMaxSymbols(options));
             bool next = data.Count() > _cfg.GetMaxSymbols(options);
             var arr = data.Take(_cfg.GetMaxSymbols(options))
-                .Select(sym => sym.Path);
+                .Select(sym => new SymbolListItem()
+                {
+                    Path = sym.Path,
+                    Id = sym.Id,
+                    Type = sym.Type
+                });
 
-            return (new PageResult<string>()
+            return (new PageResult<SymbolListItem>()
             {
                 Data = arr,
                 HasMorePages = next,
                 Page = options.Page.Value,
                 Count = _cfg.GetMaxSymbols(options)
             });
+        }
+
+        public async Task OptimizeAsync()
+        {
+            foreach (var sref in Context.SymbolRefs.Where(e => e.RefId == null))
+            {
+                var symbol = Get(sref.RefPath);
+                if (symbol != null)
+                    sref.RefId = symbol.Id;
+            }
+            foreach (var sref in Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null))
+            {
+                var symbol = Get(sref.RefPath);
+                if (symbol != null)
+                    sref.RefId = symbol.Id;
+            }
+            await SaveChanges();
+        }
+
+        [ModuleInitializer(Debug = true, Release = true)]
+        public static void InitSymbols(ISymbolManager mgr)
+        {
+            mgr.OptimizeAsync().Wait();
         }
     }
 }

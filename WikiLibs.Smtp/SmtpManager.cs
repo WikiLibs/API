@@ -12,7 +12,6 @@ namespace WikiLibs.Smtp
     public class SmtpManager : ISmtpManager
     {
         private readonly Config _config;
-        private readonly string _webRoot;
         private readonly MailjetClient _client;
 
         public SmtpManager(Config cfg)
