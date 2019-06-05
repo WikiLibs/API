@@ -188,13 +188,13 @@ namespace WikiLibs.Symbols
         {
             foreach (var sref in Context.SymbolRefs.Where(e => e.RefId == null))
             {
-                var symbol = Get(sref.RefPath);
+                var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
                 if (symbol != null)
                     sref.RefId = symbol.Id;
             }
             foreach (var sref in Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null))
             {
-                var symbol = Get(sref.RefPath);
+                var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
                 if (symbol != null)
                     sref.RefId = symbol.Id;
             }
