@@ -69,7 +69,7 @@ namespace WikiLibs.API.Tests
             return (res);
         }
 
-        private async Task<IActionResult> PostTestSymbol_Complex_1(Symbols.SymbolController controller)
+        private async Task<IActionResult> PostTestSymbol_Complex_1(Symbols.SymbolController controller, bool broken = false)
         {
             await controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
             {
@@ -103,7 +103,7 @@ namespace WikiLibs.API.Tests
                             {
                                 Description = "a",
                                 Proto = "fint a",
-                                Ref = "C/TestLib/fint"
+                                Ref = broken ? "NON_EXISTANT" : "C/TestLib/fint"
                             },
                             new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
                             {
@@ -133,7 +133,7 @@ namespace WikiLibs.API.Tests
             return (res);
         }
 
-        private async Task<IActionResult> PostTestSymbol_Complex(Symbols.SymbolController controller)
+        private async Task<IActionResult> PostTestSymbol_Complex(Symbols.SymbolController controller, bool broken = false)
         {
             await PostTestSymbol(controller);
 
@@ -152,7 +152,7 @@ namespace WikiLibs.API.Tests
                 },
                 Symbols = new string[]
                 {
-                    "C/TestLib/TestFunc"
+                    broken ? "NON_EXISTANT" : "C/TestLib/TestFunc"
                 }
             });
             return (res);
@@ -238,6 +238,46 @@ namespace WikiLibs.API.Tests
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+        }
+
+        [Test]
+        public async Task Optimize_3()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+            var res = await PostTestSymbol_Complex_1(controller, true);
+
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(2, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
+            Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
+            Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
+            Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+            await controller.OptimizeAsync();
+            Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
+            Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
+            Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+        }
+
+        [Test]
+        public async Task Optimize_4()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+            var res = await PostTestSymbol_Complex(controller, true);
+
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(2, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolRefs.Count());
+            Assert.IsNull(Context.SymbolRefs.First().RefId);
+            Assert.IsNull(Context.SymbolRefs.First().Ref);
+            Assert.IsNotNull(Context.SymbolRefs.First().RefPath);
+            await controller.OptimizeAsync();
+            Assert.IsNull(Context.SymbolRefs.First().RefId);
+            Assert.IsNull(Context.SymbolRefs.First().Ref);
+            Assert.IsNotNull(Context.SymbolRefs.First().RefPath);
         }
 
         [Test]
