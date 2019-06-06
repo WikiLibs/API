@@ -18,6 +18,12 @@ namespace WikiLibs.API.Examples
         private readonly IUser _user;
         private readonly IExampleManager _manager;
 
+        public ExampleController(IUser usr, IExampleModule module)
+        {
+            _user = usr;
+            _manager = module.Manager;
+        }
+
         [HttpPost]
         [ProducesResponseType(200, Type = typeof(Models.Output.Examples.Example))]
         public async Task<IActionResult> PostAsync([FromBody, Required] Models.Input.Examples.ExampleCreate example)
