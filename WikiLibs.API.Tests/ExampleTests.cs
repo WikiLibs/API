@@ -254,11 +254,12 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Post()
         {
-            var controller = new ExampleController(User, new ExampleModule(Context));
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new Config()
             {
                 MaxSymsPerPage = 15
-            }), User));
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             var res = await controller.PostAsync(new ExampleCreate()
             {
                 SymbolId = 1,
@@ -288,17 +289,18 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(3, obj.Code.Length);
             Assert.AreEqual("This is a test example", obj.Description);
             User.SetPermissions(new string[] { });
-            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(null));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new ExampleCreate()));
         }
 
         [Test]
         public async Task Controller_Patch()
         {
-            var controller = new ExampleController(User, new ExampleModule(Context));
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new Config()
             {
                 MaxSymsPerPage = 15
-            }), User));
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
             var res = await controller.PatchAsync(1, new ExampleUpdate()
@@ -311,17 +313,18 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("test", obj.Description);
             Assert.AreEqual(3, obj.Code.Length);
             User.SetPermissions(new string[] { });
-            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(1, null));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(1, new ExampleUpdate()));
         }
 
         [Test]
         public async Task Controller_Delete()
         {
-            var controller = new ExampleController(User, new ExampleModule(Context));
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new Config()
             {
                 MaxSymsPerPage = 15
-            }), User));
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
             await controller.DeleteAsync(1);

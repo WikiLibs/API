@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Shared;
+using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Shared.Service;
 
@@ -17,11 +18,13 @@ namespace WikiLibs.API.Examples
     {
         private readonly IUser _user;
         private readonly IExampleManager _manager;
+        private readonly ISymbolManager _symbolManager;
 
-        public ExampleController(IUser usr, IExampleModule module)
+        public ExampleController(IUser usr, IExampleModule module, ISymbolManager symbolManager)
         {
             _user = usr;
             _manager = module.Manager;
+            _symbolManager = symbolManager;
         }
 
         [HttpPost]
@@ -36,7 +39,9 @@ namespace WikiLibs.API.Examples
                     MissingPermission = Permissions.CREATE_EXAMPLE
                 };
             var ex = example.CreateModel();
+            ex.User = _user.User;
             ex.UserId = _user.UserId;
+            ex.Symbol = await _symbolManager.GetAsync(ex.SymbolId);
             var mdl = await _manager.PostAsync(ex);
             return (Json(Models.Output.Examples.Example.CreateModel(mdl)));
         }
