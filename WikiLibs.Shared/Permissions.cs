@@ -32,15 +32,25 @@ namespace WikiLibs.Shared
         /// <summary>
         /// Create an example by requesting admin review
         /// </summary>
-        public const string CREATE_EXAMPLE_REQUEST = "example.requests.create";
+        public const string CREATE_EXAMPLE_REQUEST_POST = "example.requests.create.post";
 
         /// <summary>
-        /// Update an example by requesting admin review
+        /// Patch an example by requesting admin review
+        /// </summary>
+        public const string CREATE_EXAMPLE_REQUEST_PATCH = "example.requests.create.patch";
+
+        /// <summary>
+        /// Delete an example by requesting admin review
+        /// </summary>
+        public const string CREATE_EXAMPLE_REQUEST_DELETE = "example.requests.create.delete";
+
+        /// <summary>
+        /// Patch your own example request
         /// </summary>
         public const string UPDATE_EXAMPLE_REQUEST = "example.requests.update";
 
         /// <summary>
-        /// Delete an example by requesting admin review
+        /// Delete your own example request
         /// </summary>
         public const string DELETE_EXAMPLE_REQUEST = "example.requests.delete";
 
