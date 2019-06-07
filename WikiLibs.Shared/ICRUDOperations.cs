@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,6 +16,7 @@ namespace WikiLibs.Shared
         Task<DataModel> DeleteAsync(KeyType key);
         Task<DataModel> GetAsync(KeyType key);
         Task<int> SaveChanges();
+        IQueryable<DataModel> Get(Expression<Func<DataModel, bool>> expression);
     }
 
     public interface ICRUDOperations<DataModel> : ICRUDOperations<DataModel, long>

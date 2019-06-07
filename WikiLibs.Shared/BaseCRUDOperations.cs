@@ -87,6 +87,16 @@ namespace WikiLibs.Shared
         {
             return (Task.CompletedTask);
         }
+
+        public virtual IQueryable<DataModel> OrderBy(IQueryable<DataModel> models)
+        {
+            return (models);
+        }
+
+        public virtual IQueryable<DataModel> Get(Expression<Func<DataModel, bool>> expression)
+        {
+            return (OrderBy(Set.Where(expression)));
+        }
     }
 
     public abstract class BaseCRUDOperations<DbContext, DataModel> : BaseCRUDOperations<DbContext, DataModel, long>
