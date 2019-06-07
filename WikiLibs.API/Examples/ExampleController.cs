@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Shared;
+using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Shared.Service;
@@ -25,6 +27,12 @@ namespace WikiLibs.API.Examples
             _user = usr;
             _manager = module.Manager;
             _symbolManager = symbolManager;
+        }
+
+        public class ExampleQuery
+        {
+            public long? SymbolId { get; set; }
+            public string Token { get; set; }
         }
 
         [HttpPost]
@@ -75,6 +83,34 @@ namespace WikiLibs.API.Examples
                 };
             await _manager.DeleteAsync(id);
             return (Ok());
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [ProducesResponseType(200, Type = typeof(Models.Output.Examples.Example))]
+        public async Task<IActionResult> Get([FromRoute] long id)
+        {
+            return (Json(Models.Output.Examples.Example.CreateModel(await _manager.GetAsync(id))));
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
+        public IActionResult Get([FromQuery] ExampleQuery query)
+        {
+            if (query == null || (query.Token == null && query.SymbolId == null))
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    ResourceName = "",
+                    PropertyName = "Must specify at lease one query parameter",
+                    ResourceType = typeof(Data.Models.Examples.Example)
+                };
+            if (query.SymbolId != null)
+                return (Json(Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value))));
+            else
+                return (Json(Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)))));
         }
     }
 }
