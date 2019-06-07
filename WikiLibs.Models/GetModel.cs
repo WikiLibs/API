@@ -18,7 +18,7 @@ namespace WikiLibs.Models
             return (mdl);
         }
 
-        public static ICollection<Model> CreateModels(in ICollection<DataModel> models)
+        public static ICollection<Model> CreateModels(in IEnumerable<DataModel> models)
         {
             var lst = new HashSet<Model>();
 
