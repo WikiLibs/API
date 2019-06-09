@@ -189,12 +189,16 @@ namespace WikiLibs.Symbols
             foreach (var sref in Context.SymbolRefs.Where(e => e.RefId == null))
             {
                 var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
+                Context.Entry(symbol).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                Context.Entry(sref.Symbol).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
                 if (symbol != null)
                     sref.RefId = symbol.Id;
             }
             foreach (var sref in Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null))
             {
                 var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
+                Context.Entry(symbol).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                Context.Entry(sref.PrototypeParam).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
                 if (symbol != null)
                     sref.RefId = symbol.Id;
             }
