@@ -39,7 +39,7 @@ namespace WikiLibs.Models.Output
         public override void Map(in Data.Models.Symbols.Symbol model)
         {
             Id = model.Id;
-            UserId = model.User.Id;
+            UserId = model.UserId;
             LastModificationDate = model.LastModificationDate;
             CreationDate = model.CreationDate;
             Lang = model.Lang;

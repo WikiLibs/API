@@ -186,7 +186,8 @@ namespace WikiLibs.Symbols
 
         public async Task OptimizeAsync()
         {
-            foreach (var sref in Context.SymbolRefs.Where(e => e.RefId == null))
+            var srefs = Context.SymbolRefs.Where(e => e.RefId == null);
+            foreach (var sref in srefs)
             {
                 var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
                 Context.Entry(symbol).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
@@ -194,7 +195,8 @@ namespace WikiLibs.Symbols
                 if (symbol != null)
                     sref.RefId = symbol.Id;
             }
-            foreach (var sref in Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null))
+            var sprefs = Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null);
+            foreach (var sref in sprefs)
             {
                 var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
                 Context.Entry(symbol).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
