@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Attributes;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace WikiLibs.Symbols
 {
@@ -189,18 +190,14 @@ namespace WikiLibs.Symbols
             var srefs = Context.SymbolRefs.Where(e => e.RefId == null);
             foreach (var sref in srefs)
             {
-                var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
-                Context.Entry(symbol).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-                Context.Entry(sref.Symbol).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                var symbol = Set.Where(o => o.Path == sref.RefPath).AsNoTracking().FirstOrDefault();
                 if (symbol != null)
                     sref.RefId = symbol.Id;
             }
             var sprefs = Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null);
             foreach (var sref in sprefs)
             {
-                var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
-                Context.Entry(symbol).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-                Context.Entry(sref.PrototypeParam).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                var symbol = Set.Where(o => o.Path == sref.RefPath).AsNoTracking().FirstOrDefault();
                 if (symbol != null)
                     sref.RefId = symbol.Id;
             }
