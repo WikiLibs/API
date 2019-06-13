@@ -55,11 +55,6 @@ namespace WikiLibs.Examples
             return (Set.Where(e => e.DataId != null).Where(e => e.Data.SymbolId == symbol));
         }
 
-        public IQueryable<ExampleRequest> GetAll()
-        {
-            return (Set);
-        }
-
         public override async Task<ExampleRequest> PatchAsync(long key, ExampleRequest mdl)
         {
             var ex = await GetAsync(key);
