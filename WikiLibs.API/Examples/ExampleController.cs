@@ -79,7 +79,7 @@ namespace WikiLibs.API.Examples
                     ResourceId = id.ToString(),
                     ResourceName = id.ToString(),
                     ResourceType = typeof(Data.Models.Examples.Example),
-                    MissingPermission = Permissions.UPDATE_EXAMPLE
+                    MissingPermission = Permissions.DELETE_EXAMPLE
                 };
             await _manager.DeleteAsync(id);
             return (Ok());
@@ -89,7 +89,7 @@ namespace WikiLibs.API.Examples
         [HttpGet("{id}")]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Examples.Example))]
-        public async Task<IActionResult> Get([FromRoute] long id)
+        public async Task<IActionResult> GetAsync([FromRoute] long id)
         {
             return (Json(Models.Output.Examples.Example.CreateModel(await _manager.GetAsync(id))));
         }

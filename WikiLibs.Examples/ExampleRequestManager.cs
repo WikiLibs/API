@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WikiLibs.Data;
 using WikiLibs.Data.Models.Examples;
 using WikiLibs.Shared;
+using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Modules.Examples;
 
 namespace WikiLibs.Examples
@@ -49,7 +50,7 @@ namespace WikiLibs.Examples
             }
         }
 
-        public IQueryable<ExampleRequest> GetAll(long symbol)
+        public IQueryable<ExampleRequest> GetForSymbol(long symbol)
         {
             return (Set.Where(e => e.DataId != null).Where(e => e.Data.SymbolId == symbol));
         }
@@ -128,5 +129,22 @@ namespace WikiLibs.Examples
             return (mdl);
         }
 
+        public PageResult<ExampleRequest> GetAll(PageOptions options)
+        {
+            options.EnsureValid(typeof(ExampleRequest), "ExampleRequest", 100);
+            var data = Set
+                .OrderByDescending(o => o.CreationDate)
+                .Skip((options.Page.Value - 1) * options.Count.Value);
+            bool next = data.Count() > options.Count.Value;
+            var arr = data.Take(options.Count.Value);
+
+            return (new PageResult<ExampleRequest>()
+            {
+                Data = arr,
+                HasMorePages = next,
+                Page = options.Page.Value,
+                Count = options.Count.Value
+            });
+        }
     }
 }
