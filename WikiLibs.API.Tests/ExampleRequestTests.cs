@@ -1,9 +1,11 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Mvc;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WikiLibs.API.Examples;
 using WikiLibs.API.Tests.Helper;
 using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Examples;
@@ -275,10 +277,10 @@ namespace WikiLibs.API.Tests
         {
             await PostTestExampleRequest();
 
-            var res = Manager.GetAll();
-            Assert.AreEqual(1, res.Count());
-            Assert.AreEqual("This is a test", res.First().Message);
-            Assert.AreEqual("This is a test example", res.First().Data.Description);
+            var res = Manager.GetAll(new Shared.Helpers.PageOptions());
+            Assert.AreEqual(10, res.Count);
+            Assert.AreEqual("This is a test", res.Data.First().Message);
+            Assert.AreEqual("This is a test example", res.Data.First().Data.Description);
         }
 
         [Test]
@@ -286,7 +288,7 @@ namespace WikiLibs.API.Tests
         {
             await PostTestExampleRequest();
 
-            var res = Manager.GetAll(1);
+            var res = Manager.GetForSymbol(1);
             Assert.AreEqual(1, res.Count());
             Assert.AreEqual("This is a test", res.First().Message);
             Assert.AreEqual("This is a test example", res.First().Data.Description);
@@ -368,6 +370,41 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(0, Context.Examples.Count());
             Assert.AreEqual(0, Context.ExampleRequests.Count());
             Assert.AreEqual(0, Context.ExampleCodeLines.Count());
+        }
+
+        [Test]
+        public async Task Controller_Post_POST()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            var res = await controller.PostAsync(new ExampleRequestCreate()
+            {
+                Method = Data.Models.Examples.ExampleRequestType.POST,
+                Message = "this is a test",
+                Data = new ExampleCreate()
+                {
+                    SymbolId = 1,
+                    Description = "Test example",
+                    Code = new ExampleCreate.CodeLine[]
+                    {
+                        new ExampleCreate.CodeLine()
+                        {
+                            Data = "int main() {}"
+                        }
+                    }
+                }
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Examples.ExampleRequest;
+
+            Assert.AreEqual("this is a test", obj.Message);
+            Assert.AreEqual(1, obj.Data.SymbolId);
+            Assert.AreEqual("Test example", obj.Data.Description);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new ExampleRequestCreate() { Method = Data.Models.Examples.ExampleRequestType.POST }));
         }
     }
 }

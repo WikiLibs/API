@@ -11,7 +11,7 @@ namespace WikiLibs.Shared.Helpers
 
         public void EnsureValid(Type errType, string errName, int maxResults)
         {
-            Count = Count == null ? 10 : Count; //By default expose 10 results
+            Count = Count == null || Count == 0 ? 10 : Count; //By default expose 10 results
             Count = Count > maxResults ? maxResults : Count; //Ensure a maximum of results
             Page = Page != null ? Page.Value : 1;
             if (Page == 0)

@@ -675,7 +675,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("function", obj.Data.First().Type);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
-            Assert.AreEqual(15, obj.Count);
+            Assert.AreEqual(10, obj.Count);
         }
 
         [Test]
@@ -697,7 +697,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("function", obj.Data.First().Type);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
-            Assert.AreEqual(15, obj.Count);
+            Assert.AreEqual(10, obj.Count);
         }
 
         [Test]
@@ -737,7 +737,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("function", obj.Data.First().Type);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
-            Assert.AreEqual(15, obj.Count);
+            Assert.AreEqual(10, obj.Count);
         }
 
         [Test]

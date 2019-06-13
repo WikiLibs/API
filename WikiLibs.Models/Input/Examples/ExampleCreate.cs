@@ -12,7 +12,6 @@ namespace WikiLibs.Models.Input.Examples
         {
             [Required]
             public string Data { get; set; }
-            [Required]
             public string Comment { get; set; }
         }
 

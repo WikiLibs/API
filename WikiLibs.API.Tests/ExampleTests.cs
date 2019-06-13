@@ -366,7 +366,7 @@ namespace WikiLibs.API.Tests
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
-            var res = await controller.Get(1) as JsonResult;
+            var res = await controller.GetAsync(1) as JsonResult;
             var obj = res.Value as Models.Output.Examples.Example;
             Assert.AreEqual(1, obj.Id);
             Assert.AreEqual("This is a test example", obj.Description);
