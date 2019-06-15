@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
 using WikiLibs.Shared;
 using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Service;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 
 namespace WikiLibs.API
 {
@@ -17,13 +12,14 @@ namespace WikiLibs.API
     [Route("/user")]
     public class UserController : Controller
     {
-         private readonly IUser _user;
-         private readonly IUserManager _ummgr;
+        private readonly IUser _user;
+        private readonly IUserManager _ummgr;
 
-         public UserController(IUser usr, IUserManager ummgr) {
-             _user = usr;
-             _ummgr = ummgr;
-         }
+        public UserController(IUser usr, IUserManager ummgr)
+        {
+            _user = usr;
+            _ummgr = ummgr;
+        }
 
         [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(Models.Output.User))]
@@ -31,16 +27,16 @@ namespace WikiLibs.API
         [HttpGet("{uid}")]
         public async Task<IActionResult> GetUser([FromRoute] string uid)
         {
-             var mdl = await _ummgr.GetAsync(uid);
-             return (Json(Models.Output.User.CreateModel(mdl)));
+            var mdl = await _ummgr.GetAsync(uid);
+            return (Json(Models.Output.User.CreateModel(mdl)));
         }
 
         [ProducesResponseType(200, Type = typeof(Models.Output.User))]
         [HttpGet("me")]
         public async Task<IActionResult> GetMe()
         {
-             var mdl = await _ummgr.GetAsync(_user.UserId);
-             return (Json(Models.Output.User.CreateModel(mdl)));
+            var mdl = await _ummgr.GetAsync(_user.UserId);
+            return (Json(Models.Output.User.CreateModel(mdl)));
         }
 
         [HttpDelete("{uid}")]

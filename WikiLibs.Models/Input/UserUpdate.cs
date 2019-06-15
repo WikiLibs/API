@@ -18,10 +18,44 @@ namespace WikiLibs.Models.Input
 
         public override User CreatePatch(in User current)
         {
-            // current = ancien
-            // comparé à UserUpdate 
-            // create usr à partir de update (if userUpdate == NULL alors on assigne current)
-            throw new NotImplementedException();
+            User userTmp = null;
+            if (this.FirstName != null) {
+                userTmp.FirstName = this.FirstName;
+            } else {
+                userTmp.FirstName = current.FirstName;
+            }
+            if (this.LastName != null) {
+                userTmp.LastName = this.LastName;
+            } else {
+                userTmp.LastName = current.LastName;
+            }
+            if (this.Icon != null) {
+                userTmp.Icon = this.Icon;
+            } else {
+                userTmp.Icon = current.Icon;
+            }
+            if (this.Email != null) {
+                userTmp.EMail = this.Email;
+            } else {
+                userTmp.EMail = current.EMail;
+            }
+            if (this.ProfileMsg != null) {
+                userTmp.ProfileMsg = this.ProfileMsg;
+            } else {
+                userTmp.ProfileMsg = current.ProfileMsg;
+            }
+            if (this.Pseudo != null) {
+                userTmp.Pseudo = this.Pseudo;
+            } else {
+                userTmp.Pseudo = current.Pseudo;
+            }
+            if (this.Password != null) {
+                userTmp.Pass = this.Password;
+            } else {
+                userTmp.Pass = current.Pass;
+            }
+            return userTmp;
+            //throw new NotImplementedException();
         }
     }
 }
