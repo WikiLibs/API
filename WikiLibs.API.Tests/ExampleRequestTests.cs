@@ -551,5 +551,26 @@ namespace WikiLibs.API.Tests
             User.User.Id = "45sq6d46qsd";
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(1, new ExampleRequestUpdate() { Message = "test" }));
         }
+
+        [Test]
+        public async Task Controller_Delete()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestExampleRequest();
+
+            Assert.AreEqual(1, Context.ExampleRequests.Count());
+            await controller.DeleteAsync(1);
+            Assert.AreEqual(0, Context.ExampleRequests.Count());
+            Context.RemoveRange(Context.Symbols);
+            await Context.SaveChangesAsync();
+            await PostTestExampleRequest();
+            User.SetPermissions(new string[] { });
+            User.User.Id = "45sq6d46qsd";
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(2));
+        }
     }
 }

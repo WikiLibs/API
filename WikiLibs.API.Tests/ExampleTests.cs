@@ -371,5 +371,20 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Id);
             Assert.AreEqual("This is a test example", obj.Description);
         }
+
+        [Test]
+        public async Task Controller_Get_Error_Invalid()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            await PostTestExample(sym);
+
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(new ExampleController.ExampleQuery()));
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(null));
+        }
     }
 }
