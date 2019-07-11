@@ -16,9 +16,14 @@ namespace WikiLibs.Examples
         {
         }
 
-        public IQueryable<Example> GetForSymbolAsync(long symbol)
+        public override IQueryable<Example> OrderBy(IQueryable<Example> models)
         {
-            return (Set.Where(e => e.SymbolId == symbol).Where(e => e.RequestId == null));
+            return (models.OrderBy(e => e.CreationDate));
+        }
+
+        public IQueryable<Example> GetForSymbol(long symbol)
+        {
+            return (Get(e => e.SymbolId == symbol).Where(e => e.RequestId == null));
         }
 
         public override async Task<Example> PostAsync(Example mdl)

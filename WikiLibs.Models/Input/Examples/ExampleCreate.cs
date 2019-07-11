@@ -12,10 +12,11 @@ namespace WikiLibs.Models.Input.Examples
         {
             [Required]
             public string Data { get; set; }
-            [Required]
             public string Comment { get; set; }
         }
 
+        [Required]
+        public long SymbolId { get; set; }
         [Required]
         public CodeLine[] Code { get; set; }
         [Required]
@@ -27,7 +28,8 @@ namespace WikiLibs.Models.Input.Examples
             {
                 CreationDate = DateTime.UtcNow,
                 LastModificationDate = DateTime.UtcNow,
-                Description = Description
+                Description = Description,
+                SymbolId = SymbolId
             };
 
             foreach (var line in Code)

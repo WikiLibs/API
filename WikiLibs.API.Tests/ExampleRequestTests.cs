@@ -1,14 +1,17 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Mvc;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WikiLibs.API.Examples;
 using WikiLibs.API.Tests.Helper;
 using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Examples;
 using WikiLibs.Models.Input.Examples;
 using WikiLibs.Models.Input.Symbols;
+using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Symbols;
 
@@ -275,10 +278,10 @@ namespace WikiLibs.API.Tests
         {
             await PostTestExampleRequest();
 
-            var res = Manager.GetAll();
-            Assert.AreEqual(1, res.Count());
-            Assert.AreEqual("This is a test", res.First().Message);
-            Assert.AreEqual("This is a test example", res.First().Data.Description);
+            var res = Manager.GetAll(new Shared.Helpers.PageOptions());
+            Assert.AreEqual(10, res.Count);
+            Assert.AreEqual("This is a test", res.Data.First().Message);
+            Assert.AreEqual("This is a test example", res.Data.First().Data.Description);
         }
 
         [Test]
@@ -286,7 +289,7 @@ namespace WikiLibs.API.Tests
         {
             await PostTestExampleRequest();
 
-            var res = Manager.GetAll(1);
+            var res = Manager.GetForSymbol(1);
             Assert.AreEqual(1, res.Count());
             Assert.AreEqual("This is a test", res.First().Message);
             Assert.AreEqual("This is a test example", res.First().Data.Description);
@@ -368,6 +371,282 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(0, Context.Examples.Count());
             Assert.AreEqual(0, Context.ExampleRequests.Count());
             Assert.AreEqual(0, Context.ExampleCodeLines.Count());
+        }
+
+        [Test]
+        public async Task Controller_Post_POST()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            var res = await controller.PostAsync(new ExampleRequestCreate()
+            {
+                Method = Data.Models.Examples.ExampleRequestType.POST,
+                Message = "this is a test",
+                Data = new ExampleCreate()
+                {
+                    SymbolId = 1,
+                    Description = "Test example",
+                    Code = new ExampleCreate.CodeLine[]
+                    {
+                        new ExampleCreate.CodeLine()
+                        {
+                            Data = "int main() {}"
+                        }
+                    }
+                }
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Examples.ExampleRequest;
+
+            Assert.AreEqual("this is a test", obj.Message);
+            Assert.AreEqual(1, obj.Data.SymbolId);
+            Assert.AreEqual("Test example", obj.Data.Description);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new ExampleRequestCreate() { Method = Data.Models.Examples.ExampleRequestType.POST }));
+        }
+
+        [Test]
+        public async Task Controller_Post_PATCH()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            await controller.PostAsync(new ExampleRequestCreate()
+            {
+                Method = Data.Models.Examples.ExampleRequestType.POST,
+                Message = "this is a test",
+                Data = new ExampleCreate()
+                {
+                    SymbolId = 1,
+                    Description = "Test example",
+                    Code = new ExampleCreate.CodeLine[]
+                    {
+                        new ExampleCreate.CodeLine()
+                        {
+                            Data = "int main() {}"
+                        }
+                    }
+                }
+            });
+            await Manager.ApplyRequest(1);
+            var res = await controller.PostAsync(new ExampleRequestCreate()
+            {
+                Method = Data.Models.Examples.ExampleRequestType.PATCH,
+                ApplyTo = 1,
+                Message = "this is a test to update first",
+                Data = new ExampleCreate()
+                {
+                    SymbolId = 1,
+                    Description = "Updated test example",
+                    Code = new ExampleCreate.CodeLine[]
+                    {
+                        new ExampleCreate.CodeLine()
+                        {
+                            Data = "void main() {}"
+                        }
+                    }
+                }
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Examples.ExampleRequest;
+
+            Assert.AreEqual("this is a test to update first", obj.Message);
+            Assert.AreEqual(1, obj.Data.SymbolId);
+            Assert.AreEqual(1, obj.ApplyToId);
+            Assert.AreEqual("Updated test example", obj.Data.Description);
+            Assert.AreEqual("void main() {}", obj.Data.Code[0].Data);
+            Assert.IsNotNull(obj.CreationDate);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new ExampleRequestCreate() { Method = Data.Models.Examples.ExampleRequestType.PATCH }));
+        }
+
+        [Test]
+        public async Task Controller_Post_DELETE()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            await controller.PostAsync(new ExampleRequestCreate()
+            {
+                Method = Data.Models.Examples.ExampleRequestType.POST,
+                Message = "this is a test",
+                Data = new ExampleCreate()
+                {
+                    SymbolId = 1,
+                    Description = "Test example",
+                    Code = new ExampleCreate.CodeLine[]
+                    {
+                        new ExampleCreate.CodeLine()
+                        {
+                            Data = "int main() {}"
+                        }
+                    }
+                }
+            });
+            await Manager.ApplyRequest(1);
+            var res = await controller.PostAsync(new ExampleRequestCreate()
+            {
+                ApplyTo = 1,
+                Method = Data.Models.Examples.ExampleRequestType.DELETE,
+                Message = "Delete first example"
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Examples.ExampleRequest;
+            Assert.AreEqual("Delete first example", obj.Message);
+            Assert.AreEqual(1, obj.ApplyToId);
+            Assert.IsNotNull(obj.CreationDate);
+            Assert.IsNull(obj.Data);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new ExampleRequestCreate() { Method = Data.Models.Examples.ExampleRequestType.DELETE }));
+        }
+
+        [Test]
+        public async Task Controller_Patch()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestExampleRequest();
+
+            var res = await controller.PatchAsync(1, new ExampleRequestUpdate()
+            {
+                Message = "test",
+                Data = new ExampleUpdate()
+                {
+                    Description = "This is a test",
+                    Code = new ExampleUpdate.CodeLine[]
+                    {
+                        new ExampleUpdate.CodeLine()
+                        {
+                            Data = "int main()",
+                            Comment = "Useless function"
+                        },
+                        new ExampleUpdate.CodeLine()
+                        {
+                            Data = "{"
+                        },
+                        new ExampleUpdate.CodeLine()
+                        {
+                            Data = "}"
+                        }
+                    }
+                }
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Examples.ExampleRequest;
+
+            Assert.AreEqual("test", obj.Message);
+            Assert.AreEqual(1, obj.Data.SymbolId);
+            Assert.AreEqual("This is a test", obj.Data.Description);
+            Assert.AreEqual("int main()", obj.Data.Code[0].Data);
+            Assert.AreEqual("Useless function", obj.Data.Code[0].Comment);
+            User.SetPermissions(new string[] { });
+            User.User.Id = "45sq6d46qsd";
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(1, new ExampleRequestUpdate() { Message = "test" }));
+        }
+
+        [Test]
+        public async Task Controller_Delete()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestExampleRequest();
+
+            Assert.AreEqual(1, Context.ExampleRequests.Count());
+            await controller.DeleteAsync(1);
+            Assert.AreEqual(0, Context.ExampleRequests.Count());
+            Context.RemoveRange(Context.Symbols);
+            await Context.SaveChangesAsync();
+            await PostTestExampleRequest();
+            User.SetPermissions(new string[] { });
+            User.User.Id = "45sq6d46qsd";
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(2));
+        }
+
+        [Test]
+        public async Task Controller_GetById()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestExampleRequest();
+
+            var res = await controller.GetAsync(1) as JsonResult;
+            var obj = res.Value as Models.Output.Examples.ExampleRequest;
+            Assert.AreEqual("This is a test", obj.Message);
+            User.SetPermissions(new string[] { });
+            User.User.Id = "45sq6d46qsd";
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.GetAsync(1));
+        }
+
+        [Test]
+        public async Task Controller_GetByQuery()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestExampleRequest();
+
+            var res = controller.Get(new ExampleRequestController.ExampleRequestQuery()
+            {
+                SymbolId = 1
+            }) as JsonResult;
+            var obj = res.Value as PageResult<Models.Output.Examples.ExampleRequest>;
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Count);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual("This is a test", obj.Data.First().Message);
+            var res1 = controller.Get(new ExampleRequestController.ExampleRequestQuery()
+            {
+                PageOptions = new PageOptions()
+                {
+                    Count = 1,
+                    Page = 1
+                }
+            }) as JsonResult;
+            var obj1 = res1.Value as PageResult<Models.Output.Examples.ExampleRequest>;
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Count);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual("This is a test", obj.Data.First().Message);
+            User.SetPermissions(new string[] { });
+            Assert.Throws<Shared.Exceptions.InsuficientPermission>(() => controller.Get(new ExampleRequestController.ExampleRequestQuery()
+            {
+                PageOptions = new PageOptions()
+                {
+                    Count = 1,
+                    Page = 1
+                }
+            }));
+        }
+
+        [Test]
+        public async Task Controller_Get_Error_Invalid()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestExampleRequest();
+
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(new ExampleRequestController.ExampleRequestQuery()));
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(null));
         }
     }
 }

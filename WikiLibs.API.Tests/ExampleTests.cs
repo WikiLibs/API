@@ -11,6 +11,8 @@ using WikiLibs.Models.Input.Symbols;
 using WikiLibs.Models.Input.Examples;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Symbols;
+using WikiLibs.API.Examples;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WikiLibs.API.Tests
 {
@@ -244,9 +246,145 @@ namespace WikiLibs.API.Tests
             }), User));
             await PostTestExample(sym);
 
-            var res = Manager.GetForSymbolAsync(sym.Id);
+            var res = Manager.GetForSymbol(sym.Id);
             Assert.AreEqual(1, res.Count());
             Assert.AreEqual("This is a test example", res.First().Description);
+        }
+
+        [Test]
+        public async Task Controller_Post()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            var res = await controller.PostAsync(new ExampleCreate()
+            {
+                SymbolId = 1,
+                Description = "This is a test example",
+                Code = new ExampleCreate.CodeLine[]
+                {
+                    new ExampleCreate.CodeLine()
+                    {
+                        Data = "void main()",
+                        Comment = ""
+                    },
+                    new ExampleCreate.CodeLine()
+                    {
+                        Data = "{",
+                        Comment = ""
+                    },
+                    new ExampleCreate.CodeLine()
+                    {
+                        Data = "}",
+                        Comment = ""
+                    }
+                }
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Examples.Example;
+
+            Assert.AreEqual(1, obj.SymbolId);
+            Assert.AreEqual(3, obj.Code.Length);
+            Assert.AreEqual("This is a test example", obj.Description);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new ExampleCreate()));
+        }
+
+        [Test]
+        public async Task Controller_Patch()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            await PostTestExample(sym);
+
+            var res = await controller.PatchAsync(1, new ExampleUpdate()
+            {
+                Description = "test"
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Examples.Example;
+
+            Assert.AreEqual(1, obj.SymbolId);
+            Assert.AreEqual("test", obj.Description);
+            Assert.AreEqual(3, obj.Code.Length);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(1, new ExampleUpdate()));
+        }
+
+        [Test]
+        public async Task Controller_Delete()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            await PostTestExample(sym);
+
+            await controller.DeleteAsync(1);
+
+            Assert.AreEqual(0, Context.Examples.Count());
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(1));
+        }
+
+        [Test]
+        public async Task Controller_GetByQuery()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            await PostTestExample(sym);
+
+            var res = controller.Get(new ExampleController.ExampleQuery() { SymbolId = 1 }) as JsonResult;
+            var obj = res.Value as IEnumerable<Models.Output.Examples.Example>;
+            Assert.AreEqual(1, obj.Count());
+            Assert.AreEqual("This is a test example", obj.First().Description);
+            res = controller.Get(new ExampleController.ExampleQuery() { Token = "test" }) as JsonResult;
+            obj = res.Value as IEnumerable<Models.Output.Examples.Example>;
+            Assert.AreEqual(1, obj.Count());
+            Assert.AreEqual("This is a test example", obj.First().Description);
+        }
+
+        [Test]
+        public async Task Controller_GetById()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            await PostTestExample(sym);
+
+            var res = await controller.GetAsync(1) as JsonResult;
+            var obj = res.Value as Models.Output.Examples.Example;
+            Assert.AreEqual(1, obj.Id);
+            Assert.AreEqual("This is a test example", obj.Description);
+        }
+
+        [Test]
+        public async Task Controller_Get_Error_Invalid()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            await PostTestExample(sym);
+
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(new ExampleController.ExampleQuery()));
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(null));
         }
     }
 }

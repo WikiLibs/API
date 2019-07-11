@@ -156,19 +156,12 @@ namespace WikiLibs.Symbols
 
         public PageResult<SymbolListItem> SearchSymbols(string path, PageOptions options)
         {
-            options.Page = options.Page != null ? options.Page.Value : 1;
-            if (options.Page == 0)
-                throw new Shared.Exceptions.InvalidResource()
-                {
-                    PropertyName = "PageNum",
-                    ResourceName = "Symbol",
-                    ResourceType = typeof(Symbol)
-                };
+            options.EnsureValid(typeof(Symbol), "Symbol", _cfg.MaxSymsPerPage);
             var data = Set.Where(sym => sym.Path.Contains(path))
                 .OrderBy(o => o.Path)
-                .Skip((options.Page.Value - 1) * _cfg.GetMaxSymbols(options));
-            bool next = data.Count() > _cfg.GetMaxSymbols(options);
-            var arr = data.Take(_cfg.GetMaxSymbols(options))
+                .Skip((options.Page.Value - 1) * options.Count.Value);
+            bool next = data.Count() > options.Count.Value;
+            var arr = data.Take(options.Count.Value)
                 .Select(sym => new SymbolListItem()
                 {
                     Path = sym.Path,
@@ -181,7 +174,7 @@ namespace WikiLibs.Symbols
                 Data = arr,
                 HasMorePages = next,
                 Page = options.Page.Value,
-                Count = _cfg.GetMaxSymbols(options)
+                Count = options.Count.Value
             });
         }
 
