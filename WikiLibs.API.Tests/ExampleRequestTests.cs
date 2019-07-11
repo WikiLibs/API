@@ -11,6 +11,7 @@ using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Examples;
 using WikiLibs.Models.Input.Examples;
 using WikiLibs.Models.Input.Symbols;
+using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Symbols;
 
@@ -571,6 +572,81 @@ namespace WikiLibs.API.Tests
             User.SetPermissions(new string[] { });
             User.User.Id = "45sq6d46qsd";
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(2));
+        }
+
+        [Test]
+        public async Task Controller_GetById()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestExampleRequest();
+
+            var res = await controller.GetAsync(1) as JsonResult;
+            var obj = res.Value as Models.Output.Examples.ExampleRequest;
+            Assert.AreEqual("This is a test", obj.Message);
+            User.SetPermissions(new string[] { });
+            User.User.Id = "45sq6d46qsd";
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.GetAsync(1));
+        }
+
+        [Test]
+        public async Task Controller_GetByQuery()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestExampleRequest();
+
+            var res = controller.Get(new ExampleRequestController.ExampleRequestQuery()
+            {
+                SymbolId = 1
+            }) as JsonResult;
+            var obj = res.Value as PageResult<Models.Output.Examples.ExampleRequest>;
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Count);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual("This is a test", obj.Data.First().Message);
+            var res1 = controller.Get(new ExampleRequestController.ExampleRequestQuery()
+            {
+                PageOptions = new PageOptions()
+                {
+                    Count = 1,
+                    Page = 1
+                }
+            }) as JsonResult;
+            var obj1 = res1.Value as PageResult<Models.Output.Examples.ExampleRequest>;
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Count);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual("This is a test", obj.Data.First().Message);
+            User.SetPermissions(new string[] { });
+            Assert.Throws<Shared.Exceptions.InsuficientPermission>(() => controller.Get(new ExampleRequestController.ExampleRequestQuery()
+            {
+                PageOptions = new PageOptions()
+                {
+                    Count = 1,
+                    Page = 1
+                }
+            }));
+        }
+
+        [Test]
+        public async Task Controller_Get_Error_Invalid()
+        {
+            var smanager = new SymbolManager(Context, new Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            await PostTestExampleRequest();
+
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(new ExampleRequestController.ExampleRequestQuery()));
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(null));
         }
     }
 }
