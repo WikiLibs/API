@@ -10,7 +10,7 @@ namespace WikiLibs.Models.Input.Admin
         public string Description { get; set; }
         public int? Flags { get; set; }
         public int? UseNum { get; set; }
-        public DateTime ExpirationDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
 
         public override APIKey CreatePatch(in APIKey current)
         {
@@ -20,7 +20,7 @@ namespace WikiLibs.Models.Input.Admin
                 Description = Description != null ? Description : current.Description,
                 Flags = Flags != null ? Flags.Value : current.Flags,
                 UseNum = UseNum != null ? UseNum.Value : current.UseNum,
-                ExpirationDate = ExpirationDate != null ? ExpirationDate : current.ExpirationDate
+                ExpirationDate = ExpirationDate != null ? ExpirationDate.Value : current.ExpirationDate
             });
         }
     }
