@@ -64,12 +64,16 @@ namespace WikiLibs.API.Tests
             await Manager.APIKeyManager.PatchAsync(key, new APIKeyUpdate()
             {
                 Description = "SUPER API KEY",
+                ExpirationDate = DateTime.MaxValue,
+                Flags = AuthorizeApiKey.Authentication,
                 UseNum = 3
             }.CreatePatch(await Manager.APIKeyManager.GetAsync(key)));
             Assert.AreEqual(1, Context.APIKeys.Count());
             Assert.True(Guid.TryParse(Context.APIKeys.First().Id, out Guid test));
             Assert.AreEqual("SUPER API KEY", Context.APIKeys.First().Description);
             Assert.AreEqual(3, Context.APIKeys.First().UseNum);
+            Assert.AreEqual(DateTime.MaxValue, Context.APIKeys.First().ExpirationDate);
+            Assert.AreEqual(AuthorizeApiKey.Authentication, Context.APIKeys.First().Flags);
         }
 
         [Test]
@@ -197,6 +201,13 @@ namespace WikiLibs.API.Tests
             mdl = await Manager.GroupManager.GetAsync(3);
             Assert.AreEqual(2, mdl.Permissions.Count());
             Assert.AreEqual("TestGroup", mdl.Name);
+            await Manager.GroupManager.PatchAsync(3, new GroupUpdate()
+            {
+                Name = "123"
+            }.CreatePatch(mdl));
+            mdl = await Manager.GroupManager.GetAsync(3);
+            Assert.AreEqual("123", mdl.Name);
+            Assert.AreEqual(2, mdl.Permissions.Count());
         }
 
         [Test]
