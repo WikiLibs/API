@@ -1,4 +1,5 @@
 ﻿using Castle.Core.Logging;
+using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Admin;
+using WikiLibs.API.Admin;
 using WikiLibs.API.Tests.Helper;
 using WikiLibs.Models.Input.Admin;
 using WikiLibs.Shared.Attributes;
@@ -280,6 +282,75 @@ namespace WikiLibs.API.Tests
             Assert.IsNotNull(Manager.GroupManager.AdminGroup);
             Assert.AreEqual("Default", Manager.GroupManager.DefaultGroup.Name);
             Assert.AreEqual("Admin", Manager.GroupManager.AdminGroup.Name);
+        }
+
+        [Test]
+        public async Task Controller_POST_APIKey()
+        {
+            var controller = new APIKeyController(User, Manager);
+            var res = await controller.PostAsync(new APIKeyCreate()
+            {
+                Description = "TestKey",
+                ExpirationDate = DateTime.MaxValue,
+                Flags = AuthorizeApiKey.Standard,
+                UseNum = -1
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Admin.APIKey;
+
+            Assert.AreEqual("TestKey", obj.Description);
+            Assert.AreEqual(-1, obj.UseNum);
+            Assert.AreEqual(DateTime.MaxValue, obj.ExpirationDate);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new APIKeyCreate()));
+        }
+
+        [Test]
+        public async Task Controller_PATCH_APIKey()
+        {
+            var controller = new APIKeyController(User, Manager);
+
+            var str = await PostTestAPIKey();
+            var res = await controller.PatchAsync(str, new APIKeyUpdate()
+            {
+                Description = "TestKey",
+                UseNum = 0
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Admin.APIKey;
+
+            Assert.AreEqual("TestKey", obj.Description);
+            Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, obj.Flags);
+            Assert.AreEqual(0, obj.UseNum);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(str, null));
+        }
+
+        [Test]
+        public async Task Controller_DELETE_APIKey()
+        {
+            var controller = new APIKeyController(User, Manager);
+
+            var str = await PostTestAPIKey();
+            Assert.AreEqual(1, Context.APIKeys.Count());
+            await controller.DeleteAsync(str);
+            Assert.AreEqual(0, Context.APIKeys.Count());
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(null));
+        }
+
+        [Test]
+        public async Task Controller_GET_APIKey()
+        {
+            var controller = new APIKeyController(User, Manager);
+
+            await PostTestAPIKey();
+            var res = controller.Get() as JsonResult;
+            var obj = res.Value as IEnumerable<Models.Output.Admin.APIKey>;
+
+            Assert.AreEqual(1, obj.Count());
+            Assert.AreEqual("TEST_API_KEY", obj.First().Description);
+            Assert.AreEqual(DateTime.MaxValue, obj.First().ExpirationDate);
+            Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, obj.First().Flags);
+            Assert.AreEqual(2, obj.First().UseNum);
         }
     }
 }

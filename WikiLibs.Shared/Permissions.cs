@@ -69,5 +69,12 @@ namespace WikiLibs.Shared
         /// </summary>
         public const string LIST_EXAMPLE_REQUEST = "example.requests.list";
         #endregion
+
+        #region ADMIN_APIKEYS
+        public const string CREATE_APIKEY = "apikey.create";
+        public const string UPDATE_APIKEY = "apikey.update";
+        public const string DELETE_APIKEY = "apikey.delete";
+        public const string LIST_APIKEY = "apikey.list";
+        #endregion
     }
 }
