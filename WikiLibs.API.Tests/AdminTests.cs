@@ -351,6 +351,8 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(DateTime.MaxValue, obj.First().ExpirationDate);
             Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, obj.First().Flags);
             Assert.AreEqual(2, obj.First().UseNum);
+            User.SetPermissions(new string[] { });
+            Assert.Throws<Shared.Exceptions.InsuficientPermission>(() => controller.Get());
         }
     }
 }
