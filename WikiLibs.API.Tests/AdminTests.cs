@@ -354,5 +354,71 @@ namespace WikiLibs.API.Tests
             User.SetPermissions(new string[] { });
             Assert.Throws<Shared.Exceptions.InsuficientPermission>(() => controller.Get());
         }
+
+        [Test]
+        public async Task Controller_POST_Group()
+        {
+            var controller = new GroupController(User, Manager);
+            var res = await controller.PostAsync(new GroupCreate()
+            {
+                Name = "TestGrp",
+                Permissions = new string[]
+                {
+                    "permission.*"
+                }
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Admin.Group;
+
+            Assert.AreEqual("TestGrp", obj.Name);
+            Assert.AreEqual(1, obj.Permissions.Length);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new GroupCreate()));
+        }
+
+        [Test]
+        public async Task Controller_PATCH_Group()
+        {
+            var controller = new GroupController(User, Manager);
+
+            await PostTestGroup();
+            var res = await controller.PatchAsync(Context.Groups.Last().Id, new GroupUpdate()
+            {
+                Name = "MyGrp123"
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Admin.Group;
+
+            Assert.AreEqual("MyGrp123", obj.Name);
+            Assert.AreEqual(4, obj.Permissions.Length);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(Context.Groups.Last().Id, null));
+        }
+
+        [Test]
+        public async Task Controller_DELETE_Group()
+        {
+            var controller = new GroupController(User, Manager);
+
+            await PostTestGroup();
+            Assert.AreEqual(3, Context.Groups.Count());
+            await controller.DeleteAsync(Context.Groups.Last().Id);
+            Assert.AreEqual(2, Context.Groups.Count());
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(0));
+        }
+
+        [Test]
+        public async Task Controller_GET_Group()
+        {
+            var controller = new GroupController(User, Manager);
+
+            await PostTestGroup();
+            var res = controller.Get() as JsonResult;
+            var obj = res.Value as IEnumerable<Models.Output.Admin.Group>;
+
+            Assert.AreEqual(3, obj.Count());
+            Assert.AreEqual("Default", obj.First().Name);
+            User.SetPermissions(new string[] { });
+            Assert.Throws<Shared.Exceptions.InsuficientPermission>(() => controller.Get());
+        }
     }
 }

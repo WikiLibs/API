@@ -76,5 +76,12 @@ namespace WikiLibs.Shared
         public const string DELETE_APIKEY = "apikey.delete";
         public const string LIST_APIKEY = "apikey.list";
         #endregion
+
+        #region ADMIN_GROUPS
+        public const string CREATE_GROUP = "group.create";
+        public const string UPDATE_GROUP = "group.update";
+        public const string DELETE_GROUP = "group.delete";
+        public const string LIST_GROUP = "group.list";
+        #endregion
     }
 }
