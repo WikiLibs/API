@@ -14,6 +14,7 @@ namespace WikiLibs.Models.Output
         public string Icon { get; set; }
         public string Email { get; set; }
         public bool Private { get; set; }
+        public bool IsBot { get; set; }
         public string ProfileMsg { get; set; }
         public int Points { get; set; }
         public string Pseudo { get; set; }
@@ -32,6 +33,7 @@ namespace WikiLibs.Models.Output
             Points = model.Points;
             Pseudo = model.Pseudo;
             Group = model.Group.Name;
+            IsBot = model.IsBot;
         }
     }
 }

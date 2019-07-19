@@ -35,7 +35,8 @@ namespace WikiLibs.Models.Input.Users
                 Points = 0,
                 RegistrationDate = DateTime.UtcNow,
                 Pass = Password,
-                Pseudo = Pseudo
+                Pseudo = Pseudo,
+                IsBot = false
             });
         }
     }

@@ -13,6 +13,7 @@ namespace WikiLibs.Shared.Attributes
         public const int Registration = 0x10;
         public const int Authentication = 0x20;
         public const int Standard = 0x40;
+        public const int AuthBot = 0x80;
 
         [Required]
         public int Flag { get; set; }

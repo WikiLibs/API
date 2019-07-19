@@ -20,6 +20,7 @@ namespace WikiLibs.Data.Models
         public long? GroupId { get; set; }
         public string Pass { get; set; }
         public DateTime RegistrationDate { get; set; }
+        public bool IsBot { get; set; }
 
         public virtual Group Group { get; set; }
     }
