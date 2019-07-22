@@ -79,6 +79,14 @@ namespace WikiLibs.API.Tests
                 Email = "dev@localhost123456789",
                 Password = "dev123456789"
             }));
+
+            //Check that bot login is not allowed using standard user systems
+            Context.Users.Last().IsBot = true;
+            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Login(new Models.Input.Auth.Login()
+            {
+                Email = "dev@localhost",
+                Password = "dev"
+            }));
         }
 
         [Test, Order(3)]
@@ -160,6 +168,8 @@ namespace WikiLibs.API.Tests
             var controller = new InternalController(Manager);
 
             Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Reset("doesnotexist@doesnotexist.com"));
+            Context.Users.First().IsBot = true;
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Reset("dev@localhost"));
         }
 
         [Test]
@@ -192,6 +202,29 @@ namespace WikiLibs.API.Tests
         public void Refresh()
         {
             Assert.IsNotNull(Manager.Refresh(new Guid().ToString()));
+
+            var controller = new BaseController(new UserManager(Context), Manager, User);
+            Assert.IsNotNull(controller.Refresh());
+        }
+
+        [Test]
+        public async Task BotLogin()
+        {
+            var controller = new BaseController(new UserManager(Context), Manager, User);
+
+            Assert.ThrowsAsync<InvalidCredentials>(() => controller.BotLogin(new Models.Input.Auth.Bot()
+            {
+                AppId = Context.Users.First().Id,
+                AppSecret = Context.Users.First().Pass
+            }));
+            Context.Users.First().IsBot = true;
+            var res = await controller.BotLogin(new Models.Input.Auth.Bot()
+            {
+                AppId = Context.Users.First().Id,
+                AppSecret = Context.Users.First().Pass
+            }) as JsonResult;
+            var tok = res.Value as string;
+            Assert.IsNotNull(tok);
         }
     }
 }
