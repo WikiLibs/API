@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WikiLibs.Data.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class AddBotFlag : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
