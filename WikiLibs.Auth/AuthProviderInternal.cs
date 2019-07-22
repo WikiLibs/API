@@ -31,7 +31,7 @@ namespace WikiLibs.Auth
         {
             var usr = await _userManager.GetAsync(email, pass);
 
-            if (usr == null || usr.Confirmation != null)
+            if (usr == null || usr.Confirmation != null || usr.IsBot)
                 throw new InvalidCredentials();
             return (_manager.GenToken(usr.Id));
         }
@@ -71,7 +71,7 @@ namespace WikiLibs.Auth
         {
             var usr = await _userManager.GetByEmailAsync(email);
 
-            if (usr == null)
+            if (usr == null || usr.IsBot)
                 throw new Shared.Exceptions.ResourceNotFound()
                 {
                     ResourceId = email,
