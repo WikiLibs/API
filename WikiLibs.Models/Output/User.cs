@@ -27,7 +27,7 @@ namespace WikiLibs.Models.Output
             FirstName = model.FirstName;
             LastName = model.LastName;
             Icon = model.Icon;
-            Email = model.EMail;
+            Email = model.Email;
             Private = model.Private;
             ProfileMsg = model.ProfileMsg;
             Points = model.Points;

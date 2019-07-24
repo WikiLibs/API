@@ -60,7 +60,7 @@ namespace WikiLibs.Auth
                 {
                     new Recipient()
                     {
-                        Email = usr.EMail,
+                        Email = usr.Email,
                         Name = usr.FirstName + " " + usr.LastName
                     }
                 }
@@ -92,7 +92,7 @@ namespace WikiLibs.Auth
                 {
                     new Recipient()
                     {
-                        Email = usr.EMail,
+                        Email = usr.Email,
                         Name = usr.FirstName + " " + usr.LastName
                     }
                 }

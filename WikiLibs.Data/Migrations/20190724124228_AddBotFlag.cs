@@ -8,6 +8,11 @@ namespace WikiLibs.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.RenameColumn(
+                name: "EMail",
+                table: "Users",
+                newName: "Email");
+
             migrationBuilder.AddColumn<bool>(
                 name: "IsBot",
                 table: "Users",
@@ -20,6 +25,11 @@ namespace WikiLibs.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "IsBot",
                 table: "Users");
+
+            migrationBuilder.RenameColumn(
+                name: "Email",
+                table: "Users",
+                newName: "EMail");
         }
     }
 }

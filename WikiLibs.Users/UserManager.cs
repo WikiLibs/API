@@ -19,16 +19,16 @@ namespace WikiLibs.Users
 
         public async Task<User> GetAsync(string email, string pass)
         {
-            return (await Set.FirstOrDefaultAsync(x => x.EMail == email && x.Pass == pass));
+            return (await Set.FirstOrDefaultAsync(x => x.Email == email && x.Pass == pass));
         }
 
         public void CheckDuplicates(string key, User mdl)
         {
-            if (Set.Any(x => (x.Pseudo == mdl.Pseudo || x.EMail == mdl.EMail) && x.Id != key))
+            if (Set.Any(x => (x.Pseudo == mdl.Pseudo || x.Email == mdl.Email) && x.Id != key))
                 throw new Shared.Exceptions.ResourceAlreadyExists()
                 {
                     ResourceId = key,
-                    ResourceName = mdl.EMail,
+                    ResourceName = mdl.Email,
                     ResourceType = typeof(User)
                 };
         }
@@ -53,14 +53,14 @@ namespace WikiLibs.Users
             usr.Points = mdl.Points;
             usr.Private = mdl.Private;
             usr.Pass = mdl.Pass;
-            usr.EMail = mdl.EMail;
+            usr.Email = mdl.Email;
             await SaveChanges();
             return (usr);
         }
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            return (await Set.FirstOrDefaultAsync(x => x.EMail == email));
+            return (await Set.FirstOrDefaultAsync(x => x.Email == email));
         }
     }
 }

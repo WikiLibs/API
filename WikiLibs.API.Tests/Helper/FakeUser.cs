@@ -25,7 +25,7 @@ namespace WikiLibs.API.Tests.Helper
                     Group = ctx.Groups.Find(new object[] { (long)2 }),
                     FirstName = "Dev",
                     LastName = "DEV",
-                    EMail = "dev@localhost",
+                    Email = "dev@localhost",
                     Pass = "dev",
                     Id = new Guid().ToString(),
                     Points = 0,

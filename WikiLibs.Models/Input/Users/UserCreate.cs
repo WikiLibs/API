@@ -26,7 +26,7 @@ namespace WikiLibs.Models.Input.Users
         {
             return (new User()
             {
-                EMail = Email,
+                Email = Email,
                 FirstName = FirstName,
                 LastName = LastName,
                 Icon = Icon,

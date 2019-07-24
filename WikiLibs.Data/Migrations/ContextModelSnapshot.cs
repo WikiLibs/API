@@ -272,7 +272,7 @@ namespace WikiLibs.Data.Migrations
 
                     b.Property<string>("Confirmation");
 
-                    b.Property<string>("EMail");
+                    b.Property<string>("Email");
 
                     b.Property<string>("FirstName");
 

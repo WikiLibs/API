@@ -10,7 +10,7 @@ using WikiLibs.Data;
 namespace WikiLibs.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20190719091736_AddBotFlag")]
+    [Migration("20190724124228_AddBotFlag")]
     partial class AddBotFlag
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -272,7 +272,7 @@ namespace WikiLibs.Data.Migrations
 
                     b.Property<string>("Confirmation");
 
-                    b.Property<string>("EMail");
+                    b.Property<string>("Email");
 
                     b.Property<string>("FirstName");
 

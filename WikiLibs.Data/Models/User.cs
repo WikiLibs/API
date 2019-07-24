@@ -11,7 +11,7 @@ namespace WikiLibs.Data.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Icon { get; set; }
-        public string EMail { get; set; }
+        public string Email { get; set; }
         public string Confirmation { get; set; }
         public bool Private { get; set; }
         public string ProfileMsg { get; set; }
