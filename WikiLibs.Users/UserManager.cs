@@ -43,13 +43,28 @@ namespace WikiLibs.Users
         {
             var usr = await GetAsync(key);
 
-            CheckDuplicates(key, mdl);
+            if (mdl.Pseudo != usr.Pseudo && Set.Any(x => (x.Pseudo == mdl.Pseudo)))
+                throw new Shared.Exceptions.ResourceAlreadyExists()
+                {
+                    ResourceId = key,
+                    ResourceName = mdl.Pseudo,
+                    ResourceType = typeof(User)
+                };
+            if (mdl.Email != usr.Email && Set.Any(x => (x.Email == mdl.Email)))
+                throw new Shared.Exceptions.ResourceAlreadyExists()
+                {
+                    ResourceId = key,
+                    ResourceName = mdl.Email,
+                    ResourceType = typeof(User)
+                };
             usr.FirstName = mdl.FirstName;
             usr.LastName = mdl.LastName;
             usr.ProfileMsg = mdl.ProfileMsg;
             usr.Pseudo = mdl.Pseudo;
             usr.Icon = mdl.Icon;
-            usr.Group = mdl.Group;
+            var grp = Context.Groups.Where(x => x.Id == mdl.GroupId).FirstOrDefault();
+            if (grp != null)
+                usr.Group = grp;
             usr.Points = mdl.Points;
             usr.Private = mdl.Private;
             usr.Pass = mdl.Pass;
