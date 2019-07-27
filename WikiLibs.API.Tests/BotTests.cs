@@ -71,7 +71,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("mybot", obj.Pseudo);
             Assert.IsFalse(obj.Private);
             Assert.AreEqual("Updated message", obj.ProfileMsg);
-            Assert.IsEmpty(obj.LastName);
+            Assert.IsTrue(obj.LastName == null || obj.LastName.Length <= 0);
             Assert.AreEqual(0, obj.Points);
             Assert.IsNotNull(obj.Secret);
             Assert.IsNotEmpty(obj.Secret);
