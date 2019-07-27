@@ -69,5 +69,12 @@ namespace WikiLibs.Shared
         /// </summary>
         public const string LIST_EXAMPLE_REQUEST = "example.requests.list";
         #endregion
+
+        #region BOTS
+        public const string CREATE_BOT = "bot.create";
+        public const string UPDATE_BOT = "bot.update";
+        public const string DELETE_BOT = "bot.delete";
+        public const string LIST_BOT = "bot.list";
+        #endregion
     }
 }
