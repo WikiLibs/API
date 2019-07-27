@@ -20,11 +20,12 @@ namespace WikiLibs.Shared.Helpers
             var rand = new Random();
             string res = "";
             int curFreq = 1;
+            var copy = options.NumChars;
 
-            while (options.NumChars > 0)
+            while (copy > 0)
             {
                 res += RandomChar(options, rand, curFreq);
-                --options.NumChars;
+                --copy;
                 ++curFreq;
                 if (!options.Alphabet.Any(e => e.Frequency == curFreq))
                     curFreq = 1;
