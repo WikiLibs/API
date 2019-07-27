@@ -78,7 +78,7 @@ namespace WikiLibs.Auth
                     ResourceName = "User",
                     ResourceType = typeof(User)
                 };
-            usr.Pass = Guid.NewGuid().ToString();
+            usr.Pass = Shared.Helpers.PasswordUtils.NewPassword(Shared.Helpers.PasswordOptions.Standard);
             await _userManager.SaveChanges();
             await _smtpManager.SendAsync(new Mail()
             {
