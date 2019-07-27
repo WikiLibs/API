@@ -61,7 +61,7 @@ namespace WikiLibs.API.Admin
             var usr = await _userManager.GetAsync(id);
             var created = mdl.CreatePatch(usr);
             created.Pass = PasswordUtils.NewPassword(PasswordOptions.Reinforced);
-            var obj = await _userManager.PostAsync(created);
+            var obj = await _userManager.PatchAsync(id, created);
 
             return (Json(Models.Output.Bot.CreateModel(obj)));
         }
