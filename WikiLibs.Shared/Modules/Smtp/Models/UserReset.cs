@@ -7,5 +7,7 @@ namespace WikiLibs.Shared.Modules.Smtp.Models
     public class UserReset
     {
         public string NewPassword { get; set; }
+
+        public const string Template = "UserReset";
     }
 }

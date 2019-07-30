@@ -84,7 +84,7 @@ namespace WikiLibs.Smtp
             .Property("FromEmail", _config.FromEmail)
             .Property("FromName", _config.FromName)
             .Property("Subject", msg.Subject)
-            .Property("Mj-TemplateID", msg.Template)
+            .Property("Mj-TemplateID", _config.Prefix + msg.Template)
             .Property("Mj-TemplateLanguage", true)
             .Property("Recipients", recipients);
 
