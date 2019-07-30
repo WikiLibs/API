@@ -5,7 +5,7 @@ using WikiLibs.Data.Models;
 
 namespace WikiLibs.Models.Output
 {
-    public class User : GetModel<User, Data.Models.User>
+    public class Bot : GetModel<Bot, Data.Models.User>
     {
         public string Id { get; set; }
         public DateTime RegistrationDate { get; set; }
@@ -19,6 +19,7 @@ namespace WikiLibs.Models.Output
         public int Points { get; set; }
         public string Pseudo { get; set; }
         public string Group { get; set; }
+        public string Secret { get; set; }
 
         public override void Map(in Data.Models.User model)
         {
@@ -34,6 +35,7 @@ namespace WikiLibs.Models.Output
             Pseudo = model.Pseudo;
             Group = model.Group.Name;
             IsBot = model.IsBot;
+            Secret = model.Pass;
         }
     }
 }

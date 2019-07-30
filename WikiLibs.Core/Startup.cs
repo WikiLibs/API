@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,6 +63,11 @@ namespace WikiLibs.Core
 
             services.AddSwaggerGen(c =>
             {
+                c.TagActionsBy(api =>
+                {
+                    var ctrl = api.ActionDescriptor as ControllerActionDescriptor;
+                    return (new List<string>() { ctrl.ControllerTypeInfo.Namespace.Replace("WikiLibs.API.", "") + "." + ctrl.ControllerName });
+                });
                 c.SwaggerDoc("v1", new Info { Title = "WikiLibs API", Version = Assembly.GetExecutingAssembly().GetName().Version.ToString() });
                 c.CustomSchemaIds(x => x.Assembly.IsDynamic ? "Dynamic." + x.FullName : x.FullName);
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme()

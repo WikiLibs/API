@@ -4,14 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using WikiLibs.Data.Models;
 
-namespace WikiLibs.Models.Input.Users
+namespace WikiLibs.Models.Input.Admin
 {
-    public class UserCreate : PostModel<UserCreate, User>
+    public class BotCreate : PostModel<BotCreate, User>
     {
         [Required]
-        public string FirstName { get; set; }
-        [Required]
-        public string LastName { get; set; }
+        public string Name { get; set; }
         public string Icon { get; set; }
         [Required]
         public string Email { get; set; }
@@ -19,24 +17,21 @@ namespace WikiLibs.Models.Input.Users
         public string ProfileMsg { get; set; }
         [Required]
         public string Pseudo { get; set; }
-        [Required]
-        public string Password { get; set; }
 
         public override User CreateModel()
         {
             return (new User()
             {
                 Email = Email,
-                FirstName = FirstName,
-                LastName = LastName,
+                FirstName = Name,
+                LastName = "",
+                RegistrationDate = DateTime.UtcNow,
                 Icon = Icon,
+                IsBot = true,
+                Points = 0,
                 Private = Private != null ? Private.Value : false,
                 ProfileMsg = ProfileMsg,
-                Points = 0,
-                RegistrationDate = DateTime.UtcNow,
-                Pass = Password,
-                Pseudo = Pseudo,
-                IsBot = false
+                Pseudo = Pseudo
             });
         }
     }
