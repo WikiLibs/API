@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,6 +11,7 @@ using WikiLibs.Shared.Service;
 
 namespace WikiLibs.API.Admin
 {
+    [Authorize]
     [Route("/admin/apikey")]
     public class APIKeyController : Controller
     {
