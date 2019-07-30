@@ -45,6 +45,16 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("Default", Context.Groups.First().Name);
             Assert.AreEqual("Admin", Context.Groups.Last().Name);
             Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.APIKeys.First().Description);
+
+            Context.RemoveRange(Context.Groups);
+            Context.RemoveRange(Context.APIKeys);
+            AdminManager.Initialize(Manager);
+
+            Assert.AreEqual(2, Context.Groups.Count());
+            Assert.AreEqual(1, Context.APIKeys.Count());
+            Assert.AreEqual("Default", Context.Groups.First().Name);
+            Assert.AreEqual("Admin", Context.Groups.Last().Name);
+            Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.APIKeys.First().Description);
         }
 
         [Test]
