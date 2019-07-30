@@ -1,4 +1,5 @@
 ﻿using Castle.Core.Logging;
+using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Admin;
+using WikiLibs.API.Admin;
 using WikiLibs.API.Tests.Helper;
 using WikiLibs.Models.Input.Admin;
 using WikiLibs.Shared.Attributes;
@@ -43,6 +45,17 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("Default", Context.Groups.First().Name);
             Assert.AreEqual("Admin", Context.Groups.Last().Name);
             Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.APIKeys.First().Description);
+
+            Context.RemoveRange(Context.Groups);
+            Context.RemoveRange(Context.APIKeys);
+            Context.SaveChanges();
+            AdminManager.Initialize(Manager);
+
+            Assert.AreEqual(2, Context.Groups.Count());
+            Assert.AreEqual(1, Context.APIKeys.Count());
+            Assert.AreEqual("Default", Context.Groups.Last().Name);
+            Assert.AreEqual("Admin", Context.Groups.First().Name);
+            Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.APIKeys.First().Description);
         }
 
         [Test]
@@ -64,12 +77,16 @@ namespace WikiLibs.API.Tests
             await Manager.APIKeyManager.PatchAsync(key, new APIKeyUpdate()
             {
                 Description = "SUPER API KEY",
+                ExpirationDate = DateTime.MaxValue,
+                Flags = AuthorizeApiKey.Authentication,
                 UseNum = 3
             }.CreatePatch(await Manager.APIKeyManager.GetAsync(key)));
             Assert.AreEqual(1, Context.APIKeys.Count());
             Assert.True(Guid.TryParse(Context.APIKeys.First().Id, out Guid test));
             Assert.AreEqual("SUPER API KEY", Context.APIKeys.First().Description);
             Assert.AreEqual(3, Context.APIKeys.First().UseNum);
+            Assert.AreEqual(DateTime.MaxValue, Context.APIKeys.First().ExpirationDate);
+            Assert.AreEqual(AuthorizeApiKey.Authentication, Context.APIKeys.First().Flags);
         }
 
         [Test]
@@ -197,6 +214,13 @@ namespace WikiLibs.API.Tests
             mdl = await Manager.GroupManager.GetAsync(3);
             Assert.AreEqual(2, mdl.Permissions.Count());
             Assert.AreEqual("TestGroup", mdl.Name);
+            await Manager.GroupManager.PatchAsync(3, new GroupUpdate()
+            {
+                Name = "123"
+            }.CreatePatch(mdl));
+            mdl = await Manager.GroupManager.GetAsync(3);
+            Assert.AreEqual("123", mdl.Name);
+            Assert.AreEqual(2, mdl.Permissions.Count());
         }
 
         [Test]
@@ -269,6 +293,143 @@ namespace WikiLibs.API.Tests
             Assert.IsNotNull(Manager.GroupManager.AdminGroup);
             Assert.AreEqual("Default", Manager.GroupManager.DefaultGroup.Name);
             Assert.AreEqual("Admin", Manager.GroupManager.AdminGroup.Name);
+        }
+
+        [Test]
+        public async Task Controller_POST_APIKey()
+        {
+            var controller = new APIKeyController(User, Manager);
+            var res = await controller.PostAsync(new APIKeyCreate()
+            {
+                Description = "TestKey",
+                ExpirationDate = DateTime.MaxValue,
+                Flags = AuthorizeApiKey.Standard,
+                UseNum = -1
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Admin.APIKey;
+
+            Assert.AreEqual("TestKey", obj.Description);
+            Assert.AreEqual(-1, obj.UseNum);
+            Assert.AreEqual(DateTime.MaxValue, obj.ExpirationDate);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new APIKeyCreate()));
+        }
+
+        [Test]
+        public async Task Controller_PATCH_APIKey()
+        {
+            var controller = new APIKeyController(User, Manager);
+
+            var str = await PostTestAPIKey();
+            var res = await controller.PatchAsync(str, new APIKeyUpdate()
+            {
+                Description = "TestKey",
+                UseNum = 0
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Admin.APIKey;
+
+            Assert.AreEqual("TestKey", obj.Description);
+            Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, obj.Flags);
+            Assert.AreEqual(0, obj.UseNum);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(str, null));
+        }
+
+        [Test]
+        public async Task Controller_DELETE_APIKey()
+        {
+            var controller = new APIKeyController(User, Manager);
+
+            var str = await PostTestAPIKey();
+            Assert.AreEqual(1, Context.APIKeys.Count());
+            await controller.DeleteAsync(str);
+            Assert.AreEqual(0, Context.APIKeys.Count());
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(null));
+        }
+
+        [Test]
+        public async Task Controller_GET_APIKey()
+        {
+            var controller = new APIKeyController(User, Manager);
+
+            await PostTestAPIKey();
+            var res = controller.Get() as JsonResult;
+            var obj = res.Value as IEnumerable<Models.Output.Admin.APIKey>;
+
+            Assert.AreEqual(1, obj.Count());
+            Assert.AreEqual("TEST_API_KEY", obj.First().Description);
+            Assert.AreEqual(DateTime.MaxValue, obj.First().ExpirationDate);
+            Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, obj.First().Flags);
+            Assert.AreEqual(2, obj.First().UseNum);
+            User.SetPermissions(new string[] { });
+            Assert.Throws<Shared.Exceptions.InsuficientPermission>(() => controller.Get());
+        }
+
+        [Test]
+        public async Task Controller_POST_Group()
+        {
+            var controller = new GroupController(User, Manager);
+            var res = await controller.PostAsync(new GroupCreate()
+            {
+                Name = "TestGrp",
+                Permissions = new string[]
+                {
+                    "permission.*"
+                }
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Admin.Group;
+
+            Assert.AreEqual("TestGrp", obj.Name);
+            Assert.AreEqual(1, obj.Permissions.Length);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new GroupCreate()));
+        }
+
+        [Test]
+        public async Task Controller_PATCH_Group()
+        {
+            var controller = new GroupController(User, Manager);
+
+            await PostTestGroup();
+            var res = await controller.PatchAsync(Context.Groups.Last().Id, new GroupUpdate()
+            {
+                Name = "MyGrp123"
+            }) as JsonResult;
+            var obj = res.Value as Models.Output.Admin.Group;
+
+            Assert.AreEqual("MyGrp123", obj.Name);
+            Assert.AreEqual(4, obj.Permissions.Length);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(Context.Groups.Last().Id, null));
+        }
+
+        [Test]
+        public async Task Controller_DELETE_Group()
+        {
+            var controller = new GroupController(User, Manager);
+
+            await PostTestGroup();
+            Assert.AreEqual(3, Context.Groups.Count());
+            await controller.DeleteAsync(Context.Groups.Last().Id);
+            Assert.AreEqual(2, Context.Groups.Count());
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(0));
+        }
+
+        [Test]
+        public async Task Controller_GET_Group()
+        {
+            var controller = new GroupController(User, Manager);
+
+            await PostTestGroup();
+            var res = controller.Get() as JsonResult;
+            var obj = res.Value as IEnumerable<Models.Output.Admin.Group>;
+
+            Assert.AreEqual(3, obj.Count());
+            Assert.AreEqual("Default", obj.First().Name);
+            User.SetPermissions(new string[] { });
+            Assert.Throws<Shared.Exceptions.InsuficientPermission>(() => controller.Get());
         }
     }
 }
