@@ -98,7 +98,7 @@ namespace WikiLibs.API.Tests
             await PostTestUser(controller);
             Assert.AreEqual(1, Smtp.SentEmailCount);
             Assert.AreEqual("WikiLibs API Server", Smtp.LastSendEmail.Subject);
-            Assert.AreEqual("UserRegistration", Smtp.LastSendEmail.Template);
+            Assert.AreEqual(Shared.Modules.Smtp.Models.UserRegistration.Template, Smtp.LastSendEmail.Template);
             Assert.AreEqual("test@test.com", Smtp.LastSendEmail.Recipients.First().Email);
             Assert.AreEqual(Context.Users.Last().FirstName + " " + Context.Users.Last().LastName, Smtp.LastSendEmail.Recipients.First().Name);
             var data = Smtp.LastSendEmail.Model as Shared.Modules.Smtp.Models.UserRegistration;
@@ -147,7 +147,7 @@ namespace WikiLibs.API.Tests
             await controller.Reset("dev@localhost");
             Assert.AreEqual(1, Smtp.SentEmailCount);
             Assert.AreEqual("WikiLibs API Server", Smtp.LastSendEmail.Subject);
-            Assert.AreEqual("UserReset", Smtp.LastSendEmail.Template);
+            Assert.AreEqual(Shared.Modules.Smtp.Models.UserReset.Template, Smtp.LastSendEmail.Template);
             Assert.AreEqual("dev@localhost", Smtp.LastSendEmail.Recipients.First().Email);
             var data = Smtp.LastSendEmail.Model as Shared.Modules.Smtp.Models.UserReset;
             Assert.AreEqual(Context.Users.Last().Pass, data.NewPassword);

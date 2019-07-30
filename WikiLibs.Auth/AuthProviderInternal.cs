@@ -50,11 +50,12 @@ namespace WikiLibs.Auth
             await _smtpManager.SendAsync(new Mail()
             {
                 Subject = "WikiLibs API Server",
-                Template = "UserRegistration",
+                Template = Shared.Modules.Smtp.Models.UserRegistration.Template,
                 Model = new Shared.Modules.Smtp.Models.UserRegistration()
                 {
                     ConfirmCode = usr.Confirmation,
-                    UserName = usr.FirstName + " " + usr.LastName
+                    UserName = usr.FirstName + " " + usr.LastName,
+                    Link = _manager.Config.Internal.RegistrationUrlBase + "/auth/internal/confirm/" + usr.Confirmation
                 },
                 Recipients = new List<Recipient>()
                 {
@@ -83,7 +84,7 @@ namespace WikiLibs.Auth
             await _smtpManager.SendAsync(new Mail()
             {
                 Subject = "WikiLibs API Server",
-                Template = "UserReset",
+                Template = Shared.Modules.Smtp.Models.UserReset.Template,
                 Model = new Shared.Modules.Smtp.Models.UserReset()
                 {
                     NewPassword = usr.Pass

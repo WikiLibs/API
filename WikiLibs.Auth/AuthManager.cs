@@ -18,12 +18,12 @@ namespace WikiLibs.Auth
     public class AuthManager : IAuthManager
     {
         private Dictionary<string, IAuthProvider> _providers = new Dictionary<string, IAuthProvider>();
-        private readonly Config _config;
+        public Config Config { get; }
         public Data.Models.Group DefaultGroup { get; }
 
         public AuthManager(IAdminManager admin, IUserManager umgr, ISmtpManager smgr, Config cfg)
         {
-            _config = cfg;
+            Config = cfg;
             DefaultGroup = admin.GroupManager.Get(cfg.DefaultGroupName);
             _providers["internal"] = new AuthProviderInternal(umgr, smgr, this);
         }
@@ -38,12 +38,12 @@ namespace WikiLibs.Auth
         public string GenToken(string uuid)
         {
             var handler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config.Internal.TokenSecret);
+            var key = Encoding.ASCII.GetBytes(Config.Internal.TokenSecret);
             var desc = new SecurityTokenDescriptor
             {
-                Issuer = _config.Internal.TokenIssuer,
-                Audience = _config.Internal.TokenAudiance,
-                Expires = DateTime.UtcNow.AddMinutes(_config.Internal.TokenLifeMinutes),
+                Issuer = Config.Internal.TokenIssuer,
+                Audience = Config.Internal.TokenAudiance,
+                Expires = DateTime.UtcNow.AddMinutes(Config.Internal.TokenLifeMinutes),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature),
                 Subject = new ClaimsIdentity(new Claim[]
                 {
