@@ -50,7 +50,7 @@ namespace WikiLibs.Auth
             await _smtpManager.SendAsync(new Mail()
             {
                 Subject = "WikiLibs API Server",
-                Template = "UserRegistration",
+                Template = "WikiLibs_Registration",
                 Model = new Shared.Modules.Smtp.Models.UserRegistration()
                 {
                     ConfirmCode = usr.Confirmation,
