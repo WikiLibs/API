@@ -54,7 +54,6 @@ namespace WikiLibs.ImportMySQLDB
                     Id = usr.UUID,
                     FirstName = usr.FirstName,
                     LastName = usr.LastName,
-                    Icon = usr.Icon,
                     Email = usr.EMail,
                     Private = usr.ShowEmail,
                     ProfileMsg = usr.ProfileMsg,

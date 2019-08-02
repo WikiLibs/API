@@ -48,6 +48,7 @@ namespace WikiLibs.Data
                     .HasForeignKey<User>(e => e.GroupId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
+                builder.HasIndex(e => e.GroupId).IsUnique(false);
             });
             modelBuilder.Entity<Permission>(builder =>
             {

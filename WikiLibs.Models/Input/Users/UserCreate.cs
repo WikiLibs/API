@@ -12,7 +12,6 @@ namespace WikiLibs.Models.Input.Users
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        public string Icon { get; set; }
         [Required]
         public string Email { get; set; }
         public bool? Private { get; set; }
@@ -29,7 +28,6 @@ namespace WikiLibs.Models.Input.Users
                 Email = Email,
                 FirstName = FirstName,
                 LastName = LastName,
-                Icon = Icon,
                 Private = Private != null ? Private.Value : false,
                 ProfileMsg = ProfileMsg,
                 Points = 0,

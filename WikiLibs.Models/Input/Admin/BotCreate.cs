@@ -10,7 +10,6 @@ namespace WikiLibs.Models.Input.Admin
     {
         [Required]
         public string Name { get; set; }
-        public string Icon { get; set; }
         [Required]
         public string Email { get; set; }
         public bool? Private { get; set; }
@@ -26,7 +25,6 @@ namespace WikiLibs.Models.Input.Admin
                 FirstName = Name,
                 LastName = "",
                 RegistrationDate = DateTime.UtcNow,
-                Icon = Icon,
                 IsBot = true,
                 Points = 0,
                 Private = Private != null ? Private.Value : false,
