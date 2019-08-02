@@ -42,9 +42,9 @@ namespace WikiLibs.Models.Output
             UserId = model.UserId;
             LastModificationDate = model.LastModificationDate;
             CreationDate = model.CreationDate;
-            Lang = model.Lang;
-            Lib = model.Lib;
-            Type = model.Type;
+            Lang = model.Lang.Name;
+            Lib = model.Lib.Name;
+            Type = model.Type.Name;
             Path = model.Path;
             Symbols = new List<SymbolReference>();
             Prototypes = new Prototype[model.Prototypes.Count];

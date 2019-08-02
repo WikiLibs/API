@@ -69,14 +69,17 @@ namespace WikiLibs.ImportMySQLDB
             newctx.SaveChanges();
             foreach (var sym in oldctx.Symbols)
             {
-                var newSym = new Data.Models.Symbols.Symbol()
+                var newSym = new Symbol()
                 {
                     Path = sym.Path,
                     CreationDate = sym.Date,
                     LastModificationDate = DateTime.UtcNow,
-                    Type = sym.Type,
                     User = newctx.Users.Where(u => u.Id == sym.UserID).FirstOrDefault()
                 };
+                if (newctx.SymbolTypes.Any(e => e.Name == sym.Type))
+                    newSym.Type = newctx.SymbolTypes.Where(e => e.Name == sym.Type).FirstOrDefault();
+                else
+                    newSym.Type = new Data.Models.Symbols.Type() { Name = sym.Type };
                 foreach (var proto in JsonConvert.DeserializeObject<API.Entities.Symbol.Prototype[]>(sym.Prototypes))
                 {
                     var newProto = new Data.Models.Symbols.Prototype()
@@ -108,16 +111,6 @@ namespace WikiLibs.ImportMySQLDB
                     newSym.Symbols.Add(newSymRef);
                 }
                 newctx.Symbols.Add(newSym);
-            }
-            newctx.SaveChanges();
-            foreach (var info in oldctx.InfoTable)
-            {
-                var newInfo = new Data.Models.Symbols.Info()
-                {
-                    Data = info.Data,
-                    Type = (Data.Models.Symbols.EInfoType)info.Type
-                };
-                newctx.InfoTable.Add(newInfo);
             }
             newctx.SaveChanges();
         }

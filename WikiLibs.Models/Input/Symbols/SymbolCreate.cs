@@ -45,7 +45,7 @@ namespace WikiLibs.Models.Input.Symbols
                 LastModificationDate = DateTime.UtcNow,
                 CreationDate = DateTime.UtcNow,
                 Path = Path,
-                Type = Type,
+                Type = new Data.Models.Symbols.Type() { Name = Type },
             };
             foreach (var proto in Prototypes)
             {

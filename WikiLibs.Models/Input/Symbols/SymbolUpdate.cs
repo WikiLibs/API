@@ -40,7 +40,7 @@ namespace WikiLibs.Models.Input.Symbols
                 Path = current.Path,
                 Id = current.Id,
                 User = current.User,
-                Type = Type != null ? Type : current.Type
+                Type = Type != null ? new Data.Models.Symbols.Type() { Name = Type } : null
             };
             if (Prototypes != null)
             {

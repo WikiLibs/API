@@ -167,7 +167,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(1, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual("C", Context.Symbols.First().Lang);
             Assert.AreEqual("TestLib", Context.Symbols.First().Lib);
         }
@@ -181,7 +181,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.SymbolRefs.Count());
         }
 
@@ -194,7 +194,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().PrototypeParam);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().PrototypeParamId);
@@ -209,7 +209,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.SymbolRefs.Count());
             Assert.IsNull(Context.SymbolRefs.First().RefId);
             Assert.IsNull(Context.SymbolRefs.First().Ref);
@@ -229,7 +229,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
@@ -249,7 +249,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
@@ -269,7 +269,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.SymbolRefs.Count());
             Assert.IsNull(Context.SymbolRefs.First().RefId);
             Assert.IsNull(Context.SymbolRefs.First().Ref);
@@ -289,7 +289,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.SymbolRefs.Count());
             Assert.IsNull(Context.SymbolRefs.First().RefId);
             Assert.IsNull(Context.SymbolRefs.First().Ref);
@@ -309,7 +309,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(1, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => PostTestSymbol(controller));
         }
 
@@ -347,7 +347,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(1, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual("test", Context.Symbols.First().Type);
         }
 
@@ -375,7 +375,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(1, Context.Prototypes.Count());
             Assert.AreEqual(0, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual("test", Context.Symbols.First().Type);
             Assert.AreEqual("void TestFunc()", Context.Symbols.First().Prototypes.First().Data);
             Assert.AreEqual("This is a test function", Context.Symbols.First().Prototypes.First().Description);
@@ -401,7 +401,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(1, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual("test", Context.Symbols.First().Type);
             Assert.AreEqual("void TestFunc(int a, const int b, int c, int d, void *bad)", Context.Symbols.First().Prototypes.First().Data);
             Assert.AreEqual("This is a test function 123456789", Context.Symbols.First().Prototypes.First().Description);
@@ -446,7 +446,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(1, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual("test", Context.Symbols.First().Type);
             Assert.AreEqual("void TestFunc(int a, const int b, int c, int d, void *bad)", Context.Symbols.First().Prototypes.First().Data);
             Assert.AreEqual("This is a test function 123456789", Context.Symbols.First().Prototypes.First().Description);
@@ -463,7 +463,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.SymbolRefs.Count());
             await controller.PatchSymbol(2, new Models.Input.Symbols.SymbolUpdate()
             {
@@ -473,7 +473,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(0, Context.SymbolRefs.Count());
             await controller.PatchSymbol(2, new Models.Input.Symbols.SymbolUpdate()
             {
@@ -486,7 +486,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.SymbolRefs.Count());
         }
 
@@ -499,7 +499,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
             Assert.IsNotNull(Context.PrototypeParams.First().SymbolRef);
             await controller.PatchSymbol(2, new Models.Input.Symbols.SymbolUpdate()
@@ -544,7 +544,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
-            Assert.AreEqual(2, Context.InfoTable.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(0, Context.PrototypeParamSymbolRefs.Count());
             Assert.IsNull(Context.PrototypeParams.First().SymbolRef);
         }
@@ -615,7 +615,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(0, Context.Symbols.Count());
             Assert.AreEqual(0, Context.Prototypes.Count());
             Assert.AreEqual(0, Context.PrototypeParams.Count());
-            Assert.AreEqual(0, Context.InfoTable.Count());
+            Assert.AreEqual(0, Context.SymbolLibs.Count());
         }
 
         [Test]

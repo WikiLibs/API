@@ -14,7 +14,10 @@ namespace WikiLibs.Data
         public DbSet<PrototypeParam> PrototypeParams { get; set; }
         public DbSet<SymbolRef> SymbolRefs { get; set; }
         public DbSet<PrototypeParamSymbolRef> PrototypeParamSymbolRefs { get; set; }
-        public DbSet<Info> InfoTable { get; set; }
+        public DbSet<Lang> SymbolLangs { get; set; }
+        public DbSet<Lib> SymbolLibs { get; set; }
+        public DbSet<Models.Symbols.Type> SymbolTypes { get; set; }
+        public DbSet<Import> SymbolImports { get; set; }
         #endregion
 
         #region EXAMPLES
@@ -64,7 +67,32 @@ namespace WikiLibs.Data
                     .HasForeignKey<Symbol>(e => e.UserId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
+                builder.HasOne(e => e.Lang)
+                    .WithOne()
+                    .HasForeignKey<Symbol>(e => e.LangId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.SetNull);
+                builder.HasOne(e => e.Lib)
+                    .WithOne()
+                    .HasForeignKey<Symbol>(e => e.LibId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.SetNull);
+                builder.HasOne(e => e.Type)
+                    .WithOne()
+                    .HasForeignKey<Symbol>(e => e.TypeId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.SetNull);
+                builder.HasOne(e => e.Import)
+                    .WithOne()
+                    .HasForeignKey<Symbol>(e => e.ImportId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.SetNull);
                 builder.HasIndex(e => e.UserId).IsUnique(false);
+                builder.HasIndex(e => e.LangId).IsUnique(false);
+                builder.HasIndex(e => e.LibId).IsUnique(false);
+                builder.HasIndex(e => e.TypeId).IsUnique(false);
+                builder.HasIndex(e => e.ImportId).IsUnique(false);
+                builder.HasIndex(e => e.Path).IsUnique(true);
             });
             modelBuilder.Entity<Prototype>(builder =>
             {
