@@ -10,13 +10,13 @@ using WikiLibs.Shared.Modules.Admin;
 
 namespace WikiLibs.Admin
 {
-    class APIKeyManager : BaseCRUDOperations<Context, APIKey, string>, IAPIKeyManager
+    class APIKeyManager : BaseCRUDOperations<Context, ApiKey, string>, IAPIKeyManager
     {
         public APIKeyManager(Context ctx) : base(ctx)
         {
         }
 
-        public override async Task<APIKey> PostAsync(APIKey mdl)
+        public override async Task<ApiKey> PostAsync(ApiKey mdl)
         {
             mdl.Id = Guid.NewGuid().ToString();
             return (await base.PostAsync(mdl));
@@ -27,12 +27,12 @@ namespace WikiLibs.Admin
             return (Set.Any(x => x.Id == key));
         }
 
-        public IQueryable<APIKey> GetAll()
+        public IQueryable<ApiKey> GetAll()
         {
             return (Set.AsQueryable());
         }
 
-        public override async Task<APIKey> PatchAsync(string key, APIKey mdl)
+        public override async Task<ApiKey> PatchAsync(string key, ApiKey mdl)
         {
             var apiKey = await GetAsync(key);
 
@@ -55,7 +55,7 @@ namespace WikiLibs.Admin
             await SaveChanges();
         }
 
-        public IQueryable<APIKey> GetAllOfDescription(string desc)
+        public IQueryable<ApiKey> GetAllOfDescription(string desc)
         {
             return (Set.Where(x => x.Description == desc));
         }

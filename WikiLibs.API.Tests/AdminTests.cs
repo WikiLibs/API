@@ -25,7 +25,7 @@ namespace WikiLibs.API.Tests
 
         private async Task<string> PostTestAPIKey()
         {
-            var mdl = await Manager.APIKeyManager.PostAsync(new Data.Models.APIKey()
+            var mdl = await Manager.APIKeyManager.PostAsync(new Data.Models.ApiKey()
             {
                 Description = "TEST_API_KEY",
                 ExpirationDate = DateTime.MaxValue,
@@ -74,7 +74,7 @@ namespace WikiLibs.API.Tests
         {
             var key = await PostTestAPIKey();
 
-            await Manager.APIKeyManager.PatchAsync(key, new APIKeyUpdate()
+            await Manager.APIKeyManager.PatchAsync(key, new ApiKeyUpdate()
             {
                 Description = "SUPER API KEY",
                 ExpirationDate = DateTime.MaxValue,
@@ -298,8 +298,8 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_POST_APIKey()
         {
-            var controller = new APIKeyController(User, Manager);
-            var res = await controller.PostAsync(new APIKeyCreate()
+            var controller = new ApiKeyController(User, Manager);
+            var res = await controller.PostAsync(new ApiKeyCreate()
             {
                 Description = "TestKey",
                 ExpirationDate = DateTime.MaxValue,
@@ -312,16 +312,16 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(-1, obj.UseNum);
             Assert.AreEqual(DateTime.MaxValue, obj.ExpirationDate);
             User.SetPermissions(new string[] { });
-            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new APIKeyCreate()));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new ApiKeyCreate()));
         }
 
         [Test]
         public async Task Controller_PATCH_APIKey()
         {
-            var controller = new APIKeyController(User, Manager);
+            var controller = new ApiKeyController(User, Manager);
 
             var str = await PostTestAPIKey();
-            var res = await controller.PatchAsync(str, new APIKeyUpdate()
+            var res = await controller.PatchAsync(str, new ApiKeyUpdate()
             {
                 Description = "TestKey",
                 UseNum = 0
@@ -338,7 +338,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_DELETE_APIKey()
         {
-            var controller = new APIKeyController(User, Manager);
+            var controller = new ApiKeyController(User, Manager);
 
             var str = await PostTestAPIKey();
             Assert.AreEqual(1, Context.APIKeys.Count());
@@ -351,7 +351,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_GET_APIKey()
         {
-            var controller = new APIKeyController(User, Manager);
+            var controller = new ApiKeyController(User, Manager);
 
             await PostTestAPIKey();
             var res = controller.Get() as JsonResult;

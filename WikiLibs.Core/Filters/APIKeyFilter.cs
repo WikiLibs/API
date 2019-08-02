@@ -31,7 +31,7 @@ namespace WikiLibs.Core.Filters
                     ResourceName = "APIKey",
                     ResourceId = "APIKey",
                     MissingPermission = "APIKey",
-                    ResourceType = typeof(Data.Models.APIKey)
+                    ResourceType = typeof(Data.Models.ApiKey)
                 };
             }
             var adminmgr = (IAdminManager)context.HttpContext.RequestServices
@@ -44,7 +44,7 @@ namespace WikiLibs.Core.Filters
                     ResourceName = "APIKey",
                     ResourceId = "APIKey",
                     MissingPermission = "APIKey",
-                    ResourceType = typeof(Data.Models.APIKey)
+                    ResourceType = typeof(Data.Models.ApiKey)
                 };
             }
             var mdl = await adminmgr.APIKeyManager.GetAsync(auth);
@@ -55,7 +55,7 @@ namespace WikiLibs.Core.Filters
                     ResourceName = "APIKey",
                     ResourceId = "APIKey",
                     MissingPermission = "APIKey." + AuthorizeApiKey.GetFlagName(attribute.Flag),
-                    ResourceType = typeof(Data.Models.APIKey)
+                    ResourceType = typeof(Data.Models.ApiKey)
                 };
             }
             await adminmgr.APIKeyManager.UseAPIKey(auth);

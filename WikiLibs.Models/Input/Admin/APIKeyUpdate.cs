@@ -5,16 +5,16 @@ using WikiLibs.Data.Models;
 
 namespace WikiLibs.Models.Input.Admin
 {
-    public class APIKeyUpdate : PatchModel<APIKeyUpdate, APIKey>
+    public class ApiKeyUpdate : PatchModel<ApiKeyUpdate, ApiKey>
     {
         public string Description { get; set; }
         public int? Flags { get; set; }
         public int? UseNum { get; set; }
         public DateTime? ExpirationDate { get; set; }
 
-        public override APIKey CreatePatch(in APIKey current)
+        public override ApiKey CreatePatch(in ApiKey current)
         {
-            return (new APIKey()
+            return (new ApiKey()
             {
                 Id = current.Id,
                 Description = Description != null ? Description : current.Description,

@@ -6,7 +6,7 @@ using WikiLibs.Data.Models;
 
 namespace WikiLibs.Models.Input.Admin
 {
-    public class APIKeyCreate : PostModel<APIKeyCreate, APIKey>
+    public class ApiKeyCreate : PostModel<ApiKeyCreate, ApiKey>
     {
         [Required]
         public string Description { get; set; }
@@ -17,9 +17,9 @@ namespace WikiLibs.Models.Input.Admin
         [Required]
         public DateTime ExpirationDate { get; set; }
 
-        public override APIKey CreateModel()
+        public override ApiKey CreateModel()
         {
-            return (new APIKey()
+            return (new ApiKey()
             {
                 Description = Description,
                 ExpirationDate = ExpirationDate,

@@ -35,7 +35,7 @@ namespace WikiLibs.Admin
 #if DEBUG
             if (!manager._context.APIKeys.Any(x => x.Description == "[WIKILIBS_SUPER_DEV_API_KEY]"))
             {
-                manager.APIKeyManager.PostAsync(new Data.Models.APIKey()
+                manager.APIKeyManager.PostAsync(new Data.Models.ApiKey()
                 {
                     Flags = AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard,
                     Description = "[WIKILIBS_SUPER_DEV_API_KEY]",
