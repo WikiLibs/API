@@ -80,7 +80,7 @@ namespace WikiLibs.Core.Controllers
             {
                 Name = "WikiLibs API Server",
                 Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                DevKey = _admin.APIKeyManager.GetAllOfDescription("[WIKILIBS_SUPER_DEV_API_KEY]").First().Id,
+                DevKey = _admin.ApiKeyManager.GetAllOfDescription("[WIKILIBS_SUPER_DEV_API_KEY]").First().Id,
                 Host = new DebugView.HostView()
                 {
                     Framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,

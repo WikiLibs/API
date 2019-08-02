@@ -10,9 +10,9 @@ using WikiLibs.Shared.Modules.Admin;
 
 namespace WikiLibs.Admin
 {
-    class APIKeyManager : BaseCRUDOperations<Context, ApiKey, string>, IAPIKeyManager
+    class ApiKeyManager : BaseCRUDOperations<Context, ApiKey, string>, IApiKeyManager
     {
-        public APIKeyManager(Context ctx) : base(ctx)
+        public ApiKeyManager(Context ctx) : base(ctx)
         {
         }
 

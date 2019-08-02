@@ -9,7 +9,7 @@ namespace WikiLibs.Shared.Modules.Admin
         //void PostMessage(string msg);
         //ICollection<Data.Models.AdminMsg> GetAllMessages(); Needs to be added to Database scheme first
         //void DeleteMessage(uint id);
-        IAPIKeyManager APIKeyManager { get; }
+        IApiKeyManager ApiKeyManager { get; }
         IGroupManager GroupManager { get; }
     }
 }

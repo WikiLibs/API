@@ -12,11 +12,11 @@ namespace WikiLibs.Data.Models.Symbols
     {
         public string Path { get; set; }
         public string UserId { get; set; }
-        public int LangId { get; set; }
-        public int LibId { get; set; }
-        public int TypeId { get; set; }
-        public int? ImportId { get; set; }
-        public int Views { get; set; }
+        public long LangId { get; set; }
+        public long LibId { get; set; }
+        public long TypeId { get; set; }
+        public long? ImportId { get; set; }
+        public long Views { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
 

@@ -28,7 +28,7 @@ namespace WikiLibs.Data
 
         #region BASE
         public DbSet<User> Users { get; set; }
-        public DbSet<ApiKey> APIKeys { get; set; }
+        public DbSet<ApiKey> ApiKeys { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         #endregion BASE

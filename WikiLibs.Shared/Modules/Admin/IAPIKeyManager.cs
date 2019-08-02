@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WikiLibs.Shared.Modules.Admin
 {
-    public interface IAPIKeyManager : ICRUDOperations<Data.Models.ApiKey, string>
+    public interface IApiKeyManager : ICRUDOperations<Data.Models.ApiKey, string>
     {
         IQueryable<Data.Models.ApiKey> GetAll();
         bool Exists(string key);

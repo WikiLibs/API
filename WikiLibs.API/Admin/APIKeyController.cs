@@ -16,11 +16,11 @@ namespace WikiLibs.API.Admin
     public class ApiKeyController : Controller
     {
         private readonly IUser _user;
-        private readonly IAPIKeyManager _manager;
+        private readonly IApiKeyManager _manager;
 
         public ApiKeyController(IUser usr, IAdminManager mgr)
         {
-            _manager = mgr.APIKeyManager;
+            _manager = mgr.ApiKeyManager;
             _user = usr;
         }
 
