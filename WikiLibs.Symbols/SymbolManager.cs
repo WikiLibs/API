@@ -40,6 +40,8 @@ namespace WikiLibs.Symbols
 
             if (!Set.Any(sy => sy.Path.StartsWith(libl)))
                 Context.SymbolLibs.RemoveRange(Context.SymbolLibs.Where(e => e.Name == libl));
+            if (!Set.Any(sy => sy.Import.Name == sym.Import.Name))
+                Context.SymbolImports.RemoveRange(Context.SymbolImports.Where(e => e.Name == sym.Import.Name));
             await SaveChanges();
             return (sym);
         }
