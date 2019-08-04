@@ -159,6 +159,26 @@ namespace WikiLibs.Symbols
                     };
                 s.Type = Context.SymbolTypes.Where(e => e.Name == sym.Type.Name).FirstOrDefault();
             }
+            if (sym.Import != null)
+            {
+                if (s.Import != null)
+                {
+                    if (Context.SymbolImports.Where(e => e.Name == s.Import.Name).Count() == 1)
+                        Context.SymbolImports.RemoveRange(Context.SymbolImports.Where(e => e.Name == s.Import.Name));
+                }
+                Import import = null;
+                if (!Context.SymbolImports.Any(e => e.Name == sym.Import.Name))
+                {
+                    import = new Import()
+                    {
+                        Name = sym.Import.Name
+                    };
+                    Context.SymbolImports.Add(import);
+                }
+                else
+                    import = Context.SymbolImports.Where(e => e.Name == sym.Import.Name).FirstOrDefault();
+                s.Import = import;
+            }
             if (sym.Prototypes != null)
             {
                 Context.RemoveRange(s.Prototypes);
