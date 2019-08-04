@@ -72,17 +72,17 @@ namespace WikiLibs.Data
                     .WithOne()
                     .HasForeignKey<Symbol>(e => e.LangId)
                     .IsRequired(true)
-                    .OnDelete(DeleteBehavior.SetNull);
+                    .OnDelete(DeleteBehavior.Cascade);
                 builder.HasOne(e => e.Lib)
                     .WithOne()
                     .HasForeignKey<Symbol>(e => e.LibId)
                     .IsRequired(true)
-                    .OnDelete(DeleteBehavior.SetNull);
+                    .OnDelete(DeleteBehavior.Cascade);
                 builder.HasOne(e => e.Type)
                     .WithOne()
                     .HasForeignKey<Symbol>(e => e.TypeId)
                     .IsRequired(true)
-                    .OnDelete(DeleteBehavior.SetNull);
+                    .OnDelete(DeleteBehavior.Cascade);
                 builder.HasOne(e => e.Import)
                     .WithOne()
                     .HasForeignKey<Symbol>(e => e.ImportId)
