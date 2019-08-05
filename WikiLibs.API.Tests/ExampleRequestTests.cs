@@ -20,14 +20,22 @@ namespace WikiLibs.API.Tests
     [TestFixture]
     class ExampleRequestTests : DBTest<IExampleRequestManager>
     {
-        public override void Setup()
+        public override IExampleRequestManager CreateManager()
         {
-            base.Setup();
-            Manager = new ExampleRequestManager(Context);
+            return (new ExampleRequestManager(Context));
         }
 
         private async Task<Symbol> PostTestSymbol(Symbols.SymbolController controller)
         {
+            Context.SymbolLangs.Add(new Data.Models.Symbols.Lang()
+            {
+                Name = "C",
+            });
+            Context.SymbolTypes.Add(new Data.Models.Symbols.Type()
+            {
+                Name = "function"
+            });
+            await Context.SaveChangesAsync();
             await controller.PostSymbol(new SymbolCreate()
             {
                 Path = "C/TestLib/TestFunc",
