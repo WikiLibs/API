@@ -17,7 +17,7 @@ namespace WikiLibs.API.Tests.Helper
         public FakeUser User { get; private set; }
         public TestingSmtp Smtp { get; private set; }
 
-        public virtual T CreateManager() { return (null); }
+        public abstract T CreateManager();
 
         [SetUp]
         public virtual void Setup()
