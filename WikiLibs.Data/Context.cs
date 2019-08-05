@@ -150,8 +150,8 @@ namespace WikiLibs.Data
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
                 builder.HasOne(e => e.User)
-                    .WithOne()
-                    .HasForeignKey<Example>(e => e.UserId)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
                 builder.HasIndex(e => e.UserId).IsUnique(false);
@@ -172,11 +172,10 @@ namespace WikiLibs.Data
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
                 builder.HasOne(e => e.ApplyTo)
-                    .WithOne()
-                    .HasForeignKey<ExampleRequest>(e => e.ApplyToId)
+                    .WithMany()
+                    .HasForeignKey(e => e.ApplyToId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
-                builder.HasIndex(e => e.ApplyToId).IsUnique(false);
             });
             #endregion
         }
