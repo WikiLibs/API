@@ -4,7 +4,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Admin;
 using WikiLibs.API.Admin;
@@ -17,10 +16,9 @@ namespace WikiLibs.API.Tests
     [TestFixture]
     public class AdminTests : DBTest<AdminManager>
     {
-        public override void Setup()
+        public override AdminManager CreateManager()
         {
-            base.Setup();
-            Manager = new AdminManager(Context, LogUtils.FakeLogger<AdminManager>());
+            return (new AdminManager(Context, LogUtils.FakeLogger<AdminManager>()));
         }
 
         private async Task<string> PostTestAPIKey()
@@ -53,8 +51,8 @@ namespace WikiLibs.API.Tests
 
             Assert.AreEqual(2, Context.Groups.Count());
             Assert.AreEqual(1, Context.ApiKeys.Count());
-            Assert.AreEqual("Default", Context.Groups.Last().Name);
-            Assert.AreEqual("Admin", Context.Groups.First().Name);
+            Assert.AreEqual("Default", Context.Groups.First().Name);
+            Assert.AreEqual("Admin", Context.Groups.Last().Name);
             Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.ApiKeys.First().Description);
         }
 
@@ -248,6 +246,7 @@ namespace WikiLibs.API.Tests
 
             Assert.AreEqual(3, Context.Groups.Count());
             Context.Users.First().GroupId = Manager.GroupManager.Get("TestGroup").Id;
+            await Context.SaveChangesAsync();
             Assert.AreEqual(Manager.GroupManager.Get("TestGroup").Id, Context.Users.First().GroupId);
             await Manager.GroupManager.DeleteAsync(Manager.GroupManager.Get("TestGroup").Id);
             Assert.AreEqual(2, Context.Groups.Count());
