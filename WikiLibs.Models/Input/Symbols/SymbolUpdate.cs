@@ -42,7 +42,7 @@ namespace WikiLibs.Models.Input.Symbols
                 Id = current.Id,
                 User = current.User,
                 Type = Type != null ? new Data.Models.Symbols.Type() { Name = Type } : null,
-                Import = Import != null ? new Data.Models.Symbols.Import() { Name = Import } : null
+                Import = Import != null ? new Data.Models.Symbols.Import() { Name = Import } : current.Import
             };
             if (Prototypes != null)
             {

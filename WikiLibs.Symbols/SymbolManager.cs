@@ -36,11 +36,11 @@ namespace WikiLibs.Symbols
             string lib;
             string lang;
             GetLibLangFromPath(sym, out lib, out lang);
-            string libl = lang + "/" + lib + "/";
+            string libl = lang + "/" + lib;
 
             if (!Set.Any(sy => sy.Path.StartsWith(libl)))
                 Context.SymbolLibs.RemoveRange(Context.SymbolLibs.Where(e => e.Name == libl));
-            if (!Set.Any(sy => sy.Import.Name == sym.Import.Name))
+            if (sym.Import != null && !Set.Any(sy => sy.Import != null && sy.Import.Name == sym.Import.Name))
                 Context.SymbolImports.RemoveRange(Context.SymbolImports.Where(e => e.Name == sym.Import.Name));
             await SaveChanges();
             return (sym);
@@ -111,7 +111,7 @@ namespace WikiLibs.Symbols
             string lib;
             string lang;
             GetLibLangFromPath(sym, out lib, out lang);
-            string libl = lang + "/" + lib + "/";
+            string libl = lang + "/" + lib;
             if (!Context.SymbolLangs.Any(e => e.Name == lang))
                 throw new Shared.Exceptions.InvalidResource()
                 {
@@ -119,6 +119,7 @@ namespace WikiLibs.Symbols
                     ResourceType = typeof(Symbol),
                     ResourceName = sym.Path
                 };
+            sym.Lang = Context.SymbolLangs.Where(e => e.Name == lang).FirstOrDefault();
             string type = sym.Type.Name;
             sym.Type = null;
             if (!Context.SymbolTypes.Any(e => e.Name == type))
@@ -141,7 +142,6 @@ namespace WikiLibs.Symbols
             else
                 l = Context.SymbolLibs.Where(e => e.Name == libl).FirstOrDefault();
             sym.Lib = l;
-            sym.Lang = Context.SymbolLangs.Where(e => e.Name == lang).FirstOrDefault();
             return (await base.PostAsync(sym));
         }
 
@@ -163,20 +163,11 @@ namespace WikiLibs.Symbols
             }
             if (sym.Import != null)
             {
-                if (s.Import != null)
-                {
-                    if (Context.SymbolImports.Where(e => e.Name == s.Import.Name).Count() == 1)
-                        Context.SymbolImports.RemoveRange(Context.SymbolImports.Where(e => e.Name == s.Import.Name));
-                }
+                if (Context.SymbolImports.Where(e => e.Name == s.Import.Name).Count() == 1)
+                    Context.RemoveRange(Context.SymbolImports.Where(e => e.Name == s.Import.Name));
                 Import import = null;
                 if (!Context.SymbolImports.Any(e => e.Name == sym.Import.Name))
-                {
-                    import = new Import()
-                    {
-                        Name = sym.Import.Name
-                    };
-                    Context.SymbolImports.Add(import);
-                }
+                    import = new Import() { Name = sym.Import.Name };
                 else
                     import = Context.SymbolImports.Where(e => e.Name == sym.Import.Name).FirstOrDefault();
                 s.Import = import;

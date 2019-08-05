@@ -64,35 +64,30 @@ namespace WikiLibs.Data
             modelBuilder.Entity<Symbol>(builder =>
             {
                 builder.HasOne(e => e.User)
-                    .WithOne()
-                    .HasForeignKey<Symbol>(e => e.UserId)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
                 builder.HasOne(e => e.Lang)
-                    .WithOne()
-                    .HasForeignKey<Symbol>(e => e.LangId)
+                    .WithMany()
+                    .HasForeignKey(e => e.LangId)
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
                 builder.HasOne(e => e.Lib)
-                    .WithOne()
-                    .HasForeignKey<Symbol>(e => e.LibId)
+                    .WithMany()
+                    .HasForeignKey(e => e.LibId)
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
                 builder.HasOne(e => e.Type)
-                    .WithOne()
-                    .HasForeignKey<Symbol>(e => e.TypeId)
+                    .WithMany()
+                    .HasForeignKey(e => e.TypeId)
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
                 builder.HasOne(e => e.Import)
-                    .WithOne()
-                    .HasForeignKey<Symbol>(e => e.ImportId)
+                    .WithMany()
+                    .HasForeignKey(e => e.ImportId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
-                builder.HasIndex(e => e.UserId).IsUnique(false);
-                builder.HasIndex(e => e.LangId).IsUnique(false);
-                builder.HasIndex(e => e.LibId).IsUnique(false);
-                builder.HasIndex(e => e.TypeId).IsUnique(false);
-                builder.HasIndex(e => e.ImportId).IsUnique(false);
                 builder.HasIndex(e => e.Path).IsUnique(true);
             });
             modelBuilder.Entity<Prototype>(builder =>
