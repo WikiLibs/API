@@ -8,6 +8,9 @@ namespace WikiLibs.Shared.Modules
 {
     public interface ISymbolManager : IModule, ICRUDOperations<Data.Models.Symbols.Symbol>
     {
+        ICRUDOperations<Data.Models.Symbols.Lang> LangManager { get; }
+        ICRUDOperations<Data.Models.Symbols.Type> TypeManager { get; }
+
         Data.Models.Symbols.Symbol Get(string path);
         PageResult<SymbolListItem> SearchSymbols(string path, PageOptions options);
         string[] GetFirstLangs();

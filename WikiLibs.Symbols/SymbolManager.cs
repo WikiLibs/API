@@ -17,9 +17,15 @@ namespace WikiLibs.Symbols
     {
         private Config _cfg;
 
+        public ICRUDOperations<Lang> LangManager { get; }
+
+        public ICRUDOperations<Data.Models.Symbols.Type> TypeManager { get; }
+
         public SymbolManager(Data.Context db, Config cfg) : base(db)
         {
             _cfg = cfg;
+            LangManager = (ICRUDOperations<Lang>)new LangManager(db);
+            TypeManager = (ICRUDOperations<Data.Models.Symbols.Type>)new TypeManager(db);
         }
 
         private void GetLibLangFromPath(Symbol sym, out string lib, out string lang)
