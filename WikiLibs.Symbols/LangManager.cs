@@ -8,7 +8,7 @@ using WikiLibs.Shared;
 
 namespace WikiLibs.Symbols
 {
-    public class LangManager : BaseCRUDOperations<Context, Lang>
+    public class LangManager : BaseCRUDOperations<Context, Lang>, ICRUDOperations<Lang>
     {
         public LangManager(Context ctx) : base(ctx)
         {

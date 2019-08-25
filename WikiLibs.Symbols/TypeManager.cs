@@ -7,7 +7,7 @@ using WikiLibs.Shared;
 
 namespace WikiLibs.Symbols
 {
-    public class TypeManager : BaseCRUDOperations<Context, Data.Models.Symbols.Type>
+    public class TypeManager : BaseCRUDOperations<Context, Data.Models.Symbols.Type>, ICRUDOperations<Data.Models.Symbols.Type>
     {
         public TypeManager(Context ctx) : base(ctx)
         {

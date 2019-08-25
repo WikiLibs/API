@@ -24,8 +24,8 @@ namespace WikiLibs.Symbols
         public SymbolManager(Data.Context db, Config cfg) : base(db)
         {
             _cfg = cfg;
-            LangManager = (ICRUDOperations<Lang>)new LangManager(db);
-            TypeManager = (ICRUDOperations<Data.Models.Symbols.Type>)new TypeManager(db);
+            LangManager = new LangManager(db);
+            TypeManager = new TypeManager(db);
         }
 
         private void GetLibLangFromPath(Symbol sym, out string lib, out string lang)
