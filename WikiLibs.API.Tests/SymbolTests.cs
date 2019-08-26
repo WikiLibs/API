@@ -375,13 +375,13 @@ namespace WikiLibs.API.Tests
             }.CreateModel()));
 
             // Invalid lang (lang C has not been added)
-            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(new Models.Input.Symbols.SymbolCreate()
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
             {
                 Path = "C/TestLib/TestFunc",
                 Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[] { },
                 Symbols = new string[] { },
                 Type = "function"
-            }.CreateModel()));
+            }));
 
             // Invalid type (type function has not been added)
             Context.SymbolLangs.Add(new Data.Models.Symbols.Lang()
@@ -389,13 +389,13 @@ namespace WikiLibs.API.Tests
                 Name = "C"
             });
             await Context.SaveChangesAsync();
-            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => Manager.PostAsync(new Models.Input.Symbols.SymbolCreate()
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
             {
                 Path = "C/TestLib/TestFunc",
                 Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[] { },
                 Symbols = new string[] { },
                 Type = "function"
-            }.CreateModel()));
+            }));
         }
 
         [Test]
