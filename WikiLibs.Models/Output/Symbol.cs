@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using WikiLibs.Data.Models;
-using WikiLibs.Shared.Modules;
+using WikiLibs.Shared.Modules.Symbols;
 
 namespace WikiLibs.Models.Output
 {

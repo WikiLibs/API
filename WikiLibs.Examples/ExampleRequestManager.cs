@@ -15,6 +15,7 @@ namespace WikiLibs.Examples
     {
         public ExampleRequestManager(Context ctx) : base(ctx)
         {
+            MaxResults = 100;
         }
 
         public async Task ApplyRequest(long key)
@@ -126,20 +127,7 @@ namespace WikiLibs.Examples
 
         public PageResult<ExampleRequest> GetAll(PageOptions options)
         {
-            options.EnsureValid(typeof(ExampleRequest), "ExampleRequest", 100);
-            var data = Set
-                .OrderByDescending(o => o.CreationDate)
-                .Skip((options.Page.Value - 1) * options.Count.Value);
-            bool next = data.Count() > options.Count.Value;
-            var arr = data.Take(options.Count.Value);
-
-            return (new PageResult<ExampleRequest>()
-            {
-                Data = arr,
-                HasMorePages = next,
-                Page = options.Page.Value,
-                Count = options.Count.Value
-            });
+            return (base.ToPageResult(options, Set.OrderByDescending(e => e.CreationDate)));
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WikiLibs.Shared.Modules;
 using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Shared;
 using System.Threading.Tasks;
@@ -9,21 +8,20 @@ using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Attributes;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
+using WikiLibs.Shared.Modules.Symbols;
 
 namespace WikiLibs.Symbols
 {
     [Module(Interface = typeof(ISymbolManager))]
     public class SymbolManager : BaseCRUDOperations<Data.Context, Symbol>, ISymbolManager
     {
-        private Config _cfg;
-
-        public ICRUDOperations<Lang> LangManager { get; }
+        public ILangManager LangManager { get; }
 
         public ICRUDOperations<Data.Models.Symbols.Type> TypeManager { get; }
 
         public SymbolManager(Data.Context db, Config cfg) : base(db)
         {
-            _cfg = cfg;
+            MaxResults = cfg.MaxSymsPerPage;
             LangManager = new LangManager(db);
             TypeManager = new TypeManager(db);
         }
@@ -50,24 +48,6 @@ namespace WikiLibs.Symbols
                 Context.SymbolImports.RemoveRange(Context.SymbolImports.Where(e => e.Name == sym.Import.Name));
             await SaveChanges();
             return (sym);
-        }
-
-        public string[] GetFirstLangs()
-        {
-            return (Context.SymbolLangs
-                .OrderBy(o => o.Name)
-                .Take(_cfg.MaxSymsPerPage)
-                .Select(o => o.Name)
-                .ToArray());
-        }
-
-        public string[] GetFirstLibs(string lang)
-        {
-            return (Context.SymbolLibs.Where(o => o.Name.StartsWith(lang + "/"))
-                .OrderBy(o => o.Name)
-                .Take(_cfg.MaxSymsPerPage)
-                .Select(o => o.Name)
-                .ToArray());
         }
 
         public Symbol Get(string path)
@@ -205,26 +185,9 @@ namespace WikiLibs.Symbols
 
         public PageResult<SymbolListItem> SearchSymbols(string path, PageOptions options)
         {
-            options.EnsureValid(typeof(Symbol), "Symbol", _cfg.MaxSymsPerPage);
-            var data = Set.Where(sym => sym.Path.Contains(path))
-                .OrderBy(o => o.Path)
-                .Skip((options.Page.Value - 1) * options.Count.Value);
-            bool next = data.Count() > options.Count.Value;
-            var arr = data.Take(options.Count.Value)
-                .Select(sym => new SymbolListItem()
-                {
-                    Path = sym.Path,
-                    Id = sym.Id,
-                    Type = sym.Type.Name
-                });
-
-            return (new PageResult<SymbolListItem>()
-            {
-                Data = arr,
-                HasMorePages = next,
-                Page = options.Page.Value,
-                Count = options.Count.Value
-            });
+            return (base.ToPageResult<SymbolListItem>(options,
+                Set.Where(sym => sym.Path.Contains(path))
+                   .OrderBy(o => o.Path)));
         }
 
         public async Task OptimizeAsync()
@@ -250,6 +213,11 @@ namespace WikiLibs.Symbols
         public static void InitSymbols(ISymbolManager mgr)
         {
             mgr.OptimizeAsync().Wait();
+        }
+
+        public PageResult<SymbolListItem> SymbolsForLib(long lib, PageOptions options)
+        {
+            return (base.ToPageResult<SymbolListItem>(options, Set.Where(e => e.LibId == lib).OrderBy(e => e.Path)));
         }
     }
 }

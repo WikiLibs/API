@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WikiLibs.API.Tests.Helper;
 using WikiLibs.Shared.Helpers;
-using WikiLibs.Shared.Modules;
+using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Symbols;
 
 namespace WikiLibs.API.Tests
@@ -782,10 +782,10 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol();
-            var res = controller.AllLangs() as JsonResult;
-            var obj = res.Value as string[];
-            Assert.AreEqual(1, obj.Length);
-            Assert.AreEqual("C", obj[0]);
+            var res = controller.AllLangs(new PageOptions() { Page = 1 }) as JsonResult;
+            var obj = res.Value as PageResult<LangListItem>;
+            Assert.AreEqual(1, obj.Data.Count());
+            Assert.AreEqual("C", obj.Data.ElementAt(0).Name);
         }
 
         [Test]
@@ -794,10 +794,10 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol();
-            var res = controller.AllLibs("C") as JsonResult;
-            var obj = res.Value as string[];
-            Assert.AreEqual(1, obj.Length);
-            Assert.AreEqual("C/TestLib", obj[0]);
+            var res = controller.AllLibs(1, new PageOptions() { Page = 1 }) as JsonResult;
+            var obj = res.Value as PageResult<LibListItem>;
+            Assert.AreEqual(1, obj.Data.Count());
+            Assert.AreEqual("C/TestLib", obj.Data.ElementAt(0).Name);
         }
 
         [Test]

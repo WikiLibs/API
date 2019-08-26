@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.API.Tests.Helper;
 using WikiLibs.Models.Input.Symbols;
-using WikiLibs.Shared.Modules;
+using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Symbols;
 
 namespace WikiLibs.API.Tests

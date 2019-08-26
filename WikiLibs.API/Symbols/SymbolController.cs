@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using WikiLibs.Shared;
 using WikiLibs.Shared.Attributes;
-using WikiLibs.Shared.Modules;
+using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Shared.Service;
 
 namespace WikiLibs.API.Symbols

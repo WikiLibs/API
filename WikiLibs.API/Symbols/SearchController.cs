@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Text;
 using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Helpers;
-using WikiLibs.Shared.Modules;
+using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Shared.Service;
 
 namespace WikiLibs.API.Symbols
 {
-    [Route("/search")]
+    [Route("/symbol")]
     public class SearchController : Controller
     {
         private readonly ISymbolManager _symmgr;
@@ -21,27 +21,34 @@ namespace WikiLibs.API.Symbols
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("lang")]
-        [ProducesResponseType(200, Type = typeof(string[]))]
-        public IActionResult AllLangs()
+        [ProducesResponseType(200, Type = typeof(PageResult<LangListItem>))]
+        public IActionResult AllLangs([FromQuery]PageOptions options)
         {
-            return (Json(_symmgr.GetFirstLangs()));
+            return (Json(_symmgr.LangManager.GetFirstLangs(options)));
         }
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
-        [HttpGet("lang/{*name}")]
-        [ProducesResponseType(200, Type = typeof(string[]))]
-        public IActionResult AllLibs([FromRoute]string name)
+        [HttpGet("lang/{id}")]
+        [ProducesResponseType(200, Type = typeof(PageResult<LibListItem>))]
+        public IActionResult AllLibs([FromRoute]long id, [FromQuery]PageOptions options)
         {
-            return (Json(_symmgr.GetFirstLibs(name)));
+            return (Json(_symmgr.LangManager.GetFirstLibs(id, options)));
         }
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
-        [HttpGet("string/{*path}")]
+        [HttpGet("lib/{id}")]
+        [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
+        public IActionResult SymbolsFromLib([FromRoute]long id, [FromQuery]PageOptions options)
+        {
+            return (Json(_symmgr.SymbolsForLib(id, options)));
+        }
+
+        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [HttpGet("search/{*path}")]
         [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
         public IActionResult SearchSymbols([FromRoute]string path, [FromQuery]PageOptions options)
         {
-            var res = _symmgr.SearchSymbols(path, options);
-            return (Json(res));
+            return (Json(_symmgr.SearchSymbols(path, options)));
         }
     }
 }
