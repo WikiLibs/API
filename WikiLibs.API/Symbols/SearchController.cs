@@ -20,22 +20,6 @@ namespace WikiLibs.API.Symbols
         }
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
-        [HttpGet("lang")]
-        [ProducesResponseType(200, Type = typeof(PageResult<LangListItem>))]
-        public IActionResult AllLangs([FromQuery]PageOptions options)
-        {
-            return (Json(_symmgr.LangManager.GetFirstLangs(options)));
-        }
-
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
-        [HttpGet("lang/{id}")]
-        [ProducesResponseType(200, Type = typeof(PageResult<LibListItem>))]
-        public IActionResult AllLibs([FromRoute]long id, [FromQuery]PageOptions options)
-        {
-            return (Json(_symmgr.LangManager.GetFirstLibs(id, options)));
-        }
-
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("lib/{id}")]
         [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
         public IActionResult SymbolsFromLib([FromRoute]long id, [FromQuery]PageOptions options)

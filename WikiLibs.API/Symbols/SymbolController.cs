@@ -30,7 +30,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [AllowAnonymous]
-        [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
+        [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet]
         public async Task<IActionResult> GetSymbol([FromQuery] SymbolQuery query)
@@ -45,17 +45,17 @@ namespace WikiLibs.API.Symbols
             if (query.Path != null)
             {
                 var sym = _symmgr.Get(query.Path);
-                return (Json(Models.Output.Symbol.CreateModel(sym)));
+                return (Json(Models.Output.Symbols.Symbol.CreateModel(sym)));
             }
             else
             {
                 var sym = await _symmgr.GetAsync(query.Id.Value);
-                return (Json(Models.Output.Symbol.CreateModel(sym)));
+                return (Json(Models.Output.Symbols.Symbol.CreateModel(sym)));
             }
         }
 
         [HttpPost]
-        [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
+        [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
         public async Task<IActionResult> PostSymbol([FromBody, Required] Models.Input.Symbols.SymbolCreate sym)
         {
             if (!_user.HasPermission(Permissions.CREATE_SYMBOL))
@@ -69,11 +69,11 @@ namespace WikiLibs.API.Symbols
             var data = sym.CreateModel();
             data.User = _user.User;
             var mdl = await _symmgr.PostAsync(data);
-            return (Json(Models.Output.Symbol.CreateModel(mdl)));
+            return (Json(Models.Output.Symbols.Symbol.CreateModel(mdl)));
         }
 
         [HttpPatch("{id}")]
-        [ProducesResponseType(200, Type = typeof(Models.Output.Symbol))]
+        [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
         public async Task<IActionResult> PatchSymbol([FromRoute] long id, [FromBody, Required] Models.Input.Symbols.SymbolUpdate sym)
         {
             if (!_user.HasPermission(Permissions.UPDATE_SYMBOL))
@@ -85,7 +85,7 @@ namespace WikiLibs.API.Symbols
                     MissingPermission = Permissions.UPDATE_SYMBOL
                 };
             var mdl = await _symmgr.PatchAsync(id, sym.CreatePatch(await _symmgr.GetAsync(id)));
-            return (Json(Models.Output.Symbol.CreateModel(mdl)));
+            return (Json(Models.Output.Symbols.Symbol.CreateModel(mdl)));
         }
 
         [HttpDelete("{id}")]

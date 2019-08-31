@@ -108,7 +108,7 @@ namespace WikiLibs.Shared
 
         public virtual PageResult<DataModel> ToPageResult(PageOptions options, IQueryable<DataModel> models)
         {
-            return (ToPageResultMotherFucker(options, models));
+            return (ToPageResult1(options, models));
         }
 
         public virtual PageResult<T> ToPageResult<T, DM>(PageOptions options, IQueryable<DM> models)
@@ -127,7 +127,7 @@ namespace WikiLibs.Shared
             });
         }
 
-        private PageResult<DM> ToPageResultMotherFucker<DM>(PageOptions options, IQueryable<DM> models)
+        private PageResult<DM> ToPageResult1<DM>(PageOptions options, IQueryable<DM> models)
         {
             options.EnsureValid(typeof(DM), typeof(DM).Name, MaxResults);
             var data = models.Skip((options.Page.Value - 1) * options.Count.Value);
