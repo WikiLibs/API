@@ -5,7 +5,7 @@ using System.Text;
 using WikiLibs.Data.Models;
 using WikiLibs.Shared.Modules.Symbols;
 
-namespace WikiLibs.Models.Output
+namespace WikiLibs.Models.Output.Symbols
 {
     public class Symbol : GetModel<Symbol, Data.Models.Symbols.Symbol>
     {
