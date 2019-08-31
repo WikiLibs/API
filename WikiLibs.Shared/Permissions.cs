@@ -90,5 +90,17 @@ namespace WikiLibs.Shared
         public const string DELETE_GROUP = "group.delete";
         public const string LIST_GROUP = "group.list";
         #endregion
+
+        #region ADMIN_SYMBOL_LANGS
+        public const string CREATE_SYMBOL_LANG = "symbol.lang.create";
+        public const string UPDATE_SYMBOL_LANG = "symbol.lang.update";
+        public const string DELETE_SYMBOL_LANG = "symbol.lang.delete";
+        #endregion
+
+        #region ADMIN_SYMBOL_TYPES
+        public const string CREATE_SYMBOL_TYPE = "symbol.type.create";
+        public const string UPDATE_SYMBOL_TYPE = "symbol.type.update";
+        public const string DELETE_SYMBOL_TYPE = "symbol.type.delete";
+        #endregion
     }
 }
