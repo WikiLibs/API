@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Shared;
 using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Modules;
+using WikiLibs.Shared.Modules.File;
 using WikiLibs.Shared.Modules.Symbols;
 
 namespace WikiLibs.Symbols
@@ -39,6 +41,41 @@ namespace WikiLibs.Symbols
             return (base.ToPageResult<LibListItem, Lib>(options,
                 Context.SymbolLibs.Where(e => e.Name.StartsWith(lngName))
                                   .OrderBy(e => e.Name)));
+        }
+
+        public async Task PostFileAsync(Lang data, ImageFile fle)
+        {
+            var res = ImageUtils.ResizeImage(fle.OpenReadStream(), new System.Drawing.Size(128, 128), System.Drawing.Imaging.ImageFormat.Jpeg);
+            data.Icon = res;
+            await SaveChanges();
+        }
+
+        class LangIcon : ImageFile
+        {
+            public override string ContentType => "image/jpeg";
+
+            public override long Length => _data.Length;
+
+            public override string Name => "Image";
+
+            private byte[] _data;
+
+            public LangIcon(byte[] data)
+            {
+                _data = data;
+            }
+
+            public override Stream OpenReadStream()
+            {
+                return (new MemoryStream(_data));
+            }
+        }
+
+        public ImageFile GetFile(Lang data)
+        {
+            if (data.Icon == null || data.Icon.Length <= 0)
+                return (null);
+            return (new LangIcon(data.Icon));
         }
     }
 }
