@@ -16,7 +16,7 @@ namespace WikiLibs.API.Symbols
 {
     [Authorize]
     [Route("/symbol/lang")]
-    public class LangController : Controller
+    public class LangController : FileController
     {
         private readonly ISymbolManager _symmgr;
         private readonly IUser _user;
@@ -49,16 +49,20 @@ namespace WikiLibs.API.Symbols
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("{id}/icon")]
         [ProducesResponseType(200, Type = typeof(string))]
-        public IActionResult GetIcon([FromRoute]long id)
+        public async Task<IActionResult> GetIcon([FromRoute]long id)
         {
-            throw new NotImplementedException();
+            var mdl = await _symmgr.LangManager.GetAsync(id);
+            var img = _symmgr.LangManager.GetFile(mdl);
+            return (Json(await img.ToBase64()));
         }
 
         [HttpPost("{id}/icon")]
         [ProducesResponseType(200, Type = typeof(string))]
-        public async Task<IActionResult> PostIcon([FromRoute]long id)
+        public async Task<IActionResult> PostIcon([FromRoute]long id, [FromForm, Required]FormFile file)
         {
-            throw new NotImplementedException();
+            var mdl = await _symmgr.LangManager.GetAsync(id);
+            await _symmgr.LangManager.PostFileAsync(mdl, ImageFileFromForm(file));
+            return (Ok());
         }
 
         [HttpPost]

@@ -74,7 +74,12 @@ namespace WikiLibs.Symbols
         public ImageFile GetFile(Lang data)
         {
             if (data.Icon == null || data.Icon.Length <= 0)
-                return (null);
+                throw new Shared.Exceptions.ResourceNotFound()
+                {
+                    ResourceId = data.Id.ToString(),
+                    ResourceName = "Icon",
+                    ResourceType = typeof(Lang)
+                };
             return (new LangIcon(data.Icon));
         }
     }
