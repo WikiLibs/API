@@ -170,6 +170,9 @@ namespace WikiLibs.API.Tests
             Assert.IsNotEmpty(iconb64);
             Assert.Less(iconb64.Length, str.Length);
             Assert.IsTrue(iconb64.StartsWith("image/jpeg,"));
+
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostIcon(1, null));
         }
     }
 }

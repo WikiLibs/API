@@ -60,6 +60,14 @@ namespace WikiLibs.API.Symbols
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> PostIcon([FromRoute]long id, [FromForm, Required]FormFile file)
         {
+            if (!_user.HasPermission(Permissions.UPDATE_SYMBOL_LANG))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = "Icon",
+                    ResourceId = id.ToString(),
+                    ResourceType = typeof(Data.Models.Symbols.Lang),
+                    MissingPermission = Permissions.UPDATE_SYMBOL_LANG
+                };
             var mdl = await _symmgr.LangManager.GetAsync(id);
             await _symmgr.LangManager.PostFileAsync(mdl, ImageFileFromForm(file));
             return (Ok());
