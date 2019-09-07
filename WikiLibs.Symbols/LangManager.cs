@@ -29,9 +29,9 @@ namespace WikiLibs.Symbols
             return (m);
         }
 
-        public PageResult<LangListItem> GetFirstLangs(PageOptions options)
+        public IEnumerable<Lang> GetAllLangs()
         {
-            return (base.ToPageResult<LangListItem>(options, Set.OrderBy(e => e.Name)));
+            return (Set.OrderBy(e => e.Name));
         }
 
         public PageResult<LibListItem> GetFirstLibs(long lang, PageOptions options)

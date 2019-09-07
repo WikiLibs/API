@@ -30,10 +30,10 @@ namespace WikiLibs.API.Symbols
         [AllowAnonymous]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(PageResult<LangListItem>))]
-        public IActionResult AllLangs([FromQuery]PageOptions options)
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Symbols.Lang>))]
+        public IActionResult AllLangs()
         {
-            return (Json(_symmgr.LangManager.GetFirstLangs(options)));
+            return (Json(Models.Output.Symbols.Lang.CreateModels(_symmgr.LangManager.GetAllLangs())));
         }
 
         [AllowAnonymous]

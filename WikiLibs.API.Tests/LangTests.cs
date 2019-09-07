@@ -69,5 +69,20 @@ namespace WikiLibs.API.Tests
 
             Assert.AreEqual(0, Context.SymbolLangs.Count());
         }
+
+        public async Task Controller_POST()
+        {
+
+        }
+
+        public async Task Controller_PATCH()
+        {
+
+        }
+
+        public async Task Controller_DELETE()
+        {
+
+        }
     }
 }

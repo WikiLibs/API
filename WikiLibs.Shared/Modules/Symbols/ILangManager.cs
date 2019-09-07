@@ -9,7 +9,7 @@ namespace WikiLibs.Shared.Modules.Symbols
     public interface ILangManager : ICRUDOperations<Data.Models.Symbols.Lang>,
                                     IFileManager<Data.Models.Symbols.Lang, ImageFile>
     {
-        PageResult<LangListItem> GetFirstLangs(PageOptions options);
+        IEnumerable<Data.Models.Symbols.Lang> GetAllLangs();
         PageResult<LibListItem> GetFirstLibs(long lang, PageOptions options);
     }
 }

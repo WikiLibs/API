@@ -34,19 +34,6 @@ namespace WikiLibs.Shared.Modules.Symbols
         }
     }
 
-    public class LangListItem : IPageResultModel<LangListItem, Lang>
-    {
-        public long Id { get; set; }
-        public string Name { get; set; }
-
-        public LangListItem Map(Lang model)
-        {
-            Id = model.Id;
-            Name = model.Name;
-            return (this);
-        }
-    }
-
     public class SymbolReference : IPageResultModel<SymbolReference, Symbol>
     {
         public long Id { get; set; }
