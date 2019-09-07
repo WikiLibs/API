@@ -714,7 +714,7 @@ namespace WikiLibs.API.Tests
 
             await PostTestSymbol();
             var res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Path = "C/TestLib/TestFunc" }) as JsonResult;
-            var obj = res.Value as Models.Output.Symbol;
+            var obj = res.Value as Models.Output.Symbols.Symbol;
             Assert.AreEqual("C", obj.Lang);
             Assert.AreEqual("C/TestLib/TestFunc", obj.Path);
             Assert.AreEqual("function", obj.Type);
@@ -729,7 +729,7 @@ namespace WikiLibs.API.Tests
 
             await PostTestSymbol();
             var res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Id = 1 }) as JsonResult;
-            var obj = res.Value as Models.Output.Symbol;
+            var obj = res.Value as Models.Output.Symbols.Symbol;
             Assert.AreEqual("C", obj.Lang);
             Assert.AreEqual("C/TestLib/TestFunc", obj.Path);
             Assert.AreEqual("function", obj.Type);
@@ -774,30 +774,6 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(0, Context.Prototypes.Count());
             Assert.AreEqual(0, Context.PrototypeParams.Count());
             Assert.AreEqual(0, Context.SymbolLibs.Count());
-        }
-
-        [Test]
-        public async Task SearchLangs()
-        {
-            var controller = new Symbols.SearchController(Manager);
-
-            await PostTestSymbol();
-            var res = controller.AllLangs(new PageOptions() { Page = 1 }) as JsonResult;
-            var obj = res.Value as PageResult<LangListItem>;
-            Assert.AreEqual(1, obj.Data.Count());
-            Assert.AreEqual("C", obj.Data.ElementAt(0).Name);
-        }
-
-        [Test]
-        public async Task SearchLibs()
-        {
-            var controller = new Symbols.SearchController(Manager);
-
-            await PostTestSymbol();
-            var res = controller.AllLibs(1, new PageOptions() { Page = 1 }) as JsonResult;
-            var obj = res.Value as PageResult<LibListItem>;
-            Assert.AreEqual(1, obj.Data.Count());
-            Assert.AreEqual("C/TestLib", obj.Data.ElementAt(0).Name);
         }
 
         [Test]
@@ -904,6 +880,30 @@ namespace WikiLibs.API.Tests
             }));
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteSymbol(1));
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.OptimizeAsync());
+        }
+
+        [Test]
+        public async Task SearchLangs()
+        {
+            var controller = new Symbols.LangController(Manager, User);
+
+            await PostTestSymbol();
+            var res = controller.AllLangs() as JsonResult;
+            var obj = res.Value as IEnumerable<Models.Output.Symbols.Lang>;
+            Assert.AreEqual(1, obj.Count());
+            Assert.AreEqual("C", obj.ElementAt(0).Name);
+        }
+
+        [Test]
+        public async Task SearchLibs()
+        {
+            var controller = new Symbols.LangController(Manager, User);
+
+            await PostTestSymbol();
+            var res = controller.AllLibs(1, new PageOptions() { Page = 1 }) as JsonResult;
+            var obj = res.Value as PageResult<LibListItem>;
+            Assert.AreEqual(1, obj.Data.Count());
+            Assert.AreEqual("C/TestLib", obj.Data.ElementAt(0).Name);
         }
     }
 }
