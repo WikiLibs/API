@@ -487,6 +487,12 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual("test", Context.Symbols.First().Type.Name);
+
+            Assert.ThrowsAsync<Shared.Exceptions.InvalidResource>(() => controller.PatchSymbol(1, new Models.Input.Symbols.SymbolUpdate()
+            {
+                Type = "test123456789"
+            }));
+
         }
 
         [Test]
