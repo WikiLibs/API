@@ -173,6 +173,11 @@ namespace WikiLibs.API.Tests
             Assert.Less(iconb64.Length, str.Length);
             Assert.IsTrue(iconb64.StartsWith("image/jpeg,"));
 
+            var data = Manager.LangManager.GetFile(Context.SymbolLangs.First());
+            Assert.AreEqual("image/jpeg", data.ContentType);
+            Assert.Greater(data.Length, 0);
+            Assert.AreEqual("Image", data.Name);
+
             User.SetPermissions(new string[] { });
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostIcon(1, null));
         }
