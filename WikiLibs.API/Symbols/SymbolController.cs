@@ -44,7 +44,7 @@ namespace WikiLibs.API.Symbols
                 };
             if (query.Path != null)
             {
-                var sym = _symmgr.Get(query.Path);
+                var sym = await _symmgr.GetAsync(query.Path);
                 return (Json(Models.Output.Symbols.Symbol.CreateModel(sym)));
             }
             else

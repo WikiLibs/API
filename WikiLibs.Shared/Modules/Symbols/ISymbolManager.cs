@@ -11,7 +11,7 @@ namespace WikiLibs.Shared.Modules.Symbols
         ILangManager LangManager { get; }
         ICRUDOperations<Data.Models.Symbols.Type> TypeManager { get; }
 
-        Data.Models.Symbols.Symbol Get(string path);
+        Task<Data.Models.Symbols.Symbol> GetAsync(string path);
         PageResult<SymbolListItem> SearchSymbols(string path, PageOptions options);
         PageResult<SymbolListItem> GetSymbolsForLib(long id, PageOptions options);
 

@@ -26,6 +26,7 @@ namespace WikiLibs.Models.Output.Symbols
         }
 
         public long Id { get; set; }
+        public long Views { get; set; }
         public string UserId { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
@@ -39,6 +40,7 @@ namespace WikiLibs.Models.Output.Symbols
         public override void Map(in Data.Models.Symbols.Symbol model)
         {
             Id = model.Id;
+            Views = model.Views;
             UserId = model.UserId;
             LastModificationDate = model.LastModificationDate;
             CreationDate = model.CreationDate;

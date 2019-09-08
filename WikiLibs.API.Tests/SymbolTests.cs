@@ -912,6 +912,10 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("function", obj.Type);
             Assert.AreEqual(1, obj.Prototypes.Length);
             Assert.AreEqual(5, obj.Prototypes[0].Parameters.Length);
+            Assert.AreEqual(1, obj.Views);
+            res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Id = 1 }) as JsonResult;
+            obj = res.Value as Models.Output.Symbols.Symbol;
+            Assert.AreEqual(2, obj.Views);
         }
 
         [Test]
@@ -927,6 +931,10 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("function", obj.Type);
             Assert.AreEqual(1, obj.Prototypes.Length);
             Assert.AreEqual(5, obj.Prototypes[0].Parameters.Length);
+            Assert.AreEqual(1, obj.Views);
+            res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Id = 1 }) as JsonResult;
+            obj = res.Value as Models.Output.Symbols.Symbol;
+            Assert.AreEqual(2, obj.Views);
         }
 
         [Test]

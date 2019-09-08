@@ -50,7 +50,7 @@ namespace WikiLibs.Symbols
             return (sym);
         }
 
-        public Symbol Get(string path)
+        public async Task<Symbol> GetAsync(string path)
         {
             var sym = Set.Where(o => o.Path == path);
 
@@ -60,7 +60,19 @@ namespace WikiLibs.Symbols
                     ResourceType = typeof(Symbol),
                     ResourceName = path
                 };
-            return (sym.First());
+            var s = await sym.FirstAsync();
+            ++s.Views;
+            await SaveChanges();
+            return (s);
+        }
+
+        public override async Task<Symbol> GetAsync(long key)
+        {
+            var res = await base.GetAsync(key);
+
+            ++res.Views;
+            await SaveChanges();
+            return (res);
         }
 
         private bool CheckSymPath(Symbol sym)
