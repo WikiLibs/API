@@ -58,7 +58,8 @@ namespace WikiLibs.API.Symbols
 
         [HttpPost("{id}/icon")]
         [ProducesResponseType(200, Type = typeof(string))]
-        public async Task<IActionResult> PostIcon([FromRoute]long id, [FromForm, Required]FormFile file)
+        //Parameter name is forced to be meaningless otherwise useless warning
+        public async Task<IActionResult> PostIcon([FromRoute]long id, [FromForm, Required]FormFile seryhk)
         {
             if (!_user.HasPermission(Permissions.UPDATE_SYMBOL_LANG))
                 throw new Shared.Exceptions.InsuficientPermission()
@@ -69,7 +70,7 @@ namespace WikiLibs.API.Symbols
                     MissingPermission = Permissions.UPDATE_SYMBOL_LANG
                 };
             var mdl = await _symmgr.LangManager.GetAsync(id);
-            await _symmgr.LangManager.PostFileAsync(mdl, ImageFileFromForm(file));
+            await _symmgr.LangManager.PostFileAsync(mdl, ImageFileFromForm(seryhk));
             return (Ok());
         }
 
