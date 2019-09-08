@@ -13,7 +13,6 @@ namespace WikiLibs.Shared.Modules.Symbols
 
         Data.Models.Symbols.Symbol Get(string path);
         PageResult<SymbolListItem> SearchSymbols(string path, PageOptions options);
-        PageResult<SymbolListItem> SymbolsForLib(long lib, PageOptions options);
 
         /// <summary>
         /// Call this function every time you are done pushing a set of symbols to optimize their access times by using symbol id instead of path

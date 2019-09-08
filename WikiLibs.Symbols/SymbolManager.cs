@@ -223,10 +223,5 @@ namespace WikiLibs.Symbols
         {
             mgr.OptimizeAsync().Wait();
         }
-
-        public PageResult<SymbolListItem> SymbolsForLib(long lib, PageOptions options)
-        {
-            return (base.ToPageResult<SymbolListItem>(options, Set.Where(e => e.LibId == lib).OrderBy(e => e.Path)));
-        }
     }
 }
