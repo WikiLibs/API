@@ -981,6 +981,26 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task ListSymbols()
+        {
+            var controller = new Symbols.SearchController(Manager);
+
+            await PostTestSymbol();
+            var res = controller.GetSymbolsForLib(1, new PageOptions()
+            {
+                Page = 1
+            }) as JsonResult;
+            var obj = res.Value as PageResult<SymbolListItem>;
+            Assert.AreEqual(1, obj.Data.Count());
+            Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
+            Assert.AreEqual(1, obj.Data.First().Id);
+            Assert.AreEqual("function", obj.Data.First().Type);
+            Assert.IsFalse(obj.HasMorePages);
+            Assert.AreEqual(1, obj.Page);
+            Assert.AreEqual(10, obj.Count);
+        }
+
+        [Test]
         public async Task SearchString()
         {
             var controller = new Symbols.SearchController(Manager);

@@ -20,6 +20,14 @@ namespace WikiLibs.API.Symbols
         }
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [HttpGet("lib/{id}")]
+        [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
+        public IActionResult GetSymbolsForLib([FromRoute]long id, [FromQuery]PageOptions options)
+        {
+            return (Json(_symmgr.GetSymbolsForLib(id, options)));
+        }
+
+        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("search/{*path}")]
         [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
         public IActionResult SearchSymbols([FromRoute]string path, [FromQuery]PageOptions options)

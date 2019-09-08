@@ -199,6 +199,13 @@ namespace WikiLibs.Symbols
                    .OrderBy(o => o.Path)));
         }
 
+        public PageResult<SymbolListItem> GetSymbolsForLib(long id, PageOptions options)
+        {
+            return (base.ToPageResult<SymbolListItem>(options,
+                Set.Where(sym => sym.LibId == id)
+                   .OrderBy(sym => sym.Path)));
+        }
+
         public async Task OptimizeAsync()
         {
             var srefs = Context.SymbolRefs.Where(e => e.RefId == null);
