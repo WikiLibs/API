@@ -919,6 +919,18 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task Get_Path_Complex()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+            await PostTestSymbol_Complex();
+            await controller.OptimizeAsync();
+            var res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Path = "C/TestLib/Test" }) as JsonResult;
+            var obj = res.Value as Models.Output.Symbols.Symbol;
+
+            Assert.Greater(obj.Symbols.Count, 0);
+        }
+
+        [Test]
         public async Task Get_Id()
         {
             var controller = new Symbols.SymbolController(Manager, User);
