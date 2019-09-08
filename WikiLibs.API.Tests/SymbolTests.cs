@@ -399,7 +399,7 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
-        public async Task PostPatchDelete_Import()
+        public async Task PostPatchDelete_Import_Easy()
         {
             var controller = new Symbols.SymbolController(Manager, User);
 
@@ -455,6 +455,7 @@ namespace WikiLibs.API.Tests
                 },
                 Symbols = new string[] { }
             });
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual("#include \"file.h\"", Context.Symbols.First().Import.Name);
             Assert.AreEqual(1, Context.SymbolImports.Count());
             await controller.PatchSymbol(Context.Symbols.First().Id, new Models.Input.Symbols.SymbolUpdate()
@@ -463,6 +464,96 @@ namespace WikiLibs.API.Tests
             });
             Assert.AreEqual(1, Context.SymbolImports.Count());
             Assert.AreEqual("#include <test>", Context.Symbols.First().Import.Name);
+            await controller.DeleteSymbol(Context.Symbols.First().Id);
+            Assert.AreEqual(0, Context.SymbolImports.Count());
+        }
+
+        [Test]
+        public async Task PostPatchDelete_Import_Complex()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+
+            Context.SymbolLangs.Add(new Data.Models.Symbols.Lang()
+            {
+                Name = "C",
+            });
+            Context.SymbolTypes.Add(new Data.Models.Symbols.Type()
+            {
+                Name = "function"
+            });
+            await Context.SaveChangesAsync();
+            var res = await controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
+            {
+                Path = "C/TestLib/TestFunc",
+                Type = "function",
+                Import = "#include \"file.h\"",
+                Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[]
+                {
+                    new Models.Input.Symbols.SymbolCreate.Prototype()
+                    {
+                        Description = "This is a test function",
+                        Proto = "void TestFunc(int a, const int b, int c, int d, void *bad)",
+                        Parameters = new Models.Input.Symbols.SymbolCreate.Prototype.Parameter[]
+                        {
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
+                            {
+                                Description = "a",
+                                Proto = "int a"
+                            },
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
+                            {
+                                Description = "b",
+                                Proto = "const int b"
+                            },
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
+                            {
+                                Description = "c",
+                                Proto = "int c"
+                            },
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
+                            {
+                                Description = "d",
+                                Proto = "int d"
+                            },
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Parameter()
+                            {
+                                Description = "bad raw pointer",
+                                Proto = "void *bad"
+                            }
+                        }
+                    }
+                },
+                Symbols = new string[] { }
+            });
+            await controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
+            {
+                Path = "C/TestLib/TestFunc1",
+                Type = "function",
+                Import = "#include \"file.h\"",
+                Prototypes = new Models.Input.Symbols.SymbolCreate.Prototype[]
+                {
+                    new Models.Input.Symbols.SymbolCreate.Prototype()
+                    {
+                        Description = "This is a test function",
+                        Proto = "void TestFunc1()",
+                        Parameters = new Models.Input.Symbols.SymbolCreate.Prototype.Parameter[]
+                        {
+                        }
+                    }
+                },
+                Symbols = new string[] { }
+            });
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
+            Assert.AreEqual("#include \"file.h\"", Context.Symbols.First().Import.Name);
+            Assert.AreEqual(1, Context.SymbolImports.Count());
+            await controller.PatchSymbol(Context.Symbols.First().Id, new Models.Input.Symbols.SymbolUpdate()
+            {
+                Import = "#include <test>"
+            });
+            Assert.AreEqual(2, Context.SymbolImports.Count());
+            Assert.AreEqual("#include <test>", Context.Symbols.First().Import.Name);
+            await controller.DeleteSymbol(Context.Symbols.First().Id);
+            Assert.AreEqual(1, Context.SymbolImports.Count());
             await controller.DeleteSymbol(Context.Symbols.First().Id);
             Assert.AreEqual(0, Context.SymbolImports.Count());
         }

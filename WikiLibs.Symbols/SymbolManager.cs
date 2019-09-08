@@ -127,6 +127,15 @@ namespace WikiLibs.Symbols
             }
             else
                 l = Context.SymbolLibs.Where(e => e.Name == libl).FirstOrDefault();
+            if (sym.Import != null)
+            {
+                Import import = null;
+                if (!Context.SymbolImports.Any(e => e.Name == sym.Import.Name))
+                    import = new Import() { Name = sym.Import.Name };
+                else
+                    import = Context.SymbolImports.Where(e => e.Name == sym.Import.Name).FirstOrDefault();
+                sym.Import = import;
+            }
             sym.Lib = l;
             return (await base.PostAsync(sym));
         }
@@ -149,7 +158,7 @@ namespace WikiLibs.Symbols
             }
             if (sym.Import != null)
             {
-                if (Context.SymbolImports.Where(e => e.Name == s.Import.Name).Count() == 1)
+                if (Context.Symbols.Where(e => e.Import != null && e.Import.Name == s.Import.Name).Count() == 1)
                     Context.RemoveRange(Context.SymbolImports.Where(e => e.Name == s.Import.Name));
                 Import import = null;
                 if (!Context.SymbolImports.Any(e => e.Name == sym.Import.Name))
