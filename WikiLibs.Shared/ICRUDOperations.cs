@@ -18,6 +18,7 @@ namespace WikiLibs.Shared
         Task<DataModel> GetAsync(KeyType key);
         Task<int> SaveChanges();
         IQueryable<DataModel> Get(Expression<Func<DataModel, bool>> expression);
+        IQueryable<DataModel> Get();
         PageResult<T> ToPageResult<T>(PageOptions options, IQueryable<DataModel> models)
             where T : IPageResultModel<T, DataModel>, new();
     }

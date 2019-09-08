@@ -100,6 +100,11 @@ namespace WikiLibs.Shared
             return (OrderBy(Set.Where(expression)));
         }
 
+        public virtual IQueryable<DataModel> Get()
+        {
+            return (OrderBy(Set));
+        }
+
         public virtual PageResult<T> ToPageResult<T>(PageOptions options, IQueryable<DataModel> models)
             where T : IPageResultModel<T, DataModel>, new()
         {
