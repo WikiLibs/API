@@ -208,7 +208,7 @@ namespace WikiLibs.Symbols
         {
             return (base.ToPageResult<SymbolListItem>(options,
                 Set.Where(sym => sym.Path.Contains(path))
-                   .OrderBy(o => o.Path)));
+                   .OrderBy(o => o.Views).OrderBy(o => o.Path)));
         }
 
         public PageResult<SymbolListItem> GetSymbolsForLib(long id, PageOptions options)
