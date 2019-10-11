@@ -8,7 +8,6 @@ namespace WikiLibs.Models.Input.Admin
     public class BotUpdate : PatchModel<BotUpdate, Data.Models.User>
     {
         public string Name { get; set; }
-        public string Icon { get; set; }
         public string Email { get; set; }
         public bool? Private { get; set; }
         public string ProfileMsg { get; set; }
@@ -20,7 +19,6 @@ namespace WikiLibs.Models.Input.Admin
             return (new User()
             {
                 Email = Email != null ? Email : current.Email,
-                Icon = Icon != null ? Icon : current.Icon,
                 FirstName = Name != null ? Name : current.FirstName,
                 GroupId = GroupId != null ? GroupId : current.GroupId,
                 Private = Private != null ? Private.Value : current.Private,

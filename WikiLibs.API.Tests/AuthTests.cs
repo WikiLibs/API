@@ -17,10 +17,9 @@ namespace WikiLibs.API.Tests
     [TestFixture]
     public class AuthTests : DBTest<AuthManager>
     {
-        public override void Setup()
+        public override AuthManager CreateManager()
         {
-            base.Setup();
-            Manager = new AuthManager(new AdminManager(Context, null), new UserManager(Context), Smtp, new Config()
+            return (new AuthManager(new AdminManager(Context, null), new UserManager(Context), Smtp, new Config()
             {
                 DefaultGroupName = "Default",
                 Internal = new Config.CInternal()
@@ -30,7 +29,7 @@ namespace WikiLibs.API.Tests
                     TokenLifeMinutes = 5,
                     TokenSecret = "TEST_DEVELOPMENT_SECRET"
                 }
-            });
+            }));
         }
 
         [Test]

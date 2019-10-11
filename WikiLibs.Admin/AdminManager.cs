@@ -12,7 +12,7 @@ namespace WikiLibs.Admin
     [Module(Interface = typeof(IAdminManager))]
     public class AdminManager : IAdminManager
     {
-        private readonly APIKeyManager _apiKeyManager;
+        private readonly ApiKeyManager _apiKeyManager;
         private readonly GroupManager _groupManager;
         private readonly Data.Context _context;
         private readonly ILogger<AdminManager> _logger;
@@ -20,12 +20,12 @@ namespace WikiLibs.Admin
         public AdminManager(Data.Context ctx, ILogger<AdminManager> logger)
         {
             _groupManager = new GroupManager(ctx);
-            _apiKeyManager = new APIKeyManager(ctx);
+            _apiKeyManager = new ApiKeyManager(ctx);
             _context = ctx;
             _logger = logger;
         }
 
-        public IAPIKeyManager APIKeyManager => _apiKeyManager;
+        public IApiKeyManager ApiKeyManager => _apiKeyManager;
 
         public IGroupManager GroupManager => _groupManager;
 
@@ -33,9 +33,9 @@ namespace WikiLibs.Admin
         public static void Initialize(AdminManager manager)
         {
 #if DEBUG
-            if (!manager._context.APIKeys.Any(x => x.Description == "[WIKILIBS_SUPER_DEV_API_KEY]"))
+            if (!manager._context.ApiKeys.Any(x => x.Description == "[WIKILIBS_SUPER_DEV_API_KEY]"))
             {
-                manager.APIKeyManager.PostAsync(new Data.Models.APIKey()
+                manager.ApiKeyManager.PostAsync(new Data.Models.ApiKey()
                 {
                     Flags = AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard,
                     Description = "[WIKILIBS_SUPER_DEV_API_KEY]",
@@ -44,7 +44,7 @@ namespace WikiLibs.Admin
                 }).Wait();
                 manager._logger.LogInformation("A development API Key has been generated");
             }
-            var key = manager._context.APIKeys.FirstOrDefault(x => x.Description == "[WIKILIBS_SUPER_DEV_API_KEY]");
+            var key = manager._context.ApiKeys.FirstOrDefault(x => x.Description == "[WIKILIBS_SUPER_DEV_API_KEY]");
             manager._logger.LogWarning("Development API Key : " + key.Id);
             manager._logger.LogWarning("This development key is intended for development purposes, it has ALL flags enabled and will never expire");
 #endif

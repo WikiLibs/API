@@ -4,7 +4,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Admin;
 using WikiLibs.API.Admin;
@@ -17,15 +16,14 @@ namespace WikiLibs.API.Tests
     [TestFixture]
     public class AdminTests : DBTest<AdminManager>
     {
-        public override void Setup()
+        public override AdminManager CreateManager()
         {
-            base.Setup();
-            Manager = new AdminManager(Context, LogUtils.FakeLogger<AdminManager>());
+            return (new AdminManager(Context, LogUtils.FakeLogger<AdminManager>()));
         }
 
         private async Task<string> PostTestAPIKey()
         {
-            var mdl = await Manager.APIKeyManager.PostAsync(new Data.Models.APIKey()
+            var mdl = await Manager.ApiKeyManager.PostAsync(new Data.Models.ApiKey()
             {
                 Description = "TEST_API_KEY",
                 ExpirationDate = DateTime.MaxValue,
@@ -41,21 +39,21 @@ namespace WikiLibs.API.Tests
             AdminManager.Initialize(Manager);
 
             Assert.AreEqual(2, Context.Groups.Count());
-            Assert.AreEqual(1, Context.APIKeys.Count());
+            Assert.AreEqual(1, Context.ApiKeys.Count());
             Assert.AreEqual("Default", Context.Groups.First().Name);
             Assert.AreEqual("Admin", Context.Groups.Last().Name);
-            Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.APIKeys.First().Description);
+            Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.ApiKeys.First().Description);
 
             Context.RemoveRange(Context.Groups);
-            Context.RemoveRange(Context.APIKeys);
+            Context.RemoveRange(Context.ApiKeys);
             Context.SaveChanges();
             AdminManager.Initialize(Manager);
 
             Assert.AreEqual(2, Context.Groups.Count());
-            Assert.AreEqual(1, Context.APIKeys.Count());
-            Assert.AreEqual("Default", Context.Groups.Last().Name);
-            Assert.AreEqual("Admin", Context.Groups.First().Name);
-            Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.APIKeys.First().Description);
+            Assert.AreEqual(1, Context.ApiKeys.Count());
+            Assert.AreEqual("Default", Context.Groups.First().Name);
+            Assert.AreEqual("Admin", Context.Groups.Last().Name);
+            Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.ApiKeys.First().Description);
         }
 
         [Test]
@@ -65,8 +63,8 @@ namespace WikiLibs.API.Tests
 
             Assert.NotNull(key);
             Assert.True(Guid.TryParse(key, out Guid test));
-            Assert.AreEqual(1, Context.APIKeys.Count());
-            Assert.AreEqual("TEST_API_KEY", Context.APIKeys.First().Description);
+            Assert.AreEqual(1, Context.ApiKeys.Count());
+            Assert.AreEqual("TEST_API_KEY", Context.ApiKeys.First().Description);
         }
 
         [Test]
@@ -74,19 +72,19 @@ namespace WikiLibs.API.Tests
         {
             var key = await PostTestAPIKey();
 
-            await Manager.APIKeyManager.PatchAsync(key, new APIKeyUpdate()
+            await Manager.ApiKeyManager.PatchAsync(key, new ApiKeyUpdate()
             {
                 Description = "SUPER API KEY",
                 ExpirationDate = DateTime.MaxValue,
                 Flags = AuthorizeApiKey.Authentication,
                 UseNum = 3
-            }.CreatePatch(await Manager.APIKeyManager.GetAsync(key)));
-            Assert.AreEqual(1, Context.APIKeys.Count());
-            Assert.True(Guid.TryParse(Context.APIKeys.First().Id, out Guid test));
-            Assert.AreEqual("SUPER API KEY", Context.APIKeys.First().Description);
-            Assert.AreEqual(3, Context.APIKeys.First().UseNum);
-            Assert.AreEqual(DateTime.MaxValue, Context.APIKeys.First().ExpirationDate);
-            Assert.AreEqual(AuthorizeApiKey.Authentication, Context.APIKeys.First().Flags);
+            }.CreatePatch(await Manager.ApiKeyManager.GetAsync(key)));
+            Assert.AreEqual(1, Context.ApiKeys.Count());
+            Assert.True(Guid.TryParse(Context.ApiKeys.First().Id, out Guid test));
+            Assert.AreEqual("SUPER API KEY", Context.ApiKeys.First().Description);
+            Assert.AreEqual(3, Context.ApiKeys.First().UseNum);
+            Assert.AreEqual(DateTime.MaxValue, Context.ApiKeys.First().ExpirationDate);
+            Assert.AreEqual(AuthorizeApiKey.Authentication, Context.ApiKeys.First().Flags);
         }
 
         [Test]
@@ -94,8 +92,8 @@ namespace WikiLibs.API.Tests
         {
             var key = await PostTestAPIKey();
 
-            await Manager.APIKeyManager.DeleteAsync(key);
-            Assert.AreEqual(0, Context.APIKeys.Count());
+            await Manager.ApiKeyManager.DeleteAsync(key);
+            Assert.AreEqual(0, Context.ApiKeys.Count());
         }
 
         [Test]
@@ -103,7 +101,7 @@ namespace WikiLibs.API.Tests
         {
             var key = await PostTestAPIKey();
 
-            var mdl = await Manager.APIKeyManager.GetAsync(key);
+            var mdl = await Manager.ApiKeyManager.GetAsync(key);
             Assert.AreEqual("TEST_API_KEY", mdl.Description);
             Assert.AreEqual(2, mdl.UseNum);
             Assert.AreEqual(DateTime.MaxValue, mdl.ExpirationDate);
@@ -116,9 +114,9 @@ namespace WikiLibs.API.Tests
         {
             var key = await PostTestAPIKey();
 
-            Assert.True(Manager.APIKeyManager.Exists(key));
-            Assert.False(Manager.APIKeyManager.Exists("1231"));
-            Assert.False(Manager.APIKeyManager.Exists(null));
+            Assert.True(Manager.ApiKeyManager.Exists(key));
+            Assert.False(Manager.ApiKeyManager.Exists("1231"));
+            Assert.False(Manager.ApiKeyManager.Exists(null));
         }
 
         [Test]
@@ -126,20 +124,20 @@ namespace WikiLibs.API.Tests
         {
             var key = await PostTestAPIKey();
 
-            var mdl = await Manager.APIKeyManager.GetAsync(key);
+            var mdl = await Manager.ApiKeyManager.GetAsync(key);
             Assert.AreEqual(2, mdl.UseNum);
-            await Manager.APIKeyManager.UseAPIKey(key);
-            mdl = await Manager.APIKeyManager.GetAsync(key);
+            await Manager.ApiKeyManager.UseAPIKey(key);
+            mdl = await Manager.ApiKeyManager.GetAsync(key);
             Assert.AreEqual(1, mdl.UseNum);
-            await Manager.APIKeyManager.UseAPIKey(key);
-            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => Manager.APIKeyManager.GetAsync(key));
+            await Manager.ApiKeyManager.UseAPIKey(key);
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => Manager.ApiKeyManager.GetAsync(key));
         }
 
         [Test]
         public async Task GetAllAPIKeys()
         {
             var key = await PostTestAPIKey();
-            var res = Manager.APIKeyManager.GetAll();
+            var res = Manager.ApiKeyManager.GetAll();
 
             Assert.AreEqual(1, res.Count());
             Assert.AreEqual("TEST_API_KEY", res.First().Description);
@@ -153,7 +151,7 @@ namespace WikiLibs.API.Tests
         public async Task GetAllAPIKeysOfDescription()
         {
             var key = await PostTestAPIKey();
-            var res = Manager.APIKeyManager.GetAllOfDescription("TEST_API_KEY");
+            var res = Manager.ApiKeyManager.GetAllOfDescription("TEST_API_KEY");
 
             Assert.AreEqual(1, res.Count());
             Assert.AreEqual("TEST_API_KEY", res.First().Description);
@@ -248,6 +246,7 @@ namespace WikiLibs.API.Tests
 
             Assert.AreEqual(3, Context.Groups.Count());
             Context.Users.First().GroupId = Manager.GroupManager.Get("TestGroup").Id;
+            await Context.SaveChangesAsync();
             Assert.AreEqual(Manager.GroupManager.Get("TestGroup").Id, Context.Users.First().GroupId);
             await Manager.GroupManager.DeleteAsync(Manager.GroupManager.Get("TestGroup").Id);
             Assert.AreEqual(2, Context.Groups.Count());
@@ -298,8 +297,8 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_POST_APIKey()
         {
-            var controller = new APIKeyController(User, Manager);
-            var res = await controller.PostAsync(new APIKeyCreate()
+            var controller = new ApiKeyController(User, Manager);
+            var res = await controller.PostAsync(new ApiKeyCreate()
             {
                 Description = "TestKey",
                 ExpirationDate = DateTime.MaxValue,
@@ -312,16 +311,16 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(-1, obj.UseNum);
             Assert.AreEqual(DateTime.MaxValue, obj.ExpirationDate);
             User.SetPermissions(new string[] { });
-            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new APIKeyCreate()));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new ApiKeyCreate()));
         }
 
         [Test]
         public async Task Controller_PATCH_APIKey()
         {
-            var controller = new APIKeyController(User, Manager);
+            var controller = new ApiKeyController(User, Manager);
 
             var str = await PostTestAPIKey();
-            var res = await controller.PatchAsync(str, new APIKeyUpdate()
+            var res = await controller.PatchAsync(str, new ApiKeyUpdate()
             {
                 Description = "TestKey",
                 UseNum = 0
@@ -338,12 +337,12 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_DELETE_APIKey()
         {
-            var controller = new APIKeyController(User, Manager);
+            var controller = new ApiKeyController(User, Manager);
 
             var str = await PostTestAPIKey();
-            Assert.AreEqual(1, Context.APIKeys.Count());
+            Assert.AreEqual(1, Context.ApiKeys.Count());
             await controller.DeleteAsync(str);
-            Assert.AreEqual(0, Context.APIKeys.Count());
+            Assert.AreEqual(0, Context.ApiKeys.Count());
             User.SetPermissions(new string[] { });
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(null));
         }
@@ -351,7 +350,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_GET_APIKey()
         {
-            var controller = new APIKeyController(User, Manager);
+            var controller = new ApiKeyController(User, Manager);
 
             await PostTestAPIKey();
             var res = controller.Get() as JsonResult;

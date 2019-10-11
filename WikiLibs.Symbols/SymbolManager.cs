@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WikiLibs.Shared.Modules;
 using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Shared;
 using System.Threading.Tasks;
@@ -9,17 +8,22 @@ using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Attributes;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
+using WikiLibs.Shared.Modules.Symbols;
 
 namespace WikiLibs.Symbols
 {
     [Module(Interface = typeof(ISymbolManager))]
     public class SymbolManager : BaseCRUDOperations<Data.Context, Symbol>, ISymbolManager
     {
-        private Config _cfg;
+        public ILangManager LangManager { get; }
+
+        public ICRUDOperations<Data.Models.Symbols.Type> TypeManager { get; }
 
         public SymbolManager(Data.Context db, Config cfg) : base(db)
         {
-            _cfg = cfg;
+            MaxResults = cfg.MaxSymsPerPage;
+            LangManager = new LangManager(db);
+            TypeManager = new TypeManager(db);
         }
 
         private void GetLibLangFromPath(Symbol sym, out string lib, out string lang)
@@ -36,37 +40,17 @@ namespace WikiLibs.Symbols
             string lib;
             string lang;
             GetLibLangFromPath(sym, out lib, out lang);
-            string libl = lang + "/" + lib + "/";
+            string libl = lang + "/" + lib;
 
-            if (!Set.Any(sy => sy.Lang == sym.Lang))
-                Context.InfoTable.RemoveRange(Context.InfoTable.Where(sy =>
-                    sy.Type == EInfoType.LANG && sy.Data == lang));
             if (!Set.Any(sy => sy.Path.StartsWith(libl)))
-                Context.InfoTable.RemoveRange(Context.InfoTable.Where(sy =>
-                    sy.Type == EInfoType.LIB && sy.Data == libl));
+                Context.SymbolLibs.RemoveRange(Context.SymbolLibs.Where(e => e.Name == libl));
+            if (sym.Import != null && !Set.Any(sy => sy.Import != null && sy.Import.Name == sym.Import.Name))
+                Context.SymbolImports.RemoveRange(Context.SymbolImports.Where(e => e.Name == sym.Import.Name));
             await SaveChanges();
             return (sym);
         }
 
-        public string[] GetFirstLangs()
-        {
-            return (Context.InfoTable.Where(o => o.Type == EInfoType.LANG)
-                .OrderBy(o => o.Data)
-                .Take(_cfg.MaxSymsPerPage)
-                .Select(o => o.Data)
-                .ToArray());
-        }
-
-        public string[] GetFirstLibs(string lang)
-        {
-            return (Context.InfoTable.Where(o => o.Type == EInfoType.LIB && o.Data.StartsWith(lang + "/"))
-                .OrderBy(o => o.Data)
-                .Take(_cfg.MaxSymsPerPage)
-                .Select(o => o.Data)
-                .ToArray());
-        }
-
-        public Symbol Get(string path)
+        public async Task<Symbol> GetAsync(string path)
         {
             var sym = Set.Where(o => o.Path == path);
 
@@ -76,7 +60,19 @@ namespace WikiLibs.Symbols
                     ResourceType = typeof(Symbol),
                     ResourceName = path
                 };
-            return (sym.First());
+            var s = await sym.FirstAsync();
+            ++s.Views;
+            await SaveChanges();
+            return (s);
+        }
+
+        public override async Task<Symbol> GetAsync(long key)
+        {
+            var res = await base.GetAsync(key);
+
+            ++res.Views;
+            await SaveChanges();
+            return (res);
         }
 
         private bool CheckSymPath(Symbol sym)
@@ -113,13 +109,46 @@ namespace WikiLibs.Symbols
             string lib;
             string lang;
             GetLibLangFromPath(sym, out lib, out lang);
-            string libl = lang + "/" + lib + "/";
-            if (Context.InfoTable.Where(o => o.Type == EInfoType.LANG && o.Data == lang).Count() <= 0)
-                Context.InfoTable.Add(new Info { Type = EInfoType.LANG, Data = lang });
-            if (Context.InfoTable.Where(o => o.Type == EInfoType.LIB && o.Data == libl).Count() <= 0)
-                Context.InfoTable.Add(new Info { Type = EInfoType.LIB, Data = libl });
-            sym.Lib = lib;
-            sym.Lang = lang;
+            string libl = lang + "/" + lib;
+            if (!Context.SymbolLangs.Any(e => e.Name == lang))
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    PropertyName = "Lang",
+                    ResourceType = typeof(Symbol),
+                    ResourceName = sym.Path
+                };
+            sym.Lang = Context.SymbolLangs.Where(e => e.Name == lang).FirstOrDefault();
+            string type = sym.Type.Name;
+            sym.Type = null;
+            if (!Context.SymbolTypes.Any(e => e.Name == type))
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    PropertyName = "Type",
+                    ResourceType = typeof(Symbol),
+                    ResourceName = sym.Path
+                };
+            sym.Type = Context.SymbolTypes.Where(e => e.Name == type).FirstOrDefault();
+            Lib l = null;
+            if (!Context.SymbolLibs.Any(e => e.Name == libl))
+            {
+                l = new Lib()
+                {
+                    Name = libl
+                };
+                Context.SymbolLibs.Add(l);
+            }
+            else
+                l = Context.SymbolLibs.Where(e => e.Name == libl).FirstOrDefault();
+            if (sym.Import != null)
+            {
+                Import import = null;
+                if (!Context.SymbolImports.Any(e => e.Name == sym.Import.Name))
+                    import = new Import() { Name = sym.Import.Name };
+                else
+                    import = Context.SymbolImports.Where(e => e.Name == sym.Import.Name).FirstOrDefault();
+                sym.Import = import;
+            }
+            sym.Lib = l;
             return (await base.PostAsync(sym));
         }
 
@@ -128,7 +157,28 @@ namespace WikiLibs.Symbols
             var s = await GetAsync(key);
 
             s.LastModificationDate = sym.LastModificationDate;
-            s.Type = sym.Type;
+            if (sym.Type != null)
+            {
+                if (!Context.SymbolTypes.Any(e => e.Name == sym.Type.Name))
+                    throw new Shared.Exceptions.InvalidResource()
+                    {
+                        PropertyName = "Type",
+                        ResourceType = typeof(Symbol),
+                        ResourceName = sym.Path
+                    };
+                s.Type = Context.SymbolTypes.Where(e => e.Name == sym.Type.Name).FirstOrDefault();
+            }
+            if (sym.Import != null)
+            {
+                if (Context.Symbols.Where(e => e.Import != null && e.Import.Name == s.Import.Name).Count() == 1)
+                    Context.RemoveRange(Context.SymbolImports.Where(e => e.Name == s.Import.Name));
+                Import import = null;
+                if (!Context.SymbolImports.Any(e => e.Name == sym.Import.Name))
+                    import = new Import() { Name = sym.Import.Name };
+                else
+                    import = Context.SymbolImports.Where(e => e.Name == sym.Import.Name).FirstOrDefault();
+                s.Import = import;
+            }
             if (sym.Prototypes != null)
             {
                 Context.RemoveRange(s.Prototypes);
@@ -156,26 +206,16 @@ namespace WikiLibs.Symbols
 
         public PageResult<SymbolListItem> SearchSymbols(string path, PageOptions options)
         {
-            options.EnsureValid(typeof(Symbol), "Symbol", _cfg.MaxSymsPerPage);
-            var data = Set.Where(sym => sym.Path.Contains(path))
-                .OrderBy(o => o.Path)
-                .Skip((options.Page.Value - 1) * options.Count.Value);
-            bool next = data.Count() > options.Count.Value;
-            var arr = data.Take(options.Count.Value)
-                .Select(sym => new SymbolListItem()
-                {
-                    Path = sym.Path,
-                    Id = sym.Id,
-                    Type = sym.Type
-                });
+            return (base.ToPageResult<SymbolListItem>(options,
+                Set.Where(sym => sym.Path.Contains(path))
+                   .OrderByDescending(o => o.Views).ThenBy(o => o.Path)));
+        }
 
-            return (new PageResult<SymbolListItem>()
-            {
-                Data = arr,
-                HasMorePages = next,
-                Page = options.Page.Value,
-                Count = options.Count.Value
-            });
+        public PageResult<SymbolListItem> GetSymbolsForLib(long id, PageOptions options)
+        {
+            return (base.ToPageResult<SymbolListItem>(options,
+                Set.Where(sym => sym.LibId == id)
+                   .OrderBy(sym => sym.Path)));
         }
 
         public async Task OptimizeAsync()

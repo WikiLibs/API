@@ -11,7 +11,6 @@ namespace WikiLibs.Models.Output
         public DateTime RegistrationDate { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Icon { get; set; }
         public string Email { get; set; }
         public bool Private { get; set; }
         public bool IsBot { get; set; }
@@ -26,7 +25,6 @@ namespace WikiLibs.Models.Output
             RegistrationDate = model.RegistrationDate;
             FirstName = model.FirstName;
             LastName = model.LastName;
-            Icon = model.Icon;
             Email = model.Email;
             Private = model.Private;
             ProfileMsg = model.ProfileMsg;

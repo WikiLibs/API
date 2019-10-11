@@ -31,23 +31,23 @@ namespace WikiLibs.Core.Filters
                     ResourceName = "APIKey",
                     ResourceId = "APIKey",
                     MissingPermission = "APIKey",
-                    ResourceType = typeof(Data.Models.APIKey)
+                    ResourceType = typeof(Data.Models.ApiKey)
                 };
             }
             var adminmgr = (IAdminManager)context.HttpContext.RequestServices
                 .GetService(typeof(IAdminManager));
             string auth = context.HttpContext.Request.Headers["Authorization"];
-            if (auth == null || auth == "" || !adminmgr.APIKeyManager.Exists(auth))
+            if (auth == null || auth == "" || !adminmgr.ApiKeyManager.Exists(auth))
             {
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
                     ResourceName = "APIKey",
                     ResourceId = "APIKey",
                     MissingPermission = "APIKey",
-                    ResourceType = typeof(Data.Models.APIKey)
+                    ResourceType = typeof(Data.Models.ApiKey)
                 };
             }
-            var mdl = await adminmgr.APIKeyManager.GetAsync(auth);
+            var mdl = await adminmgr.ApiKeyManager.GetAsync(auth);
             if ((mdl.Flags & attribute.Flag) == 0)
             {
                 throw new Shared.Exceptions.InsuficientPermission()
@@ -55,10 +55,10 @@ namespace WikiLibs.Core.Filters
                     ResourceName = "APIKey",
                     ResourceId = "APIKey",
                     MissingPermission = "APIKey." + AuthorizeApiKey.GetFlagName(attribute.Flag),
-                    ResourceType = typeof(Data.Models.APIKey)
+                    ResourceType = typeof(Data.Models.ApiKey)
                 };
             }
-            await adminmgr.APIKeyManager.UseAPIKey(auth);
+            await adminmgr.ApiKeyManager.UseAPIKey(auth);
         }
     }
 }

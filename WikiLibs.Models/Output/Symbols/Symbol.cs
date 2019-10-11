@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using WikiLibs.Data.Models;
-using WikiLibs.Shared.Modules;
+using WikiLibs.Shared.Modules.Symbols;
 
-namespace WikiLibs.Models.Output
+namespace WikiLibs.Models.Output.Symbols
 {
     public class Symbol : GetModel<Symbol, Data.Models.Symbols.Symbol>
     {
@@ -26,6 +26,7 @@ namespace WikiLibs.Models.Output
         }
 
         public long Id { get; set; }
+        public long Views { get; set; }
         public string UserId { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
@@ -39,12 +40,13 @@ namespace WikiLibs.Models.Output
         public override void Map(in Data.Models.Symbols.Symbol model)
         {
             Id = model.Id;
+            Views = model.Views;
             UserId = model.UserId;
             LastModificationDate = model.LastModificationDate;
             CreationDate = model.CreationDate;
-            Lang = model.Lang;
-            Lib = model.Lib;
-            Type = model.Type;
+            Lang = model.Lang.Name;
+            Lib = model.Lib.Name;
+            Type = model.Type.Name;
             Path = model.Path;
             Symbols = new List<SymbolReference>();
             Prototypes = new Prototype[model.Prototypes.Count];

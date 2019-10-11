@@ -21,7 +21,7 @@ namespace WikiLibs.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("WikiLibs.Data.Models.APIKey", b =>
+            modelBuilder.Entity("WikiLibs.Data.Models.ApiKey", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -32,11 +32,13 @@ namespace WikiLibs.Data.Migrations
 
                     b.Property<int>("Flags");
 
+                    b.Property<string>("Origin");
+
                     b.Property<int>("UseNum");
 
                     b.HasKey("Id");
 
-                    b.ToTable("APIKeys");
+                    b.ToTable("ApiKeys");
                 });
 
             modelBuilder.Entity("WikiLibs.Data.Models.Examples.Example", b =>
@@ -142,19 +144,45 @@ namespace WikiLibs.Data.Migrations
                     b.ToTable("Permissions");
                 });
 
-            modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Info", b =>
+            modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Import", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Data");
-
-                    b.Property<int>("Type");
+                    b.Property<string>("Name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("InfoTable");
+                    b.ToTable("SymbolImports");
+                });
+
+            modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Lang", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<byte[]>("Icon");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SymbolLangs");
+                });
+
+            modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Lib", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SymbolLibs");
                 });
 
             modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Prototype", b =>
@@ -225,19 +253,35 @@ namespace WikiLibs.Data.Migrations
 
                     b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Lang");
+                    b.Property<long?>("ImportId");
+
+                    b.Property<long>("LangId");
 
                     b.Property<DateTime>("LastModificationDate");
 
-                    b.Property<string>("Lib");
+                    b.Property<long>("LibId");
 
                     b.Property<string>("Path");
 
-                    b.Property<string>("Type");
+                    b.Property<long>("TypeId");
 
                     b.Property<string>("UserId");
 
+                    b.Property<long>("Views");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ImportId");
+
+                    b.HasIndex("LangId");
+
+                    b.HasIndex("LibId");
+
+                    b.HasIndex("Path")
+                        .IsUnique()
+                        .HasFilter("[Path] IS NOT NULL");
+
+                    b.HasIndex("TypeId");
 
                     b.HasIndex("UserId");
 
@@ -265,6 +309,19 @@ namespace WikiLibs.Data.Migrations
                     b.ToTable("SymbolRefs");
                 });
 
+            modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Type", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SymbolTypes");
+                });
+
             modelBuilder.Entity("WikiLibs.Data.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -278,7 +335,7 @@ namespace WikiLibs.Data.Migrations
 
                     b.Property<long?>("GroupId");
 
-                    b.Property<string>("Icon");
+                    b.Property<byte[]>("Icon");
 
                     b.Property<bool>("IsBot");
 
@@ -298,9 +355,7 @@ namespace WikiLibs.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId")
-                        .IsUnique()
-                        .HasFilter("[GroupId] IS NOT NULL");
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Users");
                 });
@@ -378,6 +433,26 @@ namespace WikiLibs.Data.Migrations
 
             modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Symbol", b =>
                 {
+                    b.HasOne("WikiLibs.Data.Models.Symbols.Import", "Import")
+                        .WithOne()
+                        .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "ImportId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("WikiLibs.Data.Models.Symbols.Lang", "Lang")
+                        .WithOne()
+                        .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "LangId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WikiLibs.Data.Models.Symbols.Lib", "Lib")
+                        .WithOne()
+                        .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "LibId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WikiLibs.Data.Models.Symbols.Type", "Type")
+                        .WithOne()
+                        .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "TypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("WikiLibs.Data.Models.User", "User")
                         .WithOne()
                         .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "UserId")

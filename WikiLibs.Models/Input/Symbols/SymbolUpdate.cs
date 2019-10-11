@@ -27,6 +27,7 @@ namespace WikiLibs.Models.Input.Symbols
         }
 
         public string Type { get; set; }
+        public string Import { get; set; }
         public Prototype[] Prototypes { get; set; }
         public string[] Symbols { get; set; }
 
@@ -40,7 +41,8 @@ namespace WikiLibs.Models.Input.Symbols
                 Path = current.Path,
                 Id = current.Id,
                 User = current.User,
-                Type = Type != null ? Type : current.Type
+                Type = Type != null ? new Data.Models.Symbols.Type() { Name = Type } : null,
+                Import = Import != null ? new Data.Models.Symbols.Import() { Name = Import } : current.Import
             };
             if (Prototypes != null)
             {

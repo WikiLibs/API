@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace WikiLibs.Shared.Modules.Admin
 {
-    public interface IAPIKeyManager : ICRUDOperations<Data.Models.APIKey, string>
+    public interface IApiKeyManager : ICRUDOperations<Data.Models.ApiKey, string>
     {
-        IQueryable<Data.Models.APIKey> GetAll();
+        IQueryable<Data.Models.ApiKey> GetAll();
         bool Exists(string key);
         Task UseAPIKey(string key);
-        IQueryable<Data.Models.APIKey> GetAllOfDescription(string desc);
+        IQueryable<Data.Models.ApiKey> GetAllOfDescription(string desc);
     }
 }

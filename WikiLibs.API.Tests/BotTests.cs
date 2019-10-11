@@ -16,10 +16,9 @@ namespace WikiLibs.API.Tests
     [TestFixture]
     public class BotTests : DBTest<IUserManager>
     {
-        public override void Setup()
+        public override IUserManager CreateManager()
         {
-            base.Setup();
-            Manager = new UserManager(Context);
+            return (new UserManager(Context));
         }
 
         public async Task<Models.Output.Bot> PostTestBot(BotController controller)

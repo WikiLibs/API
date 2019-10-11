@@ -33,6 +33,7 @@ namespace WikiLibs.Models.Input.Symbols
         public string Path { get; set; }
         [Required]
         public string Type { get; set; }
+        public string Import { get; set; }
         [Required]
         public Prototype[] Prototypes { get; set; }
         [Required]
@@ -45,7 +46,8 @@ namespace WikiLibs.Models.Input.Symbols
                 LastModificationDate = DateTime.UtcNow,
                 CreationDate = DateTime.UtcNow,
                 Path = Path,
-                Type = Type,
+                Type = new Data.Models.Symbols.Type() { Name = Type },
+                Import = Import != null ? new Data.Models.Symbols.Import() { Name = Import } : null
             };
             foreach (var proto in Prototypes)
             {

@@ -14,7 +14,10 @@ namespace WikiLibs.Data
         public DbSet<PrototypeParam> PrototypeParams { get; set; }
         public DbSet<SymbolRef> SymbolRefs { get; set; }
         public DbSet<PrototypeParamSymbolRef> PrototypeParamSymbolRefs { get; set; }
-        public DbSet<Info> InfoTable { get; set; }
+        public DbSet<Lang> SymbolLangs { get; set; }
+        public DbSet<Lib> SymbolLibs { get; set; }
+        public DbSet<Models.Symbols.Type> SymbolTypes { get; set; }
+        public DbSet<Import> SymbolImports { get; set; }
         #endregion
 
         #region EXAMPLES
@@ -25,7 +28,7 @@ namespace WikiLibs.Data
 
         #region BASE
         public DbSet<User> Users { get; set; }
-        public DbSet<APIKey> APIKeys { get; set; }
+        public DbSet<ApiKey> ApiKeys { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         #endregion BASE
@@ -45,6 +48,7 @@ namespace WikiLibs.Data
                     .HasForeignKey<User>(e => e.GroupId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
+                builder.HasIndex(e => e.GroupId).IsUnique(false);
             });
             modelBuilder.Entity<Permission>(builder =>
             {
@@ -60,11 +64,31 @@ namespace WikiLibs.Data
             modelBuilder.Entity<Symbol>(builder =>
             {
                 builder.HasOne(e => e.User)
-                    .WithOne()
-                    .HasForeignKey<Symbol>(e => e.UserId)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
-                builder.HasIndex(e => e.UserId).IsUnique(false);
+                builder.HasOne(e => e.Lang)
+                    .WithMany()
+                    .HasForeignKey(e => e.LangId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.Cascade);
+                builder.HasOne(e => e.Lib)
+                    .WithMany()
+                    .HasForeignKey(e => e.LibId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.Cascade);
+                builder.HasOne(e => e.Type)
+                    .WithMany()
+                    .HasForeignKey(e => e.TypeId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.Cascade);
+                builder.HasOne(e => e.Import)
+                    .WithMany()
+                    .HasForeignKey(e => e.ImportId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.SetNull);
+                builder.HasIndex(e => e.Path).IsUnique(true);
             });
             modelBuilder.Entity<Prototype>(builder =>
             {
@@ -126,8 +150,8 @@ namespace WikiLibs.Data
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
                 builder.HasOne(e => e.User)
-                    .WithOne()
-                    .HasForeignKey<Example>(e => e.UserId)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
                 builder.HasIndex(e => e.UserId).IsUnique(false);
@@ -148,11 +172,10 @@ namespace WikiLibs.Data
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
                 builder.HasOne(e => e.ApplyTo)
-                    .WithOne()
-                    .HasForeignKey<ExampleRequest>(e => e.ApplyToId)
+                    .WithMany()
+                    .HasForeignKey(e => e.ApplyToId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
-                builder.HasIndex(e => e.ApplyToId).IsUnique(false);
             });
             #endregion
         }

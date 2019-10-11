@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,28 +8,33 @@ using WikiLibs.Shared.Service;
 
 namespace WikiLibs.API.Tests.Helper
 {
-    public class DBTest<T>
+    public abstract class DBTest<T>
         where T : class
     {
-        public TestingSmtp Smtp { get; private set; }
+        private SqliteConnection _connection = new SqliteConnection("DataSource=:memory:");
         public Data.Context Context { get; private set; }
         public T Manager { get; set; }
         public FakeUser User { get; private set; }
+        public TestingSmtp Smtp { get; private set; }
+
+        public abstract T CreateManager();
 
         [SetUp]
         public virtual void Setup()
         {
-            Context = DbUtils.CreateFakeDB();
-            User = new FakeUser(Context);
+            _connection.Open();
             Smtp = new TestingSmtp();
+            DbUtils.CreateFakeDB(_connection);
+            Context = new Data.Context(new DbContextOptionsBuilder().UseSqlite(_connection).UseLazyLoadingProxies().Options);
+            User = new FakeUser(Context);
+            Manager = CreateManager();
         }
 
         [TearDown]
-        public virtual void Teardown()
+        public void Teardown()
         {
-            Context = null;
-            User = null;
-            Manager = null;
+            Context.Dispose();
+            _connection.Close();
             Smtp = null;
         }
     }
