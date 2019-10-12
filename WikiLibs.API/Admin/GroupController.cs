@@ -72,7 +72,7 @@ namespace WikiLibs.API.Admin
             return (Ok());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Admin.Group>))]
         public IActionResult Get()
         {
