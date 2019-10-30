@@ -8,12 +8,14 @@ namespace WikiLibs.Models.Input.Symbols
     public class LangCreate : PostModel<LangCreate, Lang>
     {
         public string Name { get; set; }
+        public string DisplayName { get; set; }
 
         public override Lang CreateModel()
         {
             return (new Lang()
             {
-                Name = Name
+                Name = Name,
+                DisplayName = DisplayName
             });
         }
     }

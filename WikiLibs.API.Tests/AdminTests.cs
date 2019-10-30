@@ -305,7 +305,7 @@ namespace WikiLibs.API.Tests
                 Flags = AuthorizeApiKey.Standard,
                 UseNum = -1
             }) as JsonResult;
-            var obj = res.Value as Models.Output.Admin.APIKey;
+            var obj = res.Value as Models.Output.Admin.ApiKey;
 
             Assert.AreEqual("TestKey", obj.Description);
             Assert.AreEqual(-1, obj.UseNum);
@@ -325,7 +325,7 @@ namespace WikiLibs.API.Tests
                 Description = "TestKey",
                 UseNum = 0
             }) as JsonResult;
-            var obj = res.Value as Models.Output.Admin.APIKey;
+            var obj = res.Value as Models.Output.Admin.ApiKey;
 
             Assert.AreEqual("TestKey", obj.Description);
             Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, obj.Flags);
@@ -354,7 +354,7 @@ namespace WikiLibs.API.Tests
 
             await PostTestAPIKey();
             var res = controller.Get() as JsonResult;
-            var obj = res.Value as IEnumerable<Models.Output.Admin.APIKey>;
+            var obj = res.Value as IEnumerable<Models.Output.Admin.ApiKey>;
 
             Assert.AreEqual(1, obj.Count());
             Assert.AreEqual("TEST_API_KEY", obj.First().Description);
