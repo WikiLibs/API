@@ -134,6 +134,14 @@ namespace WikiLibs.Data
                     .OnDelete(DeleteBehavior.Restrict);
                 builder.HasIndex(e => e.RefId).IsUnique(false);
             });
+            modelBuilder.Entity<Models.Symbols.Type>(builder =>
+            {
+                builder.HasIndex(e => e.Name).IsUnique(true);
+            });
+            modelBuilder.Entity<Models.Symbols.Lang>(builder =>
+            {
+                builder.HasIndex(e => e.Name).IsUnique(true);
+            });
             #endregion
 
             #region EXAMPLES_BUILD
