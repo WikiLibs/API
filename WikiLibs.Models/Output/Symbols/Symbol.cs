@@ -48,7 +48,7 @@ namespace WikiLibs.Models.Output.Symbols
             Lang = Lang.CreateModel(model.Lang);
             Lib = model.Lib.Name;
             Type = Type.CreateModel(model.Type);
-            Import = model.Import.Name;
+            Import = model.Import != null ? model.Import.Name : null;
             Path = model.Path;
             Symbols = new List<SymbolReference>();
             Prototypes = new Prototype[model.Prototypes.Count];

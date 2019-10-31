@@ -15,7 +15,7 @@ namespace WikiLibs.Models.Input.Symbols
             return (new Lang()
             {
                 Name = Name != null ? Name : current.Name,
-                DisplayName = DisplayName != null ? DisplayName : current.DisplayName
+                DisplayName = DisplayName != null ? DisplayName : current.DisplayName,
                 Id = current.Id
             });
         }

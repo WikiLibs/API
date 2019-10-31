@@ -23,14 +23,16 @@ namespace WikiLibs.API.Tests
 
         private async Task<IActionResult> PostTestSymbol()
         {
-            Context.SymbolLangs.Add(new Data.Models.Symbols.Lang()
-            {
-                Name = "C",
-            });
-            Context.SymbolTypes.Add(new Data.Models.Symbols.Type()
-            {
-                Name = "function"
-            });
+            if (!Context.SymbolLangs.Any(e => e.Name == "C"))
+                Context.SymbolLangs.Add(new Data.Models.Symbols.Lang()
+                {
+                    Name = "C",
+                });
+            if (!Context.SymbolTypes.Any(e => e.Name == "function"))
+                Context.SymbolTypes.Add(new Data.Models.Symbols.Type()
+                {
+                    Name = "function"
+                });
             await Context.SaveChangesAsync();
             var controller = new Symbols.SymbolController(Manager, User);
             var res = await controller.PostSymbol(new Models.Input.Symbols.SymbolCreate()
@@ -907,9 +909,9 @@ namespace WikiLibs.API.Tests
             await PostTestSymbol();
             var res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Path = "C/TestLib/TestFunc" }) as JsonResult;
             var obj = res.Value as Models.Output.Symbols.Symbol;
-            Assert.AreEqual("C", obj.Lang);
+            Assert.AreEqual("C", obj.Lang.Name);
             Assert.AreEqual("C/TestLib/TestFunc", obj.Path);
-            Assert.AreEqual("function", obj.Type);
+            Assert.AreEqual("function", obj.Type.Name);
             Assert.AreEqual(1, obj.Prototypes.Length);
             Assert.AreEqual(5, obj.Prototypes[0].Parameters.Length);
             Assert.AreEqual(1, obj.Views);
@@ -938,9 +940,9 @@ namespace WikiLibs.API.Tests
             await PostTestSymbol();
             var res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Id = 1 }) as JsonResult;
             var obj = res.Value as Models.Output.Symbols.Symbol;
-            Assert.AreEqual("C", obj.Lang);
+            Assert.AreEqual("C", obj.Lang.Name);
             Assert.AreEqual("C/TestLib/TestFunc", obj.Path);
-            Assert.AreEqual("function", obj.Type);
+            Assert.AreEqual("function", obj.Type.Name);
             Assert.AreEqual(1, obj.Prototypes.Length);
             Assert.AreEqual(5, obj.Prototypes[0].Parameters.Length);
             Assert.AreEqual(1, obj.Views);
