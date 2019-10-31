@@ -39,7 +39,8 @@ GO
 
 CREATE TABLE [SymbolLangs] (
     [Id] bigint NOT NULL IDENTITY,
-    [Name] nvarchar(max) NULL,
+    [Name] nvarchar(450) NULL,
+    [DisplayName] nvarchar(max) NULL,
     [Icon] varbinary(max) NULL,
     CONSTRAINT [PK_SymbolLangs] PRIMARY KEY ([Id])
 );
@@ -56,7 +57,8 @@ GO
 
 CREATE TABLE [SymbolTypes] (
     [Id] bigint NOT NULL IDENTITY,
-    [Name] nvarchar(max) NULL,
+    [Name] nvarchar(450) NULL,
+    [DisplayName] nvarchar(max) NULL,
     CONSTRAINT [PK_SymbolTypes] PRIMARY KEY ([Id])
 );
 
@@ -240,6 +242,10 @@ CREATE INDEX [IX_Prototypes_SymbolId] ON [Prototypes] ([SymbolId]);
 
 GO
 
+CREATE UNIQUE INDEX [IX_SymbolLangs_Name] ON [SymbolLangs] ([Name]) WHERE [Name] IS NOT NULL;
+
+GO
+
 CREATE INDEX [IX_SymbolRefs_RefId] ON [SymbolRefs] ([RefId]);
 
 GO
@@ -272,12 +278,16 @@ CREATE INDEX [IX_Symbols_UserId] ON [Symbols] ([UserId]);
 
 GO
 
+CREATE UNIQUE INDEX [IX_SymbolTypes_Name] ON [SymbolTypes] ([Name]) WHERE [Name] IS NOT NULL;
+
+GO
+
 CREATE INDEX [IX_Users_GroupId] ON [Users] ([GroupId]);
 
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20190804151124_Init', N'2.2.6-servicing-10079');
+VALUES (N'20191031045835_Init', N'2.2.4-servicing-10062');
 
 GO
 
