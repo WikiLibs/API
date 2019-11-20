@@ -223,14 +223,14 @@ namespace WikiLibs.Symbols
             var srefs = Context.SymbolRefs.Where(e => e.RefId == null);
             foreach (var sref in srefs)
             {
-                var symbol = Set.Where(o => o.Path == sref.RefPath).AsNoTracking().FirstOrDefault();
+                var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
                 if (symbol != null)
                     sref.RefId = symbol.Id;
             }
             var sprefs = Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null);
             foreach (var sref in sprefs)
             {
-                var symbol = Set.Where(o => o.Path == sref.RefPath).AsNoTracking().FirstOrDefault();
+                var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
                 if (symbol != null)
                     sref.RefId = symbol.Id;
             }

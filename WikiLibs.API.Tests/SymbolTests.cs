@@ -1021,6 +1021,21 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task ListSymbols_Complex()
+        {
+            var controller = new Symbols.SearchController(Manager);
+
+            await PostTestSymbol_Complex();
+            await Manager.OptimizeAsync();
+            var res = controller.GetSymbolsForLib(1, new PageOptions()
+            {
+                Page = 1
+            }) as JsonResult;
+            var obj = res.Value as PageResult<SymbolListItem>;
+            Assert.AreEqual(3, obj.Data.Count());
+        }
+
+        [Test]
         public async Task SearchString()
         {
             var controller = new Symbols.SearchController(Manager);
