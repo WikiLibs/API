@@ -122,7 +122,9 @@ namespace WikiLibs.Shared
             options.EnsureValid(typeof(DM), typeof(DM).Name, MaxResults);
             var data = models.Skip((options.Page.Value - 1) * options.Count.Value);
             bool next = data.Count() > options.Count.Value;
-            var arr = data.Take(options.Count.Value).Select(e => new T().Map(e));
+            var arr = new List<T>();
+            foreach (var mdl in data.Take(options.Count.Value))
+                arr.Add(new T().Map(mdl));
             return (new PageResult<T>()
             {
                 Data = arr,
