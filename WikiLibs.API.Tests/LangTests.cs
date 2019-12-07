@@ -88,6 +88,8 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Id);
             Assert.AreEqual("C", obj.Name);
 
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => controller.PostLang(new LangCreate() { Name = "C" }));
+
             User.SetPermissions(new string[] { });
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostLang(new LangCreate()));
         }
@@ -106,6 +108,11 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Id);
             Assert.AreEqual("C", obj.Name);
 
+            await controller.PostLang(new LangCreate()
+            {
+                Name = "C1"
+            });
+
             mdl = await controller.PatchLang(1, new LangUpdate()
             {
                 Name = "Test"
@@ -114,6 +121,8 @@ namespace WikiLibs.API.Tests
 
             Assert.AreEqual(1, obj.Id);
             Assert.AreEqual("Test", obj.Name);
+
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => controller.PatchLang(1, new LangUpdate() { Name = "C1" }));
 
             User.SetPermissions(new string[] { });
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchLang(1, null));

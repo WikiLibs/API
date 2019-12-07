@@ -5,7 +5,7 @@ using WikiLibs.Data.Models;
 
 namespace WikiLibs.Models.Output.Admin
 {
-    public class APIKey : GetModel<APIKey, Data.Models.ApiKey>
+    public class ApiKey : GetModel<ApiKey, Data.Models.ApiKey>
     {
         public string Id { get; set; }
         public string Description { get; set; }

@@ -30,9 +30,10 @@ namespace WikiLibs.Models.Output.Symbols
         public string UserId { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
-        public string Lang { get; set; }
+        public Lang Lang { get; set; }
         public string Lib { get; set; }
-        public string Type { get; set; }
+        public string Import { get; set; }
+        public Type Type { get; set; }
         public string Path { get; set; }
         public Prototype[] Prototypes { get; set; }
         public List<SymbolReference> Symbols { get; set; }
@@ -44,9 +45,10 @@ namespace WikiLibs.Models.Output.Symbols
             UserId = model.UserId;
             LastModificationDate = model.LastModificationDate;
             CreationDate = model.CreationDate;
-            Lang = model.Lang.Name;
+            Lang = Lang.CreateModel(model.Lang);
             Lib = model.Lib.Name;
-            Type = model.Type.Name;
+            Type = Type.CreateModel(model.Type);
+            Import = model.Import != null ? model.Import.Name : null;
             Path = model.Path;
             Symbols = new List<SymbolReference>();
             Prototypes = new Prototype[model.Prototypes.Count];

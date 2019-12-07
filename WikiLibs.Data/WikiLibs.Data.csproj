@@ -33,6 +33,8 @@
     <Compile Remove="Migrations\20190802072556_Rewrite.cs" />
     <Compile Remove="Migrations\20190802073425_Rewrite.cs" />
     <Compile Remove="Migrations\20190804150212_Init.cs" />
+    <Compile Remove="Migrations\20190804151124_Init.cs" />
+    <Compile Remove="Migrations\20190804151124_Init.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

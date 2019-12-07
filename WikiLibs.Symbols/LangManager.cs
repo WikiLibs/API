@@ -24,9 +24,29 @@ namespace WikiLibs.Symbols
         {
             var m = await GetAsync(key);
 
+            if (Set.Any(e => e.Id != key && e.Name == mdl.Name))
+                throw new Shared.Exceptions.ResourceAlreadyExists()
+                {
+                    ResourceId = key.ToString(),
+                    ResourceName = m.Name,
+                    ResourceType = typeof(Lang)
+                };
             m.Name = mdl.Name;
+            m.DisplayName = mdl.DisplayName;
             await SaveChanges();
             return (m);
+        }
+
+        public override Task<Lang> PostAsync(Lang mdl)
+        {
+            if (Set.Any(e => e.Name == mdl.Name))
+                throw new Shared.Exceptions.ResourceAlreadyExists()
+                {
+                    ResourceId = mdl.Name,
+                    ResourceName = mdl.Name,
+                    ResourceType = typeof(Lang)
+                };
+            return (base.PostAsync(mdl));
         }
 
         public IEnumerable<Lang> GetAllLangs()

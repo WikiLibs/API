@@ -27,14 +27,16 @@ namespace WikiLibs.API.Tests
 
         private async Task<Symbol> PostTestSymbol(Symbols.SymbolController controller)
         {
-            Context.SymbolLangs.Add(new Data.Models.Symbols.Lang()
-            {
-                Name = "C",
-            });
-            Context.SymbolTypes.Add(new Data.Models.Symbols.Type()
-            {
-                Name = "function"
-            });
+            if (!Context.SymbolLangs.Any(e => e.Name == "C"))
+                Context.SymbolLangs.Add(new Data.Models.Symbols.Lang()
+                {
+                    Name = "C",
+                });
+            if (!Context.SymbolTypes.Any(e => e.Name == "function"))
+                Context.SymbolTypes.Add(new Data.Models.Symbols.Type()
+                {
+                    Name = "function"
+                });
             await Context.SaveChangesAsync();
             await controller.PostSymbol(new SymbolCreate()
             {

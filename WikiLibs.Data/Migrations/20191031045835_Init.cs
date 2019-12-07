@@ -59,6 +59,7 @@ namespace WikiLibs.Data.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
+                    DisplayName = table.Column<string>(nullable: true),
                     Icon = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
@@ -85,7 +86,8 @@ namespace WikiLibs.Data.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    DisplayName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -423,6 +425,13 @@ namespace WikiLibs.Data.Migrations
                 column: "SymbolId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SymbolLangs_Name",
+                table: "SymbolLangs",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SymbolRefs_RefId",
                 table: "SymbolRefs",
                 column: "RefId");
@@ -463,6 +472,13 @@ namespace WikiLibs.Data.Migrations
                 name: "IX_Symbols_UserId",
                 table: "Symbols",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SymbolTypes_Name",
+                table: "SymbolTypes",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_GroupId",

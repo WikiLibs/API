@@ -7,5 +7,6 @@ namespace WikiLibs.Data.Models.Symbols
     public class Type : Model
     {
         public string Name { get; set; }
+        public string DisplayName { get; set; }
     }
 }

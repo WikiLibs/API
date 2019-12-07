@@ -25,7 +25,7 @@ namespace WikiLibs.API.Admin
         }
 
         [HttpPost]
-        [ProducesResponseType(200, Type = typeof(Models.Output.Admin.APIKey))]
+        [ProducesResponseType(200, Type = typeof(Models.Output.Admin.ApiKey))]
         public async Task<IActionResult> PostAsync([FromBody, Required] Models.Input.Admin.ApiKeyCreate apikey)
         {
             if (!_user.HasPermission(Permissions.CREATE_APIKEY))
@@ -36,11 +36,11 @@ namespace WikiLibs.API.Admin
                     MissingPermission = Permissions.CREATE_APIKEY
                 };
             var mdl = await _manager.PostAsync(apikey.CreateModel());
-            return (Json(Models.Output.Admin.APIKey.CreateModel(mdl)));
+            return (Json(Models.Output.Admin.ApiKey.CreateModel(mdl)));
         }
 
         [HttpPatch("{id}")]
-        [ProducesResponseType(200, Type = typeof(Models.Output.Admin.APIKey))]
+        [ProducesResponseType(200, Type = typeof(Models.Output.Admin.ApiKey))]
         public async Task<IActionResult> PatchAsync([FromRoute] string id, [FromBody, Required] Models.Input.Admin.ApiKeyUpdate apikey)
         {
             var mdl = await _manager.GetAsync(id);
@@ -54,7 +54,7 @@ namespace WikiLibs.API.Admin
                     MissingPermission = Permissions.UPDATE_APIKEY
                 };
             var newMdl = await _manager.PatchAsync(id, apikey.CreatePatch(mdl));
-            return (Json(Models.Output.Admin.APIKey.CreateModel(newMdl)));
+            return (Json(Models.Output.Admin.ApiKey.CreateModel(newMdl)));
         }
 
         [HttpDelete("{id}")]
@@ -73,7 +73,7 @@ namespace WikiLibs.API.Admin
         }
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Admin.APIKey>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Admin.ApiKey>))]
         public IActionResult Get()
         {
             if (!_user.HasPermission(Permissions.LIST_APIKEY))
@@ -82,7 +82,7 @@ namespace WikiLibs.API.Admin
                     ResourceName = "APIKey",
                     ResourceType = typeof(Data.Models.ApiKey)
                 };
-            return (Json(Models.Output.Admin.APIKey.CreateModels(_manager.GetAll())));
+            return (Json(Models.Output.Admin.ApiKey.CreateModels(_manager.GetAll())));
         }
     }
 }

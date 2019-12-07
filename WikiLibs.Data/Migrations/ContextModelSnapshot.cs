@@ -9,15 +9,15 @@ using WikiLibs.Data;
 
 namespace WikiLibs.Data.Migrations
 {
-    [ExcludeFromCodeCoverage]
     [DbContext(typeof(Context))]
+    [ExcludeFromCodeCoverage]
     partial class ContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -163,11 +163,17 @@ namespace WikiLibs.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("DisplayName");
+
                     b.Property<byte[]>("Icon");
 
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("SymbolLangs");
                 });
@@ -315,9 +321,15 @@ namespace WikiLibs.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("DisplayName");
+
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("SymbolTypes");
                 });
@@ -368,8 +380,8 @@ namespace WikiLibs.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WikiLibs.Data.Models.User", "User")
-                        .WithOne()
-                        .HasForeignKey("WikiLibs.Data.Models.Examples.Example", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
                 });
 
@@ -384,8 +396,8 @@ namespace WikiLibs.Data.Migrations
             modelBuilder.Entity("WikiLibs.Data.Models.Examples.ExampleRequest", b =>
                 {
                     b.HasOne("WikiLibs.Data.Models.Examples.Example", "ApplyTo")
-                        .WithOne()
-                        .HasForeignKey("WikiLibs.Data.Models.Examples.ExampleRequest", "ApplyToId")
+                        .WithMany()
+                        .HasForeignKey("ApplyToId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("WikiLibs.Data.Models.Examples.Example", "Data")
@@ -434,28 +446,28 @@ namespace WikiLibs.Data.Migrations
             modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Symbol", b =>
                 {
                     b.HasOne("WikiLibs.Data.Models.Symbols.Import", "Import")
-                        .WithOne()
-                        .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "ImportId")
+                        .WithMany()
+                        .HasForeignKey("ImportId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("WikiLibs.Data.Models.Symbols.Lang", "Lang")
-                        .WithOne()
-                        .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "LangId")
+                        .WithMany()
+                        .HasForeignKey("LangId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WikiLibs.Data.Models.Symbols.Lib", "Lib")
-                        .WithOne()
-                        .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "LibId")
+                        .WithMany()
+                        .HasForeignKey("LibId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WikiLibs.Data.Models.Symbols.Type", "Type")
-                        .WithOne()
-                        .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "TypeId")
+                        .WithMany()
+                        .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WikiLibs.Data.Models.User", "User")
-                        .WithOne()
-                        .HasForeignKey("WikiLibs.Data.Models.Symbols.Symbol", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
                 });
 

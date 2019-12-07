@@ -83,6 +83,8 @@ namespace WikiLibs.API.Tests
             }) as JsonResult;
             var obj = mdl.Value as Models.Output.Symbols.Type;
 
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => controller.PostAsync(new TypeCreate() { Name = "test" }));
+
             Assert.AreEqual(1, obj.Id);
             Assert.AreEqual("test", obj.Name);
 
@@ -124,6 +126,11 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Id);
             Assert.AreEqual("test", obj.Name);
 
+            await controller.PostAsync(new TypeCreate()
+            {
+                Name = "C1"
+            });
+
             mdl = await controller.PatchAsync(1, new TypeUpdate()
             {
                 Name = "function"
@@ -132,6 +139,8 @@ namespace WikiLibs.API.Tests
 
             Assert.AreEqual(1, obj.Id);
             Assert.AreEqual("function", obj.Name);
+
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => controller.PatchAsync(1, new TypeUpdate() { Name = "C1" }));
 
             User.SetPermissions(new string[] { });
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(1, null));
