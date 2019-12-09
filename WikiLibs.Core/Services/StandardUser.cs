@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -28,6 +29,8 @@ namespace WikiLibs.Core.Services
         {
             if (_perms == null)
                 return (false);
+            if (_perms.ContainsKey("*") && _perms["*"])
+                return (true);
             if (!_perms.ContainsKey(name))
                 return (false);
             return (_perms[name]);

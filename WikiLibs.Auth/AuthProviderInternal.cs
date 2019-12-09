@@ -31,7 +31,7 @@ namespace WikiLibs.Auth
         {
             var usr = await _userManager.GetAsync(email, pass);
 
-            if (usr == null || usr.Confirmation != null)
+            if (usr == null || usr.Confirmation != null || usr.IsBot)
                 throw new InvalidCredentials();
             return (_manager.GenToken(usr.Id));
         }
@@ -50,17 +50,18 @@ namespace WikiLibs.Auth
             await _smtpManager.SendAsync(new Mail()
             {
                 Subject = "WikiLibs API Server",
-                Template = "UserRegistration",
+                Template = Shared.Modules.Smtp.Models.UserRegistration.Template,
                 Model = new Shared.Modules.Smtp.Models.UserRegistration()
                 {
                     ConfirmCode = usr.Confirmation,
-                    UserName = usr.FirstName + " " + usr.LastName
+                    UserName = usr.FirstName + " " + usr.LastName,
+                    Link = _manager.Config.Internal.RegistrationUrlBase + "/auth/internal/confirm/" + usr.Confirmation
                 },
                 Recipients = new List<Recipient>()
                 {
                     new Recipient()
                     {
-                        Email = usr.EMail,
+                        Email = usr.Email,
                         Name = usr.FirstName + " " + usr.LastName
                     }
                 }
@@ -71,19 +72,19 @@ namespace WikiLibs.Auth
         {
             var usr = await _userManager.GetByEmailAsync(email);
 
-            if (usr == null)
+            if (usr == null || usr.IsBot)
                 throw new Shared.Exceptions.ResourceNotFound()
                 {
                     ResourceId = email,
                     ResourceName = "User",
                     ResourceType = typeof(User)
                 };
-            usr.Pass = Guid.NewGuid().ToString();
+            usr.Pass = Shared.Helpers.PasswordUtils.NewPassword(Shared.Helpers.PasswordOptions.Standard);
             await _userManager.SaveChanges();
             await _smtpManager.SendAsync(new Mail()
             {
                 Subject = "WikiLibs API Server",
-                Template = "UserReset",
+                Template = Shared.Modules.Smtp.Models.UserReset.Template,
                 Model = new Shared.Modules.Smtp.Models.UserReset()
                 {
                     NewPassword = usr.Pass
@@ -92,7 +93,7 @@ namespace WikiLibs.Auth
                 {
                     new Recipient()
                     {
-                        Email = usr.EMail,
+                        Email = usr.Email,
                         Name = usr.FirstName + " " + usr.LastName
                     }
                 }

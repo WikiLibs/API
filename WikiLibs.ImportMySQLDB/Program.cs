@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using WikiLibs.Data.Models.Symbols;
 
 namespace WikiLibs.ImportMySQLDB
 {
@@ -53,8 +54,7 @@ namespace WikiLibs.ImportMySQLDB
                     Id = usr.UUID,
                     FirstName = usr.FirstName,
                     LastName = usr.LastName,
-                    Icon = usr.Icon,
-                    EMail = usr.EMail,
+                    Email = usr.EMail,
                     Private = usr.ShowEmail,
                     ProfileMsg = usr.ProfileMsg,
                     Points = usr.Points,
@@ -68,18 +68,20 @@ namespace WikiLibs.ImportMySQLDB
             newctx.SaveChanges();
             foreach (var sym in oldctx.Symbols)
             {
-                var newSym = new Data.Models.Symbol()
+                var newSym = new Symbol()
                 {
                     Path = sym.Path,
-                    Lang = sym.Lang,
                     CreationDate = sym.Date,
                     LastModificationDate = DateTime.UtcNow,
-                    Type = sym.Type,
                     User = newctx.Users.Where(u => u.Id == sym.UserID).FirstOrDefault()
                 };
+                if (newctx.SymbolTypes.Any(e => e.Name == sym.Type))
+                    newSym.Type = newctx.SymbolTypes.Where(e => e.Name == sym.Type).FirstOrDefault();
+                else
+                    newSym.Type = new Data.Models.Symbols.Type() { Name = sym.Type };
                 foreach (var proto in JsonConvert.DeserializeObject<API.Entities.Symbol.Prototype[]>(sym.Prototypes))
                 {
-                    var newProto = new Data.Models.Prototype()
+                    var newProto = new Data.Models.Symbols.Prototype()
                     {
                         Description = proto.Description,
                         Symbol = newSym,
@@ -87,11 +89,11 @@ namespace WikiLibs.ImportMySQLDB
                     };
                     foreach (var param in proto.Parameters)
                     {
-                        var newParam = new Data.Models.PrototypeParam()
+                        var newParam = new Data.Models.Symbols.PrototypeParam()
                         {
                             Description = param.Description,
                             Data = param.Proto,
-                            Path = param.Path,
+                            SymbolRef = param.Path != null ? new PrototypeParamSymbolRef() { RefPath = param.Path } : null,
                             Prototype = newProto
                         };
                         newProto.Parameters.Add(newParam);
@@ -100,24 +102,14 @@ namespace WikiLibs.ImportMySQLDB
                 }
                 foreach (var symref in JsonConvert.DeserializeObject<string[]>(sym.Symbols))
                 {
-                    var newSymRef = new Data.Models.SymbolRef()
+                    var newSymRef = new Data.Models.Symbols.SymbolRef()
                     {
-                        Path = symref,
+                        RefPath = symref,
                         Symbol = newSym
                     };
                     newSym.Symbols.Add(newSymRef);
                 }
                 newctx.Symbols.Add(newSym);
-            }
-            newctx.SaveChanges();
-            foreach (var info in oldctx.InfoTable)
-            {
-                var newInfo = new Data.Models.Info()
-                {
-                    Data = info.Data,
-                    Type = (Data.Models.EInfoType)info.Type
-                };
-                newctx.InfoTable.Add(newInfo);
             }
             newctx.SaveChanges();
         }

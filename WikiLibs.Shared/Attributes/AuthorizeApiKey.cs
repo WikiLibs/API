@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace WikiLibs.Shared.Attributes
 {
+    [ExcludeFromCodeCoverage]
     [AttributeUsage(AttributeTargets.Method)]
     public class AuthorizeApiKey : Attribute
     {
         public const int Registration = 0x10;
         public const int Authentication = 0x20;
         public const int Standard = 0x40;
+        public const int AuthBot = 0x80;
 
         [Required]
         public int Flag { get; set; }

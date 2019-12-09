@@ -17,10 +17,9 @@ namespace WikiLibs.API.Tests
     [TestFixture]
     public class AuthTests : DBTest<AuthManager>
     {
-        public override void Setup()
+        public override AuthManager CreateManager()
         {
-            base.Setup();
-            Manager = new AuthManager(new AdminManager(Context, null), new UserManager(Context), Smtp, new Config()
+            return (new AuthManager(new AdminManager(Context, null), new UserManager(Context), Smtp, new Config()
             {
                 DefaultGroupName = "Default",
                 Internal = new Config.CInternal()
@@ -30,7 +29,7 @@ namespace WikiLibs.API.Tests
                     TokenLifeMinutes = 5,
                     TokenSecret = "TEST_DEVELOPMENT_SECRET"
                 }
-            });
+            }));
         }
 
         [Test]
@@ -43,7 +42,7 @@ namespace WikiLibs.API.Tests
 
         public async Task PostTestUser(InternalController controller)
         {
-            await controller.Register(new Models.Input.UserCreate()
+            await controller.Register(new Models.Input.Users.UserCreate()
             {
                 Email = "test@test.com",
                 Password = "thisIsATest",
@@ -79,6 +78,14 @@ namespace WikiLibs.API.Tests
                 Email = "dev@localhost123456789",
                 Password = "dev123456789"
             }));
+
+            //Check that bot login is not allowed using standard user systems
+            Context.Users.Last().IsBot = true;
+            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Login(new Models.Input.Auth.Login()
+            {
+                Email = "dev@localhost",
+                Password = "dev"
+            }));
         }
 
         [Test, Order(3)]
@@ -90,7 +97,7 @@ namespace WikiLibs.API.Tests
             await PostTestUser(controller);
             Assert.AreEqual(1, Smtp.SentEmailCount);
             Assert.AreEqual("WikiLibs API Server", Smtp.LastSendEmail.Subject);
-            Assert.AreEqual("UserRegistration", Smtp.LastSendEmail.Template);
+            Assert.AreEqual(Shared.Modules.Smtp.Models.UserRegistration.Template, Smtp.LastSendEmail.Template);
             Assert.AreEqual("test@test.com", Smtp.LastSendEmail.Recipients.First().Email);
             Assert.AreEqual(Context.Users.Last().FirstName + " " + Context.Users.Last().LastName, Smtp.LastSendEmail.Recipients.First().Name);
             var data = Smtp.LastSendEmail.Model as Shared.Modules.Smtp.Models.UserRegistration;
@@ -139,7 +146,7 @@ namespace WikiLibs.API.Tests
             await controller.Reset("dev@localhost");
             Assert.AreEqual(1, Smtp.SentEmailCount);
             Assert.AreEqual("WikiLibs API Server", Smtp.LastSendEmail.Subject);
-            Assert.AreEqual("UserReset", Smtp.LastSendEmail.Template);
+            Assert.AreEqual(Shared.Modules.Smtp.Models.UserReset.Template, Smtp.LastSendEmail.Template);
             Assert.AreEqual("dev@localhost", Smtp.LastSendEmail.Recipients.First().Email);
             var data = Smtp.LastSendEmail.Model as Shared.Modules.Smtp.Models.UserReset;
             Assert.AreEqual(Context.Users.Last().Pass, data.NewPassword);
@@ -160,6 +167,8 @@ namespace WikiLibs.API.Tests
             var controller = new InternalController(Manager);
 
             Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Reset("doesnotexist@doesnotexist.com"));
+            Context.Users.First().IsBot = true;
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Reset("dev@localhost"));
         }
 
         [Test]
@@ -192,6 +201,29 @@ namespace WikiLibs.API.Tests
         public void Refresh()
         {
             Assert.IsNotNull(Manager.Refresh(new Guid().ToString()));
+
+            var controller = new BaseController(new UserManager(Context), Manager, User);
+            Assert.IsNotNull(controller.Refresh());
+        }
+
+        [Test]
+        public async Task BotLogin()
+        {
+            var controller = new BaseController(new UserManager(Context), Manager, User);
+
+            Assert.ThrowsAsync<InvalidCredentials>(() => controller.BotLogin(new Models.Input.Auth.Bot()
+            {
+                AppId = Context.Users.First().Id,
+                AppSecret = Context.Users.First().Pass
+            }));
+            Context.Users.First().IsBot = true;
+            var res = await controller.BotLogin(new Models.Input.Auth.Bot()
+            {
+                AppId = Context.Users.First().Id,
+                AppSecret = Context.Users.First().Pass
+            }) as JsonResult;
+            var tok = res.Value as string;
+            Assert.IsNotNull(tok);
         }
     }
 }

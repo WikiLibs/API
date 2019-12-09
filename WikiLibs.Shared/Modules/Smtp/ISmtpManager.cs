@@ -7,6 +7,6 @@ namespace WikiLibs.Shared.Modules.Smtp
 {
     public interface ISmtpManager : IModule
     {
-        Task SendAsync(Mail msg);
+        Task<bool> SendAsync(Mail msg);
     }
 }

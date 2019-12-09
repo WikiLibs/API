@@ -1,16 +1,10 @@
-﻿using FluentEmail.Core;
-using FluentEmail.Core.Models;
-using FluentEmail.Razor;
-using FluentEmail.Smtp;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
+﻿using Mailjet.Client;
+using Mailjet.Client.Resources;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules.Smtp;
+using Module = WikiLibs.Shared.Attributes.Module;
 
 namespace WikiLibs.Smtp
 {
@@ -18,47 +12,84 @@ namespace WikiLibs.Smtp
     public class SmtpManager : ISmtpManager
     {
         private readonly Config _config;
-        private readonly string _webRoot;
-        private readonly IFluentEmailFactory _factory;
+        private readonly MailjetClient _client;
 
-        public SmtpManager(Config cfg, IFluentEmailFactory factory, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        public SmtpManager(Config cfg)
         {
             _config = cfg;
-            _factory = factory;
-            _webRoot = env.WebRootPath;
+            _client = new MailjetClient(cfg.ApiKey, cfg.ApiSecret);
+            _client.Version = ApiVersion.V3;
         }
 
-        public async Task SendAsync(Mail msg)
+        private JToken GetVarValueAsJToken(object value, PropertyInfo prop)
         {
-            var email = _factory.Create();
-
-            email.SetFrom(_config.FromEmail, _config.FromName)
-                .Subject(msg.Subject)
-                .To(msg.Recipients.Select(e => new Address()
-                {
-                    EmailAddress = e.Email,
-                    Name = e.Name
-                }).ToList())
-                .CC(msg.CCRecipients.Select(e => new Address()
-                {
-                    EmailAddress = e.Email,
-                    Name = e.Name
-                }).ToList())
-                .UsingTemplateFromFile(_webRoot + "\\MailTemplates\\" + msg.Template + ".cshtml", msg.Model);
-            await email.SendAsync();
+            if (value == null)
+                return (null);
+            if (prop.PropertyType == typeof(int))
+                return ((int)value);
+            if (prop.PropertyType == typeof(uint))
+                return ((uint)value);
+            if (prop.PropertyType == typeof(long))
+                return ((long)value);
+            if (prop.PropertyType == typeof(ulong))
+                return ((ulong)value);
+            if (prop.PropertyType == typeof(float))
+                return ((float)value);
+            if (prop.PropertyType == typeof(double))
+                return ((double)value);
+            if (prop.PropertyType == typeof(string))
+                return ((string)value);
+            if (prop.PropertyType == typeof(bool))
+                return ((bool)value);
+            return (null);
         }
 
-        [ModuleConfigurator]
-        public static void SetupEmailSystem(IServiceCollection services, Config cfg)
+        private JObject GenVariables(object viewModel)
         {
-            var client = new SmtpClient();
-            client.Credentials = new NetworkCredential(cfg.Username, cfg.Password);
-            client.Host = cfg.Host;
-            client.Port = cfg.Port;
+            var obj = new JObject();
 
-            services.AddFluentEmail(cfg.FromEmail)
-                .AddRazorRenderer()
-                .AddSmtpSender(client);
+            foreach (var prop in viewModel.GetType().GetProperties())
+            {
+                var p = GetVarValueAsJToken(prop.GetValue(viewModel), prop);
+                if (p != null)
+                    obj.Add(prop.Name, p);
+            }
+            return (obj);
+        }
+
+        private JArray GenRecipients(Mail msg, JObject vars)
+        {
+            var recipients = new JArray();
+
+            foreach (var recv in msg.Recipients)
+            {
+                recipients.Add(new JObject()
+                {
+                    { "Email", recv.Email },
+                    { "Name", recv.Name },
+                    { "Vars", vars }
+                });
+            }
+            return (recipients);
+        }
+
+        public async Task<bool> SendAsync(Mail msg)
+        {
+            var vars = GenVariables(msg.Model);
+            var recipients = GenRecipients(msg, vars);
+            var req = new MailjetRequest()
+            {
+                Resource = Send.Resource
+            }
+            .Property("FromEmail", _config.FromEmail)
+            .Property("FromName", _config.FromName)
+            .Property("Subject", msg.Subject)
+            .Property("Mj-TemplateID", _config.Prefix + msg.Template)
+            .Property("Mj-TemplateLanguage", true)
+            .Property("Recipients", recipients);
+
+            var response = await _client.PostAsync(req);
+            return (response.IsSuccessStatusCode);
         }
     }
 }

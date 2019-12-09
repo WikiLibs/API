@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using WikiLibs.Shared.Helpers;
 
 namespace WikiLibs.Shared
 {
@@ -14,6 +15,7 @@ namespace WikiLibs.Shared
     {
         protected DbSet<DataModel> Set { get; }
         protected DbContext Context { get; }
+        public int MaxResults { get; set; } = 15;
 
         public BaseCRUDOperations(DbContext ctx)
         {
@@ -86,6 +88,65 @@ namespace WikiLibs.Shared
         public virtual Task OnDbUpdateException(DbUpdateException e)
         {
             return (Task.CompletedTask);
+        }
+
+        public virtual IQueryable<DataModel> OrderBy(IQueryable<DataModel> models)
+        {
+            return (models);
+        }
+
+        public virtual IQueryable<DataModel> Get(Expression<Func<DataModel, bool>> expression)
+        {
+            return (OrderBy(Set.Where(expression)));
+        }
+
+        public virtual IQueryable<DataModel> Get()
+        {
+            return (OrderBy(Set));
+        }
+
+        public virtual PageResult<T> ToPageResult<T>(PageOptions options, IQueryable<DataModel> models)
+            where T : IPageResultModel<T, DataModel>, new()
+        {
+            return (ToPageResult<T, DataModel>(options, models));
+        }
+
+        public virtual PageResult<DataModel> ToPageResult(PageOptions options, IQueryable<DataModel> models)
+        {
+            return (ToPageResult1(options, models));
+        }
+
+        public virtual PageResult<T> ToPageResult<T, DM>(PageOptions options, IQueryable<DM> models)
+            where T : IPageResultModel<T, DM>, new()
+        {
+            options.EnsureValid(typeof(DM), typeof(DM).Name, MaxResults);
+            var data = models.Skip((options.Page.Value - 1) * options.Count.Value);
+            bool next = data.Count() > options.Count.Value;
+            var arr = new List<T>();
+            foreach (var mdl in data.Take(options.Count.Value))
+                arr.Add(new T().Map(mdl));
+            return (new PageResult<T>()
+            {
+                Data = arr,
+                HasMorePages = next,
+                Page = options.Page.Value,
+                Count = options.Count.Value
+            });
+        }
+
+        private PageResult<DM> ToPageResult1<DM>(PageOptions options, IQueryable<DM> models)
+        {
+            options.EnsureValid(typeof(DM), typeof(DM).Name, MaxResults);
+            var data = models.Skip((options.Page.Value - 1) * options.Count.Value);
+            bool next = data.Count() > options.Count.Value;
+            var arr = data.Take(options.Count.Value);
+            return (new PageResult<DM>()
+            {
+                Data = arr,
+                HasMorePages = next,
+                Page = options.Page.Value,
+                Count = options.Count.Value
+            });
         }
     }
 

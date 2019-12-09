@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WikiLibs.API.Tests.Helper
 {
@@ -36,11 +38,12 @@ namespace WikiLibs.API.Tests.Helper
             }
         }
 
-        public static Data.Context CreateFakeDB()
+        public static Data.Context CreateFakeDB(SqliteConnection con)
         {
-            var ctx = new Data.Context(new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString()).UseLazyLoadingProxies().Options);
+           var ctx = new Data.Context(new DbContextOptionsBuilder().UseSqlite(con).UseLazyLoadingProxies().Options);
 
-            ResetValueGenerators(ctx);
+            ctx.Database.EnsureCreated();
+            ctx.SaveChanges();
             ctx.Add(new Data.Models.Group()
             {
                 Name = "Default"
