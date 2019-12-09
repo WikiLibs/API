@@ -73,6 +73,8 @@ namespace WikiLibs.Shared
         #region USERS
         public const string DELETE_USER = "user.delete";
         public const string DELETE_ME = "user.me.delete";
+        public const string UPDATE_USER = "user.update";
+        public const string UPDATE_ME = "user.me.update";
         #endregion
 
         #region BOTS

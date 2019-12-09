@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using WikiLibs.Models.Input.Users;
 using WikiLibs.Shared;
 using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules;
@@ -28,7 +29,15 @@ namespace WikiLibs.API
         public async Task<IActionResult> GetUser([FromRoute] string uid)
         {
             var mdl = await _ummgr.GetAsync(uid);
-            return (Json(Models.Output.User.CreateModel(mdl)));
+            var data = Models.Output.User.CreateModel(mdl);
+
+            if (data.Private)
+            {
+                data.FirstName = null;
+                data.LastName = null;
+                data.Email = null;
+            }
+            return (Json(data));
         }
 
         [ProducesResponseType(200, Type = typeof(Models.Output.User))]
@@ -71,17 +80,44 @@ namespace WikiLibs.API
             return (Ok());
         }
 
-        [HttpPatch]
-        public IActionResult PatchUser()
+        [HttpPatch("{uid}")]
+        public async Task<IActionResult> PatchUser([FromRoute] string uid, [FromBody] UserUpdateGlobal usr)
         {
-            return (Ok());
+            if (!_user.HasPermission(Permissions.UPDATE_USER))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = uid,
+                    ResourceId = uid,
+                    ResourceType = typeof(Data.Models.User),
+                    MissingPermission = Permissions.UPDATE_USER
+                };
+
+            var mdl = await _ummgr.PatchAsync(uid, usr.CreatePatch(await _ummgr.GetAsync(uid)));
+            return (Json(Models.Output.User.CreateModel(mdl)));
         }
 
         [HttpPatch("me")]
-        public IActionResult PatchMe()
+        public async Task<IActionResult> PatchMe([FromBody] UserUpdate usr)
         {
-            return (Ok());
-        }
+            if (!_user.HasPermission(Permissions.UPDATE_ME))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = _user.UserId,
+                    ResourceId = _user.UserId,
+                    ResourceType = typeof(Data.Models.User),
+                    MissingPermission = Permissions.UPDATE_ME
+                };
+            if (usr.CurPassword != _user.User.Pass)
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = _user.UserId,
+                    ResourceId = _user.UserId,
+                    ResourceType = typeof(Data.Models.User),
+                    MissingPermission = Permissions.UPDATE_ME
+                };
 
+            var mdl = await _ummgr.PatchAsync(_user.UserId, usr.CreatePatch(_user.User));
+            return (Json(Models.Output.User.CreateModel(mdl)));
+        }
     }
 }
