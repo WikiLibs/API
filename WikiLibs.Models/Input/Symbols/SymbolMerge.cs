@@ -8,7 +8,7 @@ using WikiLibs.Data.Models.Symbols;
 
 namespace WikiLibs.Models.Input.Symbols
 {
-    public class SymbolMerge : PutModel<SymbolMerge, Symbol>
+    public class SymbolMerge : PutModel<SymbolMerge, Symbol, string>
     {
         public class Prototype
         {
@@ -37,11 +37,12 @@ namespace WikiLibs.Models.Input.Symbols
         [Required]
         public string[] Symbols { get; set; }
 
-        public override Symbol CreateModel()
+        public override Symbol CreateModel(string key)
         {
             return (new SymbolCreate()
             {
-                Import = Import, 
+                Path = key,
+                Import = Import,
                 Type = Type,
                 Prototypes = Prototypes.Select((e) => new SymbolCreate.Prototype
                 {
@@ -60,11 +61,27 @@ namespace WikiLibs.Models.Input.Symbols
 
         public override Symbol CreatePatch(in Symbol current)
         {
+            List<Prototype> lst = Prototypes.ToList();
+            foreach (var proto in current.Prototypes)
+            {
+                if (!Prototypes.Any((e) => e.Proto == proto.Data))
+                    lst.Add(new Prototype()
+                    {
+                        Description = proto.Description,
+                        Proto = proto.Data,
+                        Parameters = proto.Parameters.Select((p) => new Prototype.Parameter()
+                        {
+                            Description = p.Description,
+                            Proto = p.Data,
+                            Ref = p.SymbolRef != null ? p.SymbolRef.RefPath : null
+                        }).ToArray()
+                    });
+            }
             var sym = new SymbolUpdate()
             {
                 Import = Import,
                 Type = Type,
-                Prototypes = Prototypes.Select((e) => new SymbolUpdate.Prototype
+                Prototypes = lst.Select((e) => new SymbolUpdate.Prototype
                 {
                     Description = e.Description,
                     Proto = e.Proto,
@@ -77,11 +94,6 @@ namespace WikiLibs.Models.Input.Symbols
                 }).ToArray(),
                 Symbols = Symbols
             }.CreatePatch(current);
-            foreach (var proto in current.Prototypes)
-            {
-                if (!Prototypes.Any((e) => e.Proto == proto.Data))
-                    sym.Prototypes.Add(proto);
-            }
             return (sym);
         }
     }
