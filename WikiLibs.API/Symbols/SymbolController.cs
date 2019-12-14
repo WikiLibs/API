@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using WikiLibs.Shared;
 using WikiLibs.Shared.Attributes;
@@ -70,6 +71,31 @@ namespace WikiLibs.API.Symbols
             data.User = _user.User;
             var mdl = await _symmgr.PostAsync(data);
             return (Json(Models.Output.Symbols.Symbol.CreateModel(mdl)));
+        }
+
+        [HttpPut("{path*}")]
+        [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
+        public async Task<IActionResult> PutSymbol([FromRoute] string path, [FromBody, Required] Models.Input.Symbols.SymbolMerge sym)
+        {
+            if (!_user.HasPermission(Permissions.UPDATE_SYMBOL) || !_user.HasPermission(Permissions.CREATE_SYMBOL))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = path,
+                    ResourceId = path,
+                    ResourceType = typeof(Data.Models.Symbols.Symbol),
+                    MissingPermission = Permissions.UPDATE_SYMBOL
+                };
+            var mdl = _symmgr.Get((e) => e.Path == path).FirstOrDefault();
+            Data.Models.Symbols.Symbol fasoi = null;
+            if (mdl != null)
+                fasoi = await _symmgr.PatchAsync(mdl.Id, sym.CreatePatch(mdl));
+            else
+            {
+                var tmp = sym.CreateModel(path);
+                tmp.User = _user.User;
+                fasoi = await _symmgr.PostAsync(tmp);
+            }
+            return (Json(Models.Output.Symbols.Symbol.CreateModel(fasoi)));
         }
 
         [HttpPatch("{id}")]
