@@ -4,10 +4,11 @@ using System.Text;
 
 namespace WikiLibs.Models
 {
-    public abstract class PostModel<Model, DataModel>
-        where Model : PostModel<Model, DataModel>, new()
+    public abstract class PutModel<Model, DataModel>
+        where Model : PutModel<Model, DataModel>, new()
         where DataModel : new()
     {
         public abstract DataModel CreateModel();
+        public abstract DataModel CreatePatch(in DataModel current);
     }
 }
