@@ -73,7 +73,7 @@ namespace WikiLibs.API.Symbols
             return (Json(Models.Output.Symbols.Symbol.CreateModel(mdl)));
         }
 
-        [HttpPut("{path*}")]
+        [HttpPut("{*path}")]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
         public async Task<IActionResult> PutSymbol([FromRoute] string path, [FromBody, Required] Models.Input.Symbols.SymbolMerge sym)
         {
