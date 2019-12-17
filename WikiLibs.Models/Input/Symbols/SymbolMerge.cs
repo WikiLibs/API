@@ -77,6 +77,12 @@ namespace WikiLibs.Models.Input.Symbols
                         }).ToArray()
                     });
             }
+            List<string> symbols = current.Symbols.Select(e => e.RefPath).ToList();
+            foreach (var s in Symbols)
+            {
+                if (!symbols.Contains(s))
+                    symbols.Add(s);
+            }
             var sym = new SymbolUpdate()
             {
                 Import = Import,
@@ -92,7 +98,7 @@ namespace WikiLibs.Models.Input.Symbols
                         Ref = p.Ref
                     }).ToArray()
                 }).ToArray(),
-                Symbols = Symbols
+                Symbols = symbols.ToArray()
             }.CreatePatch(current);
             return (sym);
         }

@@ -334,7 +334,7 @@ namespace WikiLibs.API.Tests
                         }
                     }
                 },
-                Symbols = new string[] { }
+                Symbols = new string[] { "test", "test2" }
             });
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(2, Context.Prototypes.Count());
@@ -342,6 +342,10 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual("C", Context.Symbols.First().Lang.Name);
             Assert.AreEqual("C/TestLib", Context.Symbols.First().Lib.Name);
+            string str = "";
+            foreach (var obj in Context.Symbols.First().Symbols)
+                str += obj.RefPath;
+            Assert.AreEqual("testtest2", str);
         }
 
         [Test]
@@ -821,6 +825,50 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.Symbols.Count());
             Assert.AreEqual(1, Context.Prototypes.Count());
             Assert.AreEqual(0, Context.PrototypeParams.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
+            Assert.AreEqual("test", Context.Symbols.First().Type.Name);
+            Assert.AreEqual("void TestFunc()", Context.Symbols.First().Prototypes.First().Data);
+            Assert.AreEqual("This is a test function", Context.Symbols.First().Prototypes.First().Description);
+        }
+
+        [Test]
+        public async Task Patch_SpecialCase()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+
+            await PostTestSymbol();
+            Context.SymbolTypes.Add(new Data.Models.Symbols.Type()
+            {
+                Name = "test"
+            });
+            await Context.SaveChangesAsync();
+            await controller.PatchSymbol(1, new Models.Input.Symbols.SymbolUpdate()
+            {
+                Type = "test",
+                Prototypes = new Models.Input.Symbols.SymbolUpdate.Prototype[]
+                {
+                    new Models.Input.Symbols.SymbolUpdate.Prototype()
+                    {
+                        Description = "This is a test function",
+                        Proto = "void TestFunc()",
+                        Parameters = new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter[]
+                        {
+                        }
+                    },
+                    new Models.Input.Symbols.SymbolUpdate.Prototype()
+                    {
+                        Parameters = new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter[]
+                        {
+                            new Models.Input.Symbols.SymbolUpdate.Prototype.Parameter()
+                            {
+                            }
+                        }
+                    }
+                }
+            });
+            Assert.AreEqual(1, Context.Symbols.Count());
+            Assert.AreEqual(2, Context.Prototypes.Count());
+            Assert.AreEqual(1, Context.PrototypeParams.Count());
             Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual("test", Context.Symbols.First().Type.Name);
             Assert.AreEqual("void TestFunc()", Context.Symbols.First().Prototypes.First().Data);

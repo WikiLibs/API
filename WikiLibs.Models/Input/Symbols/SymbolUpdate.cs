@@ -53,8 +53,8 @@ namespace WikiLibs.Models.Input.Symbols
                     var p = new Data.Models.Symbols.Prototype
                     {
                         Id = old != null ? old.Id : 0,
-                        Data = proto.Proto != null ? proto.Proto : old.Data,
-                        Description = proto.Description != null ? proto.Description : old.Description,
+                        Data = proto.Proto != null ? proto.Proto : (old != null ? old.Data : null),
+                        Description = proto.Description != null ? proto.Description : (old != null ? old.Description : null),
                         Symbol = sym
                     };
                     if (proto.Parameters != null)
@@ -66,8 +66,8 @@ namespace WikiLibs.Models.Input.Symbols
                             var param = new PrototypeParam()
                             {
                                 Id = oldParam != null ? oldParam.Id : 0,
-                                Data = par.Proto != null ? par.Proto : oldParam.Data,
-                                Description = par.Description != null ? par.Description : oldParam.Description,
+                                Data = par.Proto != null ? par.Proto : (oldParam != null ? oldParam.Data : null),
+                                Description = par.Description != null ? par.Description : (oldParam != null ? oldParam.Description : null),
                                 SymbolRef = par.Ref != null ? new PrototypeParamSymbolRef() { RefPath = par.Ref } : null,
                                 Prototype = p
                             };
