@@ -1,0 +1,25 @@
+﻿@using WikiLibs.Shared.Modules.Smtp.Models
+@model UserReset
+<html>
+<head>
+
+</head>
+<body>
+	<h1>User registration email</h1>
+	<p>
+		Hello,
+		<br />
+		<br />
+		This email was sent automaticaly by WikiLibs API Server to inform you that you requested a reset of your password.
+		<br />
+		The new password for your account is <strong>@Model.NewPassword</strong>.
+		<br />
+		We recommend you to change this password as soon as you log back in.
+		<br />
+		<br />
+		Thanks by advance,
+		<br />
+		WikiLibs API Server
+	</p>
+</body>
+</html>

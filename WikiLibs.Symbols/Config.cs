@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WikiLibs.Shared.Attributes;
+using WikiLibs.Shared.Helpers;
 
 namespace WikiLibs.Symbols
 {
-    [API.Configurator]
+    [Configurator]
     public class Config
     {
         public int MaxSymsPerPage { get; set; }

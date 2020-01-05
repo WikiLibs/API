@@ -10,6 +10,7 @@ namespace WikiLibs.Data.Models
     public class Group : Model
     {
         public string Name { get; set; }
+
         public virtual ICollection<Permission> Permissions { get; set; } = new HashSet<Permission>();
     }
 }

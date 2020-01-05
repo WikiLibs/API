@@ -6,10 +6,14 @@ using System.Text;
 
 namespace WikiLibs.Data
 {
-    public abstract class Model
+    public abstract class Model<KeyType>
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public KeyType Id { get; set; }
+    }
+
+    public abstract class Model : Model<long>
+    {
     }
 }

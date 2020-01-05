@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Core.Services
 {
     public class StandardUser : IUser
     {
         private Dictionary<string, bool> _perms;
+        private Data.Context _context;
 
         public StandardUser(IHttpContextAccessor ctx, Data.Context dbCtx)
         {
@@ -19,6 +21,7 @@ namespace WikiLibs.Core.Services
                 User = dbCtx.Users.Find(new object[] { ctx.HttpContext.User.FindFirst(ClaimTypes.Name).Value });
                 foreach (var perm in User.Group.Permissions)
                     _perms[perm.Perm] = true;
+                _context = dbCtx;
             }
         }
 
@@ -26,14 +29,34 @@ namespace WikiLibs.Core.Services
         {
             if (_perms == null)
                 return (false);
+            if (_perms.ContainsKey("*") && _perms["*"])
+                return (true);
+            if (!_perms.ContainsKey(name))
+                return (false);
             return (_perms[name]);
         }
 
-        public string GenToken(string uuid = null)
+        public async Task Save()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
 
+        public bool IsExternal => false;
+
         public Data.Models.User User { get; }
+
+        public string UserId => User.Id;
+
+        public int Points
+        {
+            get
+            {
+                return (User.Points);
+            }
+            set
+            {
+                User.Points = value;
+            }
+        }
     }
 }

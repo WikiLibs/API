@@ -9,7 +9,5 @@ namespace WikiLibs.Models
         where DataModel : new()
     {
         public abstract DataModel CreateModel();
-
-
     }
 }

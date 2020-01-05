@@ -1,23 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" PrivateAssets="All" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\WikiLibs.Admin\WikiLibs.Admin.csproj" />
     <ProjectReference Include="..\WikiLibs.API\WikiLibs.API.csproj" />
+    <ProjectReference Include="..\WikiLibs.Auth\WikiLibs.Auth.csproj" />
     <ProjectReference Include="..\WikiLibs.Data\WikiLibs.Data.csproj" />
+    <ProjectReference Include="..\WikiLibs.Models\WikiLibs.Models.csproj" />
+    <ProjectReference Include="..\WikiLibs.Shared\WikiLibs.Shared.csproj" />
+    <ProjectReference Include="..\WikiLibs.Smtp\WikiLibs.Smtp.csproj" />
+    <ProjectReference Include="..\WikiLibs.Symbols\WikiLibs.Symbols.csproj" />
+    <ProjectReference Include="..\WikiLibs.Users\WikiLibs.Users.csproj" />
   </ItemGroup>
 
 </Project>

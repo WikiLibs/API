@@ -3,16 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs", "WikiLibs\WikiLibs.csproj", "{3285B592-6FF1-417B-9308-517AABF2069E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{FA2FEADA-EF06-4258-AF58-54E22F65E9FB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManager", "UserManager\UserManager.csproj", "{F4552AF8-8D47-4A75-A7B9-A843ACBEA581}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminManager", "AdminManager\AdminManager.csproj", "{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymbolManager", "SymbolManager\SymbolManager.csproj", "{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Data", "WikiLibs.Data\WikiLibs.Data.csproj", "{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Core", "WikiLibs.Core\WikiLibs.Core.csproj", "{4B748472-1E3D-4AD8-A67A-D8255AA726BA}"
@@ -21,9 +11,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.ImportMySQLDB", "W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Models", "WikiLibs.Models\WikiLibs.Models.csproj", "{0F807594-CCD1-4350-BC99-2AE6E14EE3D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.API", "WikiLibs.API\WikiLibs.API.csproj", "{96EA7CDF-46E6-4786-88DA-8CADF542BF33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Shared", "WikiLibs.Shared\WikiLibs.Shared.csproj", "{96EA7CDF-46E6-4786-88DA-8CADF542BF33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiLibs.Symbols", "WikiLibs.Symbols\WikiLibs.Symbols.csproj", "{FE03C079-62DA-4D8C-B279-E704D723B058}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Symbols", "WikiLibs.Symbols\WikiLibs.Symbols.csproj", "{FE03C079-62DA-4D8C-B279-E704D723B058}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.API", "WikiLibs.API\WikiLibs.API.csproj", "{F573B919-E8BF-4879-BA9A-1A1675903789}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Auth", "WikiLibs.Auth\WikiLibs.Auth.csproj", "{A96978FE-C252-4CEC-B0B0-FE9F45503DEF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Admin", "WikiLibs.Admin\WikiLibs.Admin.csproj", "{C830E6CA-4F13-44B2-8400-807F4A36C149}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Users", "WikiLibs.Users\WikiLibs.Users.csproj", "{0C00551F-38F1-459C-9CB8-B8CD25662CBF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Smtp", "WikiLibs.Smtp\WikiLibs.Smtp.csproj", "{35F883C3-CF87-4269-9005-25ED96BB39D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.API.Tests", "WikiLibs.API.Tests\WikiLibs.API.Tests.csproj", "{6ECD1185-9A00-4D1F-A273-13EE39B7F6DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiLibs.Examples", "WikiLibs.Examples\WikiLibs.Examples.csproj", "{CADA800F-A61F-4C6A-B573-862392F3AE2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,26 +35,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3285B592-6FF1-417B-9308-517AABF2069E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3285B592-6FF1-417B-9308-517AABF2069E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3285B592-6FF1-417B-9308-517AABF2069E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3285B592-6FF1-417B-9308-517AABF2069E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA2FEADA-EF06-4258-AF58-54E22F65E9FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA2FEADA-EF06-4258-AF58-54E22F65E9FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA2FEADA-EF06-4258-AF58-54E22F65E9FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA2FEADA-EF06-4258-AF58-54E22F65E9FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4552AF8-8D47-4A75-A7B9-A843ACBEA581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4552AF8-8D47-4A75-A7B9-A843ACBEA581}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4552AF8-8D47-4A75-A7B9-A843ACBEA581}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4552AF8-8D47-4A75-A7B9-A843ACBEA581}.Release|Any CPU.Build.0 = Release|Any CPU
-		{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{40BBFC52-F9C8-42C5-AF12-CC9EAB046FE5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36FD68AF-DF14-4960-9DFF-E3DC7CC08541}.Release|Any CPU.Build.0 = Release|Any CPU
 		{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{444BDDF8-E14F-4DAC-A288-3C61AB8A770E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,6 +59,34 @@ Global
 		{FE03C079-62DA-4D8C-B279-E704D723B058}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE03C079-62DA-4D8C-B279-E704D723B058}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE03C079-62DA-4D8C-B279-E704D723B058}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F573B919-E8BF-4879-BA9A-1A1675903789}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F573B919-E8BF-4879-BA9A-1A1675903789}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F573B919-E8BF-4879-BA9A-1A1675903789}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F573B919-E8BF-4879-BA9A-1A1675903789}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A96978FE-C252-4CEC-B0B0-FE9F45503DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A96978FE-C252-4CEC-B0B0-FE9F45503DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A96978FE-C252-4CEC-B0B0-FE9F45503DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A96978FE-C252-4CEC-B0B0-FE9F45503DEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C830E6CA-4F13-44B2-8400-807F4A36C149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C830E6CA-4F13-44B2-8400-807F4A36C149}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C830E6CA-4F13-44B2-8400-807F4A36C149}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C830E6CA-4F13-44B2-8400-807F4A36C149}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C00551F-38F1-459C-9CB8-B8CD25662CBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C00551F-38F1-459C-9CB8-B8CD25662CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C00551F-38F1-459C-9CB8-B8CD25662CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C00551F-38F1-459C-9CB8-B8CD25662CBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35F883C3-CF87-4269-9005-25ED96BB39D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35F883C3-CF87-4269-9005-25ED96BB39D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35F883C3-CF87-4269-9005-25ED96BB39D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35F883C3-CF87-4269-9005-25ED96BB39D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ECD1185-9A00-4D1F-A273-13EE39B7F6DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ECD1185-9A00-4D1F-A273-13EE39B7F6DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ECD1185-9A00-4D1F-A273-13EE39B7F6DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ECD1185-9A00-4D1F-A273-13EE39B7F6DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CADA800F-A61F-4C6A-B573-862392F3AE2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CADA800F-A61F-4C6A-B573-862392F3AE2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CADA800F-A61F-4C6A-B573-862392F3AE2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CADA800F-A61F-4C6A-B573-862392F3AE2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
