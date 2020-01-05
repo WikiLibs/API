@@ -64,7 +64,7 @@ namespace WikiLibs.Core.Controllers
         public IActionResult ShowAllControllers()
         {
 #if !DEBUG
-            throw new API.Exceptions.ResourceNotFound()
+            throw new WikiLibs.Shared.Exceptions.ResourceNotFound()
             {
                 ResourceId = "debug",
                 ResourceName = "Debug",
