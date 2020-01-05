@@ -20,11 +20,13 @@ namespace WikiLibs.Auth
         private Dictionary<string, IAuthProvider> _providers = new Dictionary<string, IAuthProvider>();
         public Config Config { get; }
         public Data.Models.Group DefaultGroup { get; }
+        public Data.Models.Group AdminGroup { get; }
 
         public AuthManager(IAdminManager admin, IUserManager umgr, ISmtpManager smgr, Config cfg)
         {
             Config = cfg;
             DefaultGroup = admin.GroupManager.Get(cfg.DefaultGroupName);
+            AdminGroup = admin.GroupManager.Get(cfg.AdminGroupName);
             _providers["internal"] = new AuthProviderInternal(umgr, smgr, this);
         }
 
