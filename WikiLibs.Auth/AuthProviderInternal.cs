@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WikiLibs.Data.Models;
@@ -112,6 +113,8 @@ namespace WikiLibs.Auth
             var usr = await _userManager.GetAsync(uid);
             if (usr.Confirmation != code)
                 throw new InvalidCredentials();
+            if (_userManager.Get().Count() == 1)
+                usr.Group = _manager.AdminGroup;
             usr.Confirmation = null;
             await _userManager.SaveChanges();
         }
