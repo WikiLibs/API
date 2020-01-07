@@ -11,12 +11,30 @@ namespace WikiLibs.Shared.Modules.Symbols
         public long Id { get; set; }
         public string Path { get; set; }
         public string Type { get; set; }
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime LastModificationDate { get; set; }
+        public long LangId { get; set; }
+        public string LangName { get; set; }
+        public long LibId { get; set; }
+        public string LibName { get; set; }
+        public long Views { get; set; }
 
         public SymbolListItem Map(Symbol model)
         {
             Id = model.Id;
             Path = model.Path;
             Type = model.Type.Name;
+            UserId = model.UserId;
+            UserName = model.User != null ? model.User.Pseudo : null;
+            LastModificationDate = model.LastModificationDate;
+            CreationDate = model.CreationDate;
+            LangName = model.Lang.DisplayName;
+            LibName = model.Lib.Name;
+            Views = model.Views;
+            LibId = model.LibId;
+            LangId = model.LangId;
             return (this);
         }
     }
