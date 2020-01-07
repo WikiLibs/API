@@ -15,7 +15,7 @@ namespace WikiLibs.API.Admin
 {
     [Route("/bot")]
     [Authorize]
-    public class BotController : Controller
+    public class BotController : FileController
     {
         private readonly IUserManager _userManager;
         private readonly IUser _user;
@@ -43,7 +43,6 @@ namespace WikiLibs.API.Admin
             created.Pass = PasswordUtils.NewPassword(PasswordOptions.Reinforced);
             created.Group = _adminManager.GroupManager.DefaultGroup;
             var obj = await _userManager.PostAsync(created);
-
             return (Json(Models.Output.Bot.CreateModel(obj)));
         }
 
@@ -51,25 +50,43 @@ namespace WikiLibs.API.Admin
         [ProducesResponseType(200, Type = typeof(Models.Output.Bot))]
         public async Task<IActionResult> PatchAsync([FromRoute] string id, [FromBody, Required] Models.Input.Admin.BotUpdate mdl)
         {
-            if (!_user.HasPermission(Permissions.UPDATE_BOT))
+            var usr = await _userManager.GetAsync(id);
+            if (!usr.IsBot || !_user.HasPermission(Permissions.UPDATE_BOT))
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
                     ResourceName = "Bot",
                     ResourceType = typeof(Data.Models.User),
                     MissingPermission = Permissions.UPDATE_BOT
                 };
-            var usr = await _userManager.GetAsync(id);
             var created = mdl.CreatePatch(usr);
             created.Pass = PasswordUtils.NewPassword(PasswordOptions.Reinforced);
             var obj = await _userManager.PatchAsync(id, created);
-
             return (Json(Models.Output.Bot.CreateModel(obj)));
+        }
+
+        [HttpPut("{id}/icon")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        //Parameter name is forced to be meaningless otherwise useless warning
+        public async Task<IActionResult> PutIcon([FromRoute] string id, [FromForm, Required]FormFile seryhk)
+        {
+            var mdl = await _userManager.GetAsync(id);
+            if (!mdl.IsBot || !_user.HasPermission(Permissions.UPDATE_BOT))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = "BotIcon",
+                    ResourceId = id,
+                    ResourceType = typeof(Data.Models.User),
+                    MissingPermission = Permissions.UPDATE_BOT
+                };
+            await _userManager.PostFileAsync(mdl, ImageFileFromForm(seryhk));
+            return (Ok());
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] string id)
         {
-            if (!_user.HasPermission(Permissions.DELETE_BOT))
+            var mdl = await _userManager.GetAsync(id);
+            if (!mdl.IsBot || !_user.HasPermission(Permissions.DELETE_BOT))
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
                     ResourceName = "Bot",

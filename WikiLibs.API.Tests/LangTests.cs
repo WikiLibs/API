@@ -166,7 +166,7 @@ namespace WikiLibs.API.Tests
             var stream = new MemoryStream(Convert.FromBase64String(str));
             stream.Position = 0;
 
-            await controller.PostIcon(1, new FileController.FormFile()
+            await controller.PutIcon(1, new FileController.FormFile()
             {
                 File = new FormFile(stream, 0, stream.Length, null, "Image.jpeg")
             });
@@ -188,7 +188,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("Image", data.Name);
 
             User.SetPermissions(new string[] { });
-            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostIcon(1, null));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PutIcon(1, null));
         }
     }
 }

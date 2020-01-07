@@ -56,10 +56,10 @@ namespace WikiLibs.API.Symbols
             return (Json(await img.ToBase64()));
         }
 
-        [HttpPost("{id}/icon")]
+        [HttpPut("{id}/icon")]
         [ProducesResponseType(200, Type = typeof(string))]
         //Parameter name is forced to be meaningless otherwise useless warning
-        public async Task<IActionResult> PostIcon([FromRoute]long id, [FromForm, Required]FormFile seryhk)
+        public async Task<IActionResult> PutIcon([FromRoute]long id, [FromForm, Required]FormFile seryhk)
         {
             if (!_user.HasPermission(Permissions.UPDATE_SYMBOL_LANG))
                 throw new Shared.Exceptions.InsuficientPermission()
