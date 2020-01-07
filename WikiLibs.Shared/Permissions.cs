@@ -70,6 +70,13 @@ namespace WikiLibs.Shared
         public const string LIST_EXAMPLE_REQUEST = "example.requests.list";
         #endregion
 
+        #region USERS
+        public const string DELETE_USER = "user.delete";
+        public const string DELETE_ME = "user.me.delete";
+        public const string UPDATE_USER = "user.update";
+        public const string UPDATE_ME = "user.me.update";
+        #endregion
+
         #region BOTS
         public const string CREATE_BOT = "bot.create";
         public const string UPDATE_BOT = "bot.update";
