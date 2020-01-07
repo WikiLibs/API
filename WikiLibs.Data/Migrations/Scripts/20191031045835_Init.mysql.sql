@@ -9,7 +9,7 @@ CREATE TABLE ApiKeys (
     Description LONGTEXT NULL,
     Flags int NOT NULL,
     UseNum int NOT NULL,
-    ExpirationDate datetime NOT NULL,
+    ExpirationDate DATETIME(6) NOT NULL,
     Origin LONGTEXT NULL,
     CONSTRAINT PK_ApiKeys PRIMARY KEY (Id)
 );
@@ -68,7 +68,7 @@ CREATE TABLE Users (
     Pseudo LONGTEXT NULL,
     GroupId bigint NULL,
     Pass LONGTEXT NULL,
-    RegistrationDate datetime NOT NULL,
+    RegistrationDate DATETIME(6) NOT NULL,
     IsBot bit NOT NULL,
     CONSTRAINT PK_Users PRIMARY KEY (Id),
     CONSTRAINT FK_Users_Groups_GroupId FOREIGN KEY (GroupId) REFERENCES Groups (Id) ON DELETE SET NULL
@@ -83,8 +83,8 @@ CREATE TABLE Symbols (
     TypeId bigint NOT NULL,
     ImportId bigint NULL,
     Views bigint NOT NULL,
-    CreationDate datetime NOT NULL,
-    LastModificationDate datetime NOT NULL,
+    CreationDate DATETIME(6) NOT NULL,
+    LastModificationDate DATETIME(6) NOT NULL,
     CONSTRAINT PK_Symbols PRIMARY KEY (Id),
     CONSTRAINT FK_Symbols_SymbolImports_ImportId FOREIGN KEY (ImportId) REFERENCES SymbolImports (Id) ON DELETE SET NULL,
     CONSTRAINT FK_Symbols_SymbolLangs_LangId FOREIGN KEY (LangId) REFERENCES SymbolLangs (Id) ON DELETE CASCADE,
@@ -99,8 +99,8 @@ CREATE TABLE Examples (
     RequestId bigint NULL,
     UserId nvarchar(450) NULL,
     Description LONGTEXT NULL,
-    CreationDate datetime NOT NULL,
-    LastModificationDate datetime NOT NULL,
+    CreationDate DATETIME(6) NOT NULL,
+    LastModificationDate DATETIME(6) NOT NULL,
     CONSTRAINT PK_Examples PRIMARY KEY (Id),
     CONSTRAINT FK_Examples_Symbols_SymbolId FOREIGN KEY (SymbolId) REFERENCES Symbols (Id) ON DELETE CASCADE,
     CONSTRAINT FK_Examples_Users_UserId FOREIGN KEY (UserId) REFERENCES Users (Id) ON DELETE SET NULL
@@ -139,7 +139,7 @@ CREATE TABLE ExampleRequests (
     DataId bigint NULL,
     ApplyToId bigint NULL,
     Message LONGTEXT NULL,
-    CreationDate datetime NOT NULL,
+    CreationDate DATETIME(6) NOT NULL,
     Type int NOT NULL,
     CONSTRAINT PK_ExampleRequests PRIMARY KEY (Id),
     CONSTRAINT FK_ExampleRequests_Examples_ApplyToId FOREIGN KEY (ApplyToId) REFERENCES Examples (Id) ON DELETE NO ACTION,
