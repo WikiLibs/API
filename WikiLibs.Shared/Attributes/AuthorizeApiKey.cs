@@ -14,6 +14,7 @@ namespace WikiLibs.Shared.Attributes
         public const int Authentication = 0x20;
         public const int Standard = 0x40;
         public const int AuthBot = 0x80;
+        public const int SelfDestruct = 0x100;
 
         [Required]
         public int Flag { get; set; }
@@ -28,6 +29,8 @@ namespace WikiLibs.Shared.Attributes
                     return "Authentication";
                 case Standard:
                     return "Standard";
+                case AuthBot:
+                    return "BotAuthentication";
                 default:
                     return "Null";
             }
