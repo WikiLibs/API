@@ -22,7 +22,10 @@ namespace WikiLibs.API.Tests
     {
         public override IExampleRequestManager CreateManager()
         {
-            return (new ExampleRequestManager(Context));
+            return (new ExampleRequestManager(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }));
         }
 
         private async Task<Symbol> PostTestSymbol(Symbols.SymbolController controller)
@@ -86,7 +89,7 @@ namespace WikiLibs.API.Tests
 
         private async Task PostTestExampleRequest()
         {
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             }), User));
@@ -125,7 +128,10 @@ namespace WikiLibs.API.Tests
         [Test]
         public void CheckExampleModule()
         {
-            var module = new ExampleModule(Context);
+            var module = new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            });
 
             Assert.IsNotNull(module.Manager);
             Assert.IsNotNull(module.RequestManager);
@@ -153,7 +159,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Post_Error_Invalid()
         {
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             }), User));
@@ -386,11 +392,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Post_POST()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleRequestController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             var res = await controller.PostAsync(new ExampleRequestCreate()
             {
@@ -421,11 +430,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Post_PATCH()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleRequestController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await controller.PostAsync(new ExampleRequestCreate()
             {
@@ -478,11 +490,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Post_DELETE()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleRequestController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await controller.PostAsync(new ExampleRequestCreate()
             {
@@ -520,11 +535,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Patch()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleRequestController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             await PostTestExampleRequest();
 
             var res = await controller.PatchAsync(1, new ExampleRequestUpdate()
@@ -566,11 +584,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Delete()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleRequestController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             await PostTestExampleRequest();
 
             Assert.AreEqual(1, Context.ExampleRequests.Count());
@@ -587,11 +608,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_GetById()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleRequestController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             await PostTestExampleRequest();
 
             var res = await controller.GetAsync(1) as JsonResult;
@@ -605,11 +629,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_GetByQuery()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleRequestController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             await PostTestExampleRequest();
 
             var res = controller.Get(new ExampleRequestController.ExampleRequestQuery()
@@ -648,11 +675,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Get_Error_Invalid()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleRequestController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleRequestController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             await PostTestExampleRequest();
 
             Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(new ExampleRequestController.ExampleRequestQuery()));
