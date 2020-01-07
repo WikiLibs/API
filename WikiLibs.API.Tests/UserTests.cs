@@ -79,6 +79,47 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task Controller_PATCH_ME_Err_Identical()
+        {
+            Context.Users.Add(new Data.Models.User()
+            {
+                Icon = null,
+                Confirmation = null,
+                GroupId = 1,
+                FirstName = "Dev",
+                LastName = "DEV",
+                Email = "dev123@localhost",
+                Pass = "dev",
+                Id = Guid.NewGuid().ToString(),
+                Points = 0,
+                Private = false,
+                ProfileMsg = "Development user 123",
+                Pseudo = "dev123",
+                RegistrationDate = DateTime.UtcNow
+            });
+            await Context.SaveChangesAsync();
+            User.User.Private = true;
+            await Context.SaveChangesAsync();
+            var controller = new UserController(User, Manager);
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => controller.PatchMe(new Models.Input.Users.UserUpdate()
+            {
+                CurPassword = "dev",
+                Pseudo = "dev123"
+            }));
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceAlreadyExists>(() => controller.PatchMe(new Models.Input.Users.UserUpdate()
+            {
+                CurPassword = "dev",
+                Email = "dev123@localhost"
+            }));
+            var res = await controller.GetMe() as JsonResult;
+            var usr = res.Value as Models.Output.User;
+            Assert.AreEqual("Dev", usr.FirstName);
+            Assert.AreEqual("DEV", usr.LastName);
+            Assert.AreEqual("dev@localhost", usr.Email);
+            Assert.AreEqual("dev", usr.Pseudo);
+        }
+
+        [Test]
         public async Task Controller_PATCH_GLOBAL()
         {
             User.User.Private = true;
