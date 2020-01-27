@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using WikiLibs.Data.Models;
 
@@ -13,6 +14,7 @@ namespace WikiLibs.Models.Input.Users
         public bool? Private { get; set; }
         public string ProfileMsg { get; set; }
         public string Pseudo { get; set; }
+        [Required]
         public string CurPassword { get; set; }
         public string NewPassword { get; set; }
 
