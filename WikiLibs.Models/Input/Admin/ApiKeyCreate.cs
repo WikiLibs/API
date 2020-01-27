@@ -11,6 +11,8 @@ namespace WikiLibs.Models.Input.Admin
         [Required]
         public string Description { get; set; }
         [Required]
+        public string Origin { get; set; }
+        [Required]
         public int Flags { get; set; }
         [Required]
         public int UseNum { get; set; }
@@ -22,6 +24,7 @@ namespace WikiLibs.Models.Input.Admin
             return (new ApiKey()
             {
                 Description = Description,
+                Origin = Origin,
                 ExpirationDate = ExpirationDate,
                 Flags = Flags,
                 UseNum = UseNum

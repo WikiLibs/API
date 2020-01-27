@@ -26,6 +26,7 @@ namespace WikiLibs.API.Tests
             var mdl = await Manager.ApiKeyManager.PostAsync(new Data.Models.ApiKey()
             {
                 Description = "TEST_API_KEY",
+                Origin = "test",
                 ExpirationDate = DateTime.MaxValue,
                 Flags = AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard,
                 UseNum = 2
@@ -83,6 +84,7 @@ namespace WikiLibs.API.Tests
             await Manager.ApiKeyManager.PatchAsync(key, new ApiKeyUpdate()
             {
                 Description = "SUPER API KEY",
+                Origin = "test1",
                 ExpirationDate = DateTime.MaxValue,
                 Flags = AuthorizeApiKey.Authentication,
                 UseNum = 3
@@ -90,6 +92,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.ApiKeys.Count());
             Assert.True(Guid.TryParse(Context.ApiKeys.First().Id, out Guid test));
             Assert.AreEqual("SUPER API KEY", Context.ApiKeys.First().Description);
+            Assert.AreEqual("test1", Context.ApiKeys.First().Origin);
             Assert.AreEqual(3, Context.ApiKeys.First().UseNum);
             Assert.AreEqual(DateTime.MaxValue, Context.ApiKeys.First().ExpirationDate);
             Assert.AreEqual(AuthorizeApiKey.Authentication, Context.ApiKeys.First().Flags);
@@ -111,6 +114,7 @@ namespace WikiLibs.API.Tests
 
             var mdl = await Manager.ApiKeyManager.GetAsync(key);
             Assert.AreEqual("TEST_API_KEY", mdl.Description);
+            Assert.AreEqual("test", mdl.Origin);
             Assert.AreEqual(2, mdl.UseNum);
             Assert.AreEqual(DateTime.MaxValue, mdl.ExpirationDate);
             Assert.AreEqual(key, mdl.Id);

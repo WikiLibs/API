@@ -36,6 +36,7 @@ namespace WikiLibs.Data
         public Context(DbContextOptions options)
             : base(options)
         {
+            Database.SetCommandTimeout(9000);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
