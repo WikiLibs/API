@@ -38,7 +38,6 @@ namespace WikiLibs.Core
                     o.ClearProviders();
                     o.AddProvider(new Logging.Console());
                 })
-                .UseStartup<Startup>()
-                .UseApplicationInsights();
+                .UseStartup<Startup>();
     }
 }

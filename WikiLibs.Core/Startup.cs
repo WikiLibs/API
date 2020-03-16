@@ -9,8 +9,10 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 using WikiLibs.Core.Filters;
@@ -35,11 +37,12 @@ namespace WikiLibs.Core
 
             IMvcBuilder builder = services.AddMvc(o =>
             {
+                o.EnableEndpointRouting = false;
                 o.ModelMetadataDetailsProviders.Add(new ModelRequiredBinding());
                 o.Filters.Add(new Filters.APIKeyFilter());
                 o.Filters.Add(new Filters.ModelStateFilter());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-              .AddJsonOptions(o =>
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+              .AddNewtonsoftJson(o =>
               {
                   o.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
                   o.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -50,6 +53,7 @@ namespace WikiLibs.Core
             services.AddDbContext<Data.Context>(o => o.UseLazyLoadingProxies()
                                                       .UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddHttpContextAccessor();
+            services.AddApplicationInsightsTelemetry();
             services.AddScoped<IUser>(o => new StandardUser(o.GetService<IHttpContextAccessor>(), o.GetService<Data.Context>()));
             services.AddCors(o =>
                 o.AddPolicy("AllowAll", p =>
@@ -68,28 +72,30 @@ namespace WikiLibs.Core
                     var ctrl = api.ActionDescriptor as ControllerActionDescriptor;
                     return (new List<string>() { ctrl.ControllerTypeInfo.Namespace.Replace("WikiLibs.API.", "") + "." + ctrl.ControllerName });
                 });
-                c.SwaggerDoc("v1", new Info { Title = "WikiLibs API", Version = Assembly.GetExecutingAssembly().GetName().Version.ToString() });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WikiLibs API", Version = Assembly.GetExecutingAssembly().GetName().Version.ToString() });
                 c.CustomSchemaIds(x => x.Assembly.IsDynamic ? "Dynamic." + x.FullName : x.FullName);
-                c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    BearerFormat = "JWT",
+                    Scheme = "bearer",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http
                 });
-                c.AddSecurityDefinition("APIKey", new ApiKeyScheme()
+                c.AddSecurityDefinition("APIKey", new OpenApiSecurityScheme()
                 {
                     Description = "API Key scheme. Example: \"Authorization: {token}\"",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http
                 });
                 c.OperationFilter<AuthorizationSwagger>();
                 c.OperationFilter<ErrorMiddlewareSwagger>();
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env, ILoggerFactory factory)
         {
             app.UseMiddleware<Middleware.ErrorHandlingMiddleware>();
             if (!env.IsDevelopment())

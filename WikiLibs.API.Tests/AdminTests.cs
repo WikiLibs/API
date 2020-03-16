@@ -41,7 +41,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Groups.Count());
             Assert.AreEqual(1, Context.ApiKeys.Count());
             Assert.AreEqual("Default", Context.Groups.First().Name);
-            Assert.AreEqual("Admin", Context.Groups.Last().Name);
+            Assert.AreEqual("Admin", Context.Groups.ToList().Last().Name);
             Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.ApiKeys.First().Description);
 
             Context.RemoveRange(Context.Groups);
@@ -52,7 +52,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Groups.Count());
             Assert.AreEqual(1, Context.ApiKeys.Count());
             Assert.AreEqual("Default", Context.Groups.First().Name);
-            Assert.AreEqual("Admin", Context.Groups.Last().Name);
+            Assert.AreEqual("Admin", Context.Groups.ToList().Last().Name);
             Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.ApiKeys.First().Description);
         }
 
@@ -391,7 +391,7 @@ namespace WikiLibs.API.Tests
             var controller = new GroupController(User, Manager);
 
             await PostTestGroup();
-            var res = await controller.PatchAsync(Context.Groups.Last().Id, new GroupUpdate()
+            var res = await controller.PatchAsync(Context.Groups.ToList().Last().Id, new GroupUpdate()
             {
                 Name = "MyGrp123"
             }) as JsonResult;
@@ -400,7 +400,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("MyGrp123", obj.Name);
             Assert.AreEqual(4, obj.Permissions.Length);
             User.SetPermissions(new string[] { });
-            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(Context.Groups.Last().Id, null));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(Context.Groups.ToList().Last().Id, null));
         }
 
         [Test]
@@ -410,7 +410,7 @@ namespace WikiLibs.API.Tests
 
             await PostTestGroup();
             Assert.AreEqual(3, Context.Groups.Count());
-            await controller.DeleteAsync(Context.Groups.Last().Id);
+            await controller.DeleteAsync(Context.Groups.ToList().Last().Id);
             Assert.AreEqual(2, Context.Groups.Count());
             User.SetPermissions(new string[] { });
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(0));

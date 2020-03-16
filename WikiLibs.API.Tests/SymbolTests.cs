@@ -974,11 +974,13 @@ namespace WikiLibs.API.Tests
                 Name = "test"
             });
             await Context.SaveChangesAsync();
-            await controller.PatchSymbol(3, new Models.Input.Symbols.SymbolUpdate()
             {
-                Type = "test",
-                Symbols = new string[] { }
-            });
+                await controller.PatchSymbol(3, new Models.Input.Symbols.SymbolUpdate()
+                {
+                    Type = "test",
+                    Symbols = new string[] { }
+                });
+            }
             Assert.AreEqual(3, Context.Symbols.Count());
             Assert.AreEqual(3, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
