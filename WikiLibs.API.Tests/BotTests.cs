@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Internal;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using System;
@@ -129,8 +129,8 @@ namespace WikiLibs.API.Tests
                 File = new FormFile(stream, 0, stream.Length, null, "Image.jpeg")
             });
 
-            Assert.IsNotNull(Context.Users.Last().Icon);
-            Assert.IsNotEmpty(Context.Users.Last().Icon);
+            Assert.IsNotNull(Context.Users.ToList().Last().Icon);
+            Assert.IsNotEmpty(Context.Users.ToList().Last().Icon);
 
             User.SetPermissions(new string[] { });
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PutIcon(bot.Id, null));

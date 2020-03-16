@@ -141,7 +141,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Examples.Count());
             Assert.AreEqual(6, Context.ExampleCodeLines.Count());
             Assert.AreEqual(3, Context.Examples.First().Code.Count());
-            Assert.AreEqual(3, Context.Examples.Last().Code.Count());
+            Assert.AreEqual(3, Context.Examples.ToList().Last().Code.Count());
             Assert.AreEqual("This is a test example", Context.Examples.First().Description);
         }
 

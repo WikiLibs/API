@@ -81,7 +81,7 @@ namespace WikiLibs.API.Tests
             }));
 
             //Check that bot login is not allowed using standard user systems
-            Context.Users.Last().IsBot = true;
+            Context.Users.ToList().Last().IsBot = true;
             Assert.ThrowsAsync<InvalidCredentials>(() => controller.Login(new Models.Input.Auth.Login()
             {
                 Email = "dev@localhost",
@@ -100,12 +100,12 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("WikiLibs API Server", Smtp.LastSendEmail.Subject);
             Assert.AreEqual(Shared.Modules.Smtp.Models.UserRegistration.Template, Smtp.LastSendEmail.Template);
             Assert.AreEqual("test@test.com", Smtp.LastSendEmail.Recipients.First().Email);
-            Assert.AreEqual(Context.Users.Last().FirstName + " " + Context.Users.Last().LastName, Smtp.LastSendEmail.Recipients.First().Name);
+            Assert.AreEqual(Context.Users.ToList().Last().FirstName + " " + Context.Users.ToList().Last().LastName, Smtp.LastSendEmail.Recipients.First().Name);
             var data = Smtp.LastSendEmail.Model as Shared.Modules.Smtp.Models.UserRegistration;
-            Assert.AreEqual(Context.Users.Last().FirstName + " " + Context.Users.Last().LastName, data.UserName);
-            Assert.AreEqual(Context.Users.Last().Confirmation, data.ConfirmCode);
+            Assert.AreEqual(Context.Users.ToList().Last().FirstName + " " + Context.Users.ToList().Last().LastName, data.UserName);
+            Assert.AreEqual(Context.Users.ToList().Last().Confirmation, data.ConfirmCode);
             Assert.AreEqual(2, Context.Users.Count());
-            Assert.IsNotNull(Context.Users.Last().Confirmation);
+            Assert.IsNotNull(Context.Users.ToList().Last().Confirmation);
 
             //Check we can't login
             Assert.ThrowsAsync<InvalidCredentials>(() => controller.Login(new Models.Input.Auth.Login()
@@ -117,7 +117,7 @@ namespace WikiLibs.API.Tests
             //Confirmation
             await controller.Confirm(data.ConfirmCode);
             Assert.AreEqual(2, Context.Users.Count());
-            Assert.IsNull(Context.Users.Last().Confirmation);
+            Assert.IsNull(Context.Users.ToList().Last().Confirmation);
 
             //Check we can login
             var res = await controller.Login(new Models.Input.Auth.Login()
@@ -150,7 +150,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(Shared.Modules.Smtp.Models.UserReset.Template, Smtp.LastSendEmail.Template);
             Assert.AreEqual("dev@localhost", Smtp.LastSendEmail.Recipients.First().Email);
             var data = Smtp.LastSendEmail.Model as Shared.Modules.Smtp.Models.UserReset;
-            Assert.AreEqual(Context.Users.Last().Pass, data.NewPassword);
+            Assert.AreEqual(Context.Users.ToList().Last().Pass, data.NewPassword);
 
             //Check we can login
             var res = await controller.Login(new Models.Input.Auth.Login()

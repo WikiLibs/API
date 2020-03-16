@@ -358,7 +358,7 @@ namespace WikiLibs.API.Tests
             await Manager.PostAsync(ex);
             Assert.AreEqual(1, Context.ExampleRequests.Count());
             Assert.IsNull(Context.Examples.First().Request);
-            Assert.IsNotNull(Context.Examples.Last().Request);
+            Assert.IsNotNull(Context.Examples.ToList().Last().Request);
             await Manager.ApplyRequest(Context.ExampleRequests.First().Id);
             Assert.AreEqual(0, Context.ExampleRequests.Count());
             Assert.AreEqual("This has been updated", Context.Examples.First().Description);

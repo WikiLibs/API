@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -33,7 +34,7 @@ namespace WikiLibs.Core.Filters
             return (strs);
         }
 
-        public void Apply(Operation operation, OperationFilterContext context)
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             var authBearer = context.MethodInfo
                 .GetCustomAttributes(true)
@@ -50,23 +51,39 @@ namespace WikiLibs.Core.Filters
 
             if (authBearer.Any() || authApi.Any())
             {
-                operation.Responses.Add("401", new Response { Description = "Unauthorized" });
-                operation.Security = new List<IDictionary<string, IEnumerable<string>>>();
+                operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
+                operation.Security = new List<OpenApiSecurityRequirement>();
             }
             if (authBearer.Any())
             {
-                operation.Security.Add(new Dictionary<string, IEnumerable<string>>
+                OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
                 {
-                    { "Bearer", new string[] { } }
+                    Reference = new OpenApiReference()
+                    {
+                        Id = "Bearer",
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                operation.Security.Add(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, new string[] { }}
                 });
             }
             if (authApi.Any())
             {
-                operation.Security.Add(new Dictionary<string, IEnumerable<string>>
+                OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
                 {
-                    { "APIKey", ConvertAPIKeyFlagToName(authApi) }
+                    Reference = new OpenApiReference()
+                    {
+                        Id = "APIKey",
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                operation.Security.Add(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, new string[] { }}
                 });
-            }
+           }
         }
     }
 }

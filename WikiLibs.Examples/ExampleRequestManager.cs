@@ -42,9 +42,11 @@ namespace WikiLibs.Examples
                 if (ex.Data.Code != null)
                 {
                     Context.RemoveRange(ex.ApplyTo.Code);
+                    await SaveChanges(); //EF Core refuses to handle multiple requests anymore
                     foreach (var code in ex.Data.Code)
                         ex.ApplyTo.Code.Add(code);
                 }
+                await SaveChanges();
                 Set.Remove(ex);
                 Context.Examples.Remove(ex.Data);
                 await SaveChanges();

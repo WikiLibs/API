@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.Internal;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.API.Symbols;
 using WikiLibs.API.Tests.Helper;

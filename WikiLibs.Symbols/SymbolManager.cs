@@ -170,7 +170,7 @@ namespace WikiLibs.Symbols
             }
             if (sym.Import != null)
             {
-                if (Context.Symbols.Where(e => e.Import != null && e.Import.Name == s.Import.Name).Count() == 1)
+                if (s.Import != null && Context.Symbols.Where(e => e.Import != null && e.Import.Name == s.Import.Name).Count() == 1) //This line fucks everything up
                     Context.RemoveRange(Context.SymbolImports.Where(e => e.Name == s.Import.Name));
                 Import import = null;
                 if (!Context.SymbolImports.Any(e => e.Name == sym.Import.Name))
@@ -179,28 +179,32 @@ namespace WikiLibs.Symbols
                     import = Context.SymbolImports.Where(e => e.Name == sym.Import.Name).FirstOrDefault();
                 s.Import = import;
             }
+            await SaveChanges();
             if (sym.Prototypes != null)
             {
                 Context.RemoveRange(s.Prototypes);
+                await SaveChanges();
                 foreach (var proto in sym.Prototypes)
                 {
                     foreach (var param in proto.Parameters)
                         param.Id = 0;
                     proto.Id = 0;
                     proto.Symbol = s;
-                    Context.Add(proto);
+                    s.Prototypes.Add(proto);
                 }
+                await SaveChanges();
             }
             if (sym.Symbols != null)
             {
                 Context.RemoveRange(s.Symbols);
+                await SaveChanges();
                 foreach (var r in sym.Symbols)
                 {
                     r.Id = 0;
-                    Context.Add(r);
+                    s.Symbols.Add(r);
                 }
+                await SaveChanges();
             }
-            await SaveChanges();
             return (s);
         }
 
@@ -220,14 +224,14 @@ namespace WikiLibs.Symbols
 
         public async Task OptimizeAsync()
         {
-            var srefs = Context.SymbolRefs.Where(e => e.RefId == null);
+            var srefs = Context.SymbolRefs.Where(e => e.RefId == null).ToList();
             foreach (var sref in srefs)
             {
                 var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
                 if (symbol != null)
                     sref.RefId = symbol.Id;
             }
-            var sprefs = Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null);
+            var sprefs = Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null).ToList();
             foreach (var sref in sprefs)
             {
                 var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();

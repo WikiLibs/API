@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Swagger;
+﻿using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
@@ -10,47 +11,27 @@ namespace WikiLibs.Core.Filters
 {
     public class ErrorMiddlewareSwagger : IOperationFilter
     {
-        public void Apply(Operation operation, OperationFilterContext context)
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            operation.Responses.Add("403", new Response()
+            operation.Responses.Add("403", new OpenApiResponse()
             {
-                Description = "Forbidden / Missing permission",
-                Schema = new Schema()
-                {
-                    Default = new ErrorHandlingMiddleware.JsonErrorResult()
-                }
+                Description = "Forbidden / Missing permission"
             });
-            operation.Responses.Add("400", new Response()
+            operation.Responses.Add("400", new OpenApiResponse()
             {
-                Description = "Bad request / Invalid argument",
-                Schema = new Schema()
-                {
-                    Default = new ErrorHandlingMiddleware.JsonErrorResult()
-                }
+                Description = "Bad request / Invalid argument"
             });
-            operation.Responses.Add("409", new Response()
+            operation.Responses.Add("409", new OpenApiResponse()
             {
-                Description = "Conflict",
-                Schema = new Schema()
-                {
-                    Default = new ErrorHandlingMiddleware.JsonErrorResult()
-                }
+                Description = "Conflict"
             });
-            operation.Responses.Add("404", new Response()
+            operation.Responses.Add("404", new OpenApiResponse()
             {
-                Description = "NotFound",
-                Schema = new Schema()
-                {
-                    Default = new ErrorHandlingMiddleware.JsonErrorResult()
-                }
+                Description = "NotFound"
             });
-            operation.Responses.Add("500", new Response()
+            operation.Responses.Add("500", new OpenApiResponse()
             {
-                Description = "Internal Server Error, please report bug if this occurs",
-                Schema = new Schema()
-                {
-                    Default = new ErrorHandlingMiddleware.JsonErrorResult()
-                }
+                Description = "Internal Server Error, please report bug if this occurs"
             });
         }
     }

@@ -11,8 +11,6 @@ using Microsoft.Extensions.Logging;
 
 namespace WikiLibs.Core
 {
-    //TODO : Setup debug token
-
     public class Program
     {
         public static string AssemblyDirectory
@@ -38,7 +36,6 @@ namespace WikiLibs.Core
                     o.ClearProviders();
                     o.AddProvider(new Logging.Console());
                 })
-                .UseStartup<Startup>()
-                .UseApplicationInsights();
+                .UseStartup<Startup>();
     }
 }
