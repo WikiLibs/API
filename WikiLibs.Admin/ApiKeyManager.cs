@@ -37,6 +37,7 @@ namespace WikiLibs.Admin
             var apiKey = await GetAsync(key);
 
             apiKey.Description = mdl.Description;
+            apiKey.Origin = mdl.Origin;
             apiKey.Flags = mdl.Flags;
             apiKey.ExpirationDate = mdl.ExpirationDate;
             apiKey.UseNum = mdl.UseNum;

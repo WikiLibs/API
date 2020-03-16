@@ -116,7 +116,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Post()
         {
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             }), User));
@@ -131,7 +131,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Post_Multiple()
         {
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             }), User));
@@ -148,7 +148,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Post_Error_Invalid()
         {
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             }), User));
@@ -187,7 +187,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Patch()
         {
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             }), User));
@@ -203,7 +203,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Patch_Complex()
         {
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             }), User));
@@ -231,7 +231,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Delete()
         {
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             }), User));
@@ -250,7 +250,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Get()
         {
-            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new Config()
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             }), User));
@@ -264,11 +264,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Post()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             var res = await controller.PostAsync(new ExampleCreate()
             {
@@ -305,11 +308,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Patch()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
@@ -329,11 +335,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Delete()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
@@ -347,11 +356,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_GetByQuery()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
@@ -368,11 +380,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_GetById()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
@@ -385,11 +400,14 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task Controller_Get_Error_Invalid()
         {
-            var smanager = new SymbolManager(Context, new Config()
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
             {
                 MaxSymsPerPage = 15
             });
-            var controller = new ExampleController(User, new ExampleModule(Context), smanager);
+            var controller = new ExampleController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 

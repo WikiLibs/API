@@ -26,6 +26,7 @@ namespace WikiLibs.API.Tests
             var mdl = await Manager.ApiKeyManager.PostAsync(new Data.Models.ApiKey()
             {
                 Description = "TEST_API_KEY",
+                Origin = "test",
                 ExpirationDate = DateTime.MaxValue,
                 Flags = AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard,
                 UseNum = 2
@@ -41,8 +42,12 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Groups.Count());
             Assert.AreEqual(1, Context.ApiKeys.Count());
             Assert.AreEqual("Default", Context.Groups.First().Name);
-            Assert.AreEqual("Admin", Context.Groups.ToList().Last().Name);
+            Assert.AreEqual("Admin", Context.Groups.Last().Name);
+#if DEBUG
             Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.ApiKeys.First().Description);
+#else
+            Assert.AreEqual("[DEFAULT] BaseKey", Context.ApiKeys.First().Description);
+#endif
 
             Context.RemoveRange(Context.Groups);
             Context.RemoveRange(Context.ApiKeys);
@@ -52,8 +57,12 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Groups.Count());
             Assert.AreEqual(1, Context.ApiKeys.Count());
             Assert.AreEqual("Default", Context.Groups.First().Name);
-            Assert.AreEqual("Admin", Context.Groups.ToList().Last().Name);
+            Assert.AreEqual("Admin", Context.Groups.Last().Name);
+#if DEBUG
             Assert.AreEqual("[WIKILIBS_SUPER_DEV_API_KEY]", Context.ApiKeys.First().Description);
+#else
+            Assert.AreEqual("[DEFAULT] BaseKey", Context.ApiKeys.First().Description);
+#endif
         }
 
         [Test]
@@ -75,6 +84,7 @@ namespace WikiLibs.API.Tests
             await Manager.ApiKeyManager.PatchAsync(key, new ApiKeyUpdate()
             {
                 Description = "SUPER API KEY",
+                Origin = "test1",
                 ExpirationDate = DateTime.MaxValue,
                 Flags = AuthorizeApiKey.Authentication,
                 UseNum = 3
@@ -82,6 +92,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.ApiKeys.Count());
             Assert.True(Guid.TryParse(Context.ApiKeys.First().Id, out Guid test));
             Assert.AreEqual("SUPER API KEY", Context.ApiKeys.First().Description);
+            Assert.AreEqual("test1", Context.ApiKeys.First().Origin);
             Assert.AreEqual(3, Context.ApiKeys.First().UseNum);
             Assert.AreEqual(DateTime.MaxValue, Context.ApiKeys.First().ExpirationDate);
             Assert.AreEqual(AuthorizeApiKey.Authentication, Context.ApiKeys.First().Flags);
@@ -103,6 +114,7 @@ namespace WikiLibs.API.Tests
 
             var mdl = await Manager.ApiKeyManager.GetAsync(key);
             Assert.AreEqual("TEST_API_KEY", mdl.Description);
+            Assert.AreEqual("test", mdl.Origin);
             Assert.AreEqual(2, mdl.UseNum);
             Assert.AreEqual(DateTime.MaxValue, mdl.ExpirationDate);
             Assert.AreEqual(key, mdl.Id);
@@ -391,7 +403,7 @@ namespace WikiLibs.API.Tests
             var controller = new GroupController(User, Manager);
 
             await PostTestGroup();
-            var res = await controller.PatchAsync(Context.Groups.ToList().Last().Id, new GroupUpdate()
+            var res = await controller.PatchAsync(Context.Groups.Last().Id, new GroupUpdate()
             {
                 Name = "MyGrp123"
             }) as JsonResult;
@@ -400,7 +412,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("MyGrp123", obj.Name);
             Assert.AreEqual(4, obj.Permissions.Length);
             User.SetPermissions(new string[] { });
-            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(Context.Groups.ToList().Last().Id, null));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(Context.Groups.Last().Id, null));
         }
 
         [Test]
@@ -410,7 +422,7 @@ namespace WikiLibs.API.Tests
 
             await PostTestGroup();
             Assert.AreEqual(3, Context.Groups.Count());
-            await controller.DeleteAsync(Context.Groups.ToList().Last().Id);
+            await controller.DeleteAsync(Context.Groups.Last().Id);
             Assert.AreEqual(2, Context.Groups.Count());
             User.SetPermissions(new string[] { });
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(0));

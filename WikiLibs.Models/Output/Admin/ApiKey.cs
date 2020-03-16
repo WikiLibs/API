@@ -9,6 +9,7 @@ namespace WikiLibs.Models.Output.Admin
     {
         public string Id { get; set; }
         public string Description { get; set; }
+        public string Origin { get; set; }
         public int UseNum { get; set; }
         public int Flags { get; set; }
         public DateTime ExpirationDate { get; set; }
@@ -20,6 +21,7 @@ namespace WikiLibs.Models.Output.Admin
             UseNum = model.UseNum;
             Flags = model.Flags;
             ExpirationDate = model.ExpirationDate;
+            Origin = model.Origin;
         }
     }
 }

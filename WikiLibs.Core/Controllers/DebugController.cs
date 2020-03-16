@@ -57,20 +57,11 @@ namespace WikiLibs.Core.Controllers
             });
             return (Ok());
         }
-#endif
 
         [HttpGet]
         [Route("/debug")]
         public IActionResult ShowAllControllers()
         {
-#if !DEBUG
-            throw new API.Exceptions.ResourceNotFound()
-            {
-                ResourceId = "debug",
-                ResourceName = "Debug",
-                ResourceType = typeof(DebugView)
-            };
-#endif
             List<TypeInfo> controllers;
             var controllerFeature = new ControllerFeature();
 
@@ -99,5 +90,6 @@ namespace WikiLibs.Core.Controllers
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             }));
         }
+#endif
     }
 }

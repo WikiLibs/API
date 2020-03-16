@@ -22,6 +22,7 @@ namespace WikiLibs.API.Tests
             return (new AuthManager(new AdminManager(Context, null), new UserManager(Context), Smtp, new Config()
             {
                 DefaultGroupName = "Default",
+                AdminGroupName = "Admin",
                 Internal = new Config.CInternal()
                 {
                     TokenAudiance = "localhost",

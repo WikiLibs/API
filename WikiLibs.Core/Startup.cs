@@ -50,8 +50,13 @@ namespace WikiLibs.Core
             Configuration.Bind("Modules", modules);
             foreach (var s in modules)
                 collection.Add(ModuleHelper.InjectModule(services, Configuration, builder, s));
-            services.AddDbContext<Data.Context>(o => o.UseLazyLoadingProxies()
-                                                      .UseSqlServer(Configuration.GetConnectionString("Default")));
+            var str = Configuration.GetConnectionString("Default");
+            if (str.StartsWith("mysql:"))
+                services.AddDbContext<Data.Context>(o => o.UseLazyLoadingProxies()
+                                                          .UseMySql(str.Substring(str.IndexOf(":") + 1)));
+            else
+                services.AddDbContext<Data.Context>(o => o.UseLazyLoadingProxies()
+                                                          .UseSqlServer(str));
             services.AddHttpContextAccessor();
             services.AddApplicationInsightsTelemetry();
             services.AddScoped<IUser>(o => new StandardUser(o.GetService<IHttpContextAccessor>(), o.GetService<Data.Context>()));

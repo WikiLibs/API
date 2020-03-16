@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WikiLibs.Data;
 using WikiLibs.Data.Models;
 using WikiLibs.Shared;
 using WikiLibs.Shared.Attributes;
+using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Modules;
+using WikiLibs.Shared.Modules.File;
 
 namespace WikiLibs.Users
 {
@@ -76,6 +79,46 @@ namespace WikiLibs.Users
         public async Task<User> GetByEmailAsync(string email)
         {
             return (await Set.FirstOrDefaultAsync(x => x.Email == email));
+        }
+
+        public async Task PostFileAsync(User data, ImageFile fle)
+        {
+            var res = ImageUtils.ResizeImage(fle.OpenReadStream(), new System.Drawing.Size(512, 512), System.Drawing.Imaging.ImageFormat.Jpeg);
+            data.Icon = res;
+            await SaveChanges();
+        }
+
+        class UserIcon : ImageFile
+        {
+            public override string ContentType => "image/jpeg";
+
+            public override long Length => _data.Length;
+
+            public override string Name => "Image";
+
+            private byte[] _data;
+
+            public UserIcon(byte[] data)
+            {
+                _data = data;
+            }
+
+            public override Stream OpenReadStream()
+            {
+                return (new MemoryStream(_data));
+            }
+        }
+
+        public ImageFile GetFile(User data)
+        {
+            if (data.Icon == null || data.Icon.Length <= 0)
+                throw new Shared.Exceptions.ResourceNotFound()
+                {
+                    ResourceId = data.Id.ToString(),
+                    ResourceName = "Icon",
+                    ResourceType = typeof(User)
+                };
+            return (new UserIcon(data.Icon));
         }
     }
 }

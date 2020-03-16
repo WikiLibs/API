@@ -28,9 +28,9 @@ namespace WikiLibs.Core.Filters
             {
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
-                    ResourceName = "APIKey",
-                    ResourceId = "APIKey",
-                    MissingPermission = "APIKey",
+                    ResourceName = "ApiKey",
+                    ResourceId = "ApiKey",
+                    MissingPermission = "ApiKey",
                     ResourceType = typeof(Data.Models.ApiKey)
                 };
             }
@@ -41,20 +41,31 @@ namespace WikiLibs.Core.Filters
             {
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
-                    ResourceName = "APIKey",
-                    ResourceId = "APIKey",
-                    MissingPermission = "APIKey",
+                    ResourceName = "ApiKey",
+                    ResourceId = "ApiKey",
+                    MissingPermission = "ApiKey",
                     ResourceType = typeof(Data.Models.ApiKey)
                 };
             }
+            var addr = context.HttpContext.Connection.RemoteIpAddress;
             var mdl = await adminmgr.ApiKeyManager.GetAsync(auth);
+            if (mdl.Origin != null && addr.ToString() != mdl.Origin)
+            {
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = "ApiKey",
+                    ResourceId = "ApiKey",
+                    MissingPermission = "ApiKey",
+                    ResourceType = typeof(Data.Models.ApiKey)
+                };
+            }
             if ((mdl.Flags & attribute.Flag) == 0)
             {
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
-                    ResourceName = "APIKey",
-                    ResourceId = "APIKey",
-                    MissingPermission = "APIKey." + AuthorizeApiKey.GetFlagName(attribute.Flag),
+                    ResourceName = "ApiKey",
+                    ResourceId = "ApiKey",
+                    MissingPermission = "ApiKey." + AuthorizeApiKey.GetFlagName(attribute.Flag),
                     ResourceType = typeof(Data.Models.ApiKey)
                 };
             }

@@ -13,9 +13,9 @@ namespace WikiLibs.Examples
 {
     public class ExampleRequestManager : BaseCRUDOperations<Context, ExampleRequest>, IExampleRequestManager
     {
-        public ExampleRequestManager(Context ctx) : base(ctx)
+        public ExampleRequestManager(Context ctx, Config cfg) : base(ctx)
         {
-            MaxResults = 100;
+            MaxResults = cfg.MaxExampleRequestsPerPage;
         }
 
         public async Task ApplyRequest(long key)
