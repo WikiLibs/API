@@ -32,6 +32,7 @@ namespace WikiLibs.API.Symbols
         [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
         public IActionResult SearchSymbols([FromRoute]string path, [FromQuery]PageOptions options)
         {
+            path = path.Replace("__PLUS__", "+");
             return (Json(_symmgr.SearchSymbols(path, options)));
         }
     }
