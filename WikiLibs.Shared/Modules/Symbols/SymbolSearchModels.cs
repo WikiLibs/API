@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Shared.Helpers;
@@ -56,11 +57,15 @@ namespace WikiLibs.Shared.Modules.Symbols
     {
         public long Id { get; set; }
         public string Path { get; set; }
+        public string Type { get; set; }
+        public string FirstPrototype { get; set; }
 
         public SymbolReference Map(Symbol model)
         {
             Id = model.Id;
             Path = model.Path;
+            Type = model.Type.Name;
+            FirstPrototype = model.Prototypes.FirstOrDefault() != null ? model.Prototypes.FirstOrDefault().Data : null;
             return (this);
         }
     }
