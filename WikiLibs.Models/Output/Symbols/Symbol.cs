@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using WikiLibs.Data.Models;
 using WikiLibs.Shared.Modules.Symbols;
@@ -80,7 +81,9 @@ namespace WikiLibs.Models.Output.Symbols
                     Symbols.Add(new SymbolReference()
                     {
                         Id = sref.RefId.Value,
-                        Path = sref.RefPath
+                        Path = sref.RefPath,
+                        Type = sref.Ref.Type.Name,
+                        FirstPrototype = sref.Ref.Prototypes.FirstOrDefault() != null ? sref.Ref.Prototypes.FirstOrDefault().Data : null
                     });
             }
         }

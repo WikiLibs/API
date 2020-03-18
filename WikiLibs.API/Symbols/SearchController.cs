@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using WikiLibs.Models.Input.Symbols;
 using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Modules.Symbols;
@@ -28,11 +29,11 @@ namespace WikiLibs.API.Symbols
         }
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
-        [HttpGet("search/{*path}")]
+        [HttpGet("search")]
         [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
-        public IActionResult SearchSymbols([FromRoute]string path, [FromQuery]PageOptions options)
+        public IActionResult SearchSymbols([FromQuery]SearchQuery options)
         {
-            return (Json(_symmgr.SearchSymbols(path, options)));
+            return (Json(_symmgr.SearchSymbols(options)));
         }
     }
 }

@@ -1155,10 +1155,8 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol();
-            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.SearchSymbols("C/TestLib", new PageOptions()
-            {
-                Page = 0
-            }));
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.SearchSymbols(new SearchQuery() { PageOptions = new PageOptions() { Page = 0 }, Path = "C/TestLib" }));
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.SearchSymbols(new SearchQuery() { Path = "C/TestLib" }));
         }
 
         [Test]
@@ -1202,9 +1200,13 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol();
-            var res = controller.SearchSymbols("C/TestLib/", new PageOptions()
+            var res = controller.SearchSymbols(new SearchQuery()
             {
-                Page = 1
+                Path = "C/TestLib/",
+                PageOptions = new PageOptions()
+                {
+                    Page = 1
+                }
             }) as JsonResult;
             var obj = res.Value as PageResult<SymbolListItem>;
             Assert.AreEqual(1, obj.Data.Count());
@@ -1222,10 +1224,14 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol();
-            var res = controller.SearchSymbols("C/TestLib/", new PageOptions()
+            var res = controller.SearchSymbols(new SearchQuery()
             {
-                Page = 1,
-                Count = 0
+                Path = "C/TestLib/",
+                PageOptions = new PageOptions()
+                {
+                    Page = 1,
+                    Count = 0
+                }
             }) as JsonResult;
             var obj = res.Value as PageResult<SymbolListItem>;
             Assert.AreEqual(1, obj.Data.Count());
@@ -1243,10 +1249,14 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol();
-            var res = controller.SearchSymbols("C/TestLib/", new PageOptions()
+            var res = controller.SearchSymbols(new SearchQuery()
             {
-                Page = 1,
-                Count = 1
+                Path = "C/TestLib/",
+                PageOptions = new PageOptions()
+                {
+                    Page = 1,
+                    Count = 1
+                }
             }) as JsonResult;
             var obj = res.Value as PageResult<SymbolListItem>;
             Assert.AreEqual(1, obj.Data.Count());
@@ -1264,7 +1274,11 @@ namespace WikiLibs.API.Tests
             var controller = new Symbols.SearchController(Manager);
 
             await PostTestSymbol();
-            var res = controller.SearchSymbols("C/TestLib/", new PageOptions() { }) as JsonResult;
+            var res = controller.SearchSymbols(new SearchQuery()
+            {
+                Path = "C/TestLib/",
+                PageOptions = new PageOptions() {}
+            }) as JsonResult;
             var obj = res.Value as PageResult<SymbolListItem>;
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
