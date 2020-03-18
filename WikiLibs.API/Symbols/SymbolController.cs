@@ -77,7 +77,6 @@ namespace WikiLibs.API.Symbols
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
         public async Task<IActionResult> PutSymbol([FromRoute] string path, [FromBody, Required] Models.Input.Symbols.SymbolMerge sym)
         {
-            path = path.Replace("__PLUS__", "+");
             if (!_user.HasPermission(Permissions.UPDATE_SYMBOL) || !_user.HasPermission(Permissions.CREATE_SYMBOL))
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
