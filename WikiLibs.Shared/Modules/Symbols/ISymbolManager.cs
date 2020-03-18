@@ -12,7 +12,7 @@ namespace WikiLibs.Shared.Modules.Symbols
         ICRUDOperations<Data.Models.Symbols.Type> TypeManager { get; }
 
         Task<Data.Models.Symbols.Symbol> GetAsync(string path);
-        PageResult<SymbolListItem> SearchSymbols(string path, PageOptions options);
+        PageResult<SymbolListItem> SearchSymbols(SearchQuery options);
         PageResult<SymbolListItem> GetSymbolsForLib(long id, PageOptions options);
 
         /// <summary>

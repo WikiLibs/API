@@ -92,8 +92,9 @@ namespace WikiLibs.Core
                 {
                     Description = "API Key scheme. Example: \"Authorization: {token}\"",
                     Name = "Authorization",
+                    Scheme = "",
                     In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http
+                    Type = SecuritySchemeType.ApiKey
                 });
                 c.OperationFilter<AuthorizationSwagger>();
                 c.OperationFilter<ErrorMiddlewareSwagger>();

@@ -224,19 +224,47 @@ namespace WikiLibs.Symbols
 
         public async Task OptimizeAsync()
         {
+            //Pass 1 optimize symbol references
+            //First clean duplications
+            var dupes = Context.SymbolRefs.ToList().GroupBy(e => e.RefPath).SelectMany(e => e.Skip(1));
+            Context.RemoveRange(dupes);
+            await SaveChanges();
+            //Now identify references
             var srefs = Context.SymbolRefs.Where(e => e.RefId == null).ToList();
             foreach (var sref in srefs)
             {
                 var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
                 if (symbol != null)
                     sref.RefId = symbol.Id;
+                else
+                {
+                    string str = sref.Symbol.Lib.Name + "/" + sref.RefPath;
+                    symbol = Set.Where(o => o.Path == str).FirstOrDefault();
+                    if (symbol != null)
+                        sref.RefId = symbol.Id;
+                }
             }
+            await SaveChanges();
+
+            //Pass 2 optimize parameter to symbol references
+            //First clean duplications
+            var dupes1 = Context.PrototypeParamSymbolRefs.ToList().GroupBy(e => e.RefPath).SelectMany(e => e.Skip(1));
+            Context.RemoveRange(dupes1);
+            await SaveChanges();
+            //Now identify references
             var sprefs = Context.PrototypeParamSymbolRefs.Where(e => e.RefId == null).ToList();
             foreach (var sref in sprefs)
             {
                 var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
                 if (symbol != null)
                     sref.RefId = symbol.Id;
+                else
+                {
+                    string str = sref.PrototypeParam.Prototype.Symbol.Lib.Name + "/" + sref.RefPath;
+                    symbol = Set.Where(o => o.Path == str).FirstOrDefault();
+                    if (symbol != null)
+                        sref.RefId = symbol.Id;
+                }
             }
             await SaveChanges();
         }
@@ -244,7 +272,20 @@ namespace WikiLibs.Symbols
         [ModuleInitializer(Debug = true, Release = true)]
         public static void InitSymbols(ISymbolManager mgr)
         {
-            mgr.OptimizeAsync().Wait();
+            mgr.OptimizeAsync().Wait(); //EF Core cannot handle multiple connections at the same time from the same app => very nice for performance...
+        }
+
+        public PageResult<SymbolListItem> SearchSymbols(SearchQuery options)
+        {
+            var res = Set.Where(sym => sym.Path.Contains(options.Path));
+            if (options.LangId != null)
+                res = res.Where(sym => options.LangId.Value == sym.LangId);
+            if (options.LibId != null)
+                res = res.Where(sym => options.LibId.Value == sym.LibId);
+            if (options.Type != null)
+                res = res.Where(sym => options.Type == sym.Type.Name);
+            return (base.ToPageResult<SymbolListItem>(options.PageOptions,
+                res.OrderByDescending(o => o.Views).ThenBy(o => o.Path)));
         }
     }
 }

@@ -119,11 +119,18 @@ namespace WikiLibs.Shared
         public virtual PageResult<T> ToPageResult<T, DM>(PageOptions options, IQueryable<DM> models)
             where T : IPageResultModel<T, DM>, new()
         {
+            if (options == null)
+                throw new Exceptions.InvalidResource()
+                {
+                    PropertyName = "PageOptions",
+                    ResourceName = typeof(DM).Name,
+                    ResourceType = typeof(DM)
+                };
             options.EnsureValid(typeof(DM), typeof(DM).Name, MaxResults);
             var data = models.Skip((options.Page.Value - 1) * options.Count.Value);
             bool next = data.Count() > options.Count.Value;
             var arr = new List<T>();
-            foreach (var mdl in data.Take(options.Count.Value))
+            foreach (var mdl in data.Take(options.Count.Value).ToList())
                 arr.Add(new T().Map(mdl));
             return (new PageResult<T>()
             {
@@ -139,7 +146,7 @@ namespace WikiLibs.Shared
             options.EnsureValid(typeof(DM), typeof(DM).Name, MaxResults);
             var data = models.Skip((options.Page.Value - 1) * options.Count.Value);
             bool next = data.Count() > options.Count.Value;
-            var arr = data.Take(options.Count.Value);
+            var arr = data.Take(options.Count.Value).ToList();
             return (new PageResult<DM>()
             {
                 Data = arr,
