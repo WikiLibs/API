@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using WikiLibs.Data.Models;
 
@@ -18,6 +19,7 @@ namespace WikiLibs.Models.Output
         public int Points { get; set; }
         public string Pseudo { get; set; }
         public string Group { get; set; }
+        public string[] Permissions { get; set; }
 
         public override void Map(in Data.Models.User model)
         {
@@ -32,6 +34,7 @@ namespace WikiLibs.Models.Output
             Pseudo = model.Pseudo;
             Group = model.Group.Name;
             IsBot = model.IsBot;
+            Permissions = model.Group.Permissions.Select(o => o.Perm).ToArray();
         }
     }
 }
