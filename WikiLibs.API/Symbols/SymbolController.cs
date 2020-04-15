@@ -145,6 +145,7 @@ namespace WikiLibs.API.Symbols
             return (Ok());
         }
 
+        [AllowAnonymous]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("search")]
         [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
