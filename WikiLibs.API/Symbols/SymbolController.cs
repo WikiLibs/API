@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WikiLibs.Shared;
 using WikiLibs.Shared.Attributes;
+using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Shared.Service;
 
@@ -142,6 +143,14 @@ namespace WikiLibs.API.Symbols
                 };
             await _symmgr.OptimizeAsync();
             return (Ok());
+        }
+
+        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [HttpGet("search")]
+        [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
+        public IActionResult SearchSymbols([FromQuery]SearchQuery options)
+        {
+            return (Json(_symmgr.SearchSymbols(options)));
         }
     }
 }

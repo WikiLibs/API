@@ -277,13 +277,15 @@ namespace WikiLibs.Symbols
 
         public PageResult<SymbolListItem> SearchSymbols(SearchQuery options)
         {
-            var res = Set.Where(sym => sym.Path.Contains(options.Path));
+            var res = Set.AsQueryable();
             if (options.LangId != null)
                 res = res.Where(sym => options.LangId.Value == sym.LangId);
             if (options.LibId != null)
                 res = res.Where(sym => options.LibId.Value == sym.LibId);
-            if (options.Type != null)
-                res = res.Where(sym => options.Type == sym.Type.Name);
+            if (options.TypeId != null)
+                res = res.Where(sym => options.TypeId == sym.TypeId);
+            if (options.Path != null)
+                res = Set.Where(sym => sym.Path.Contains(options.Path));
             return (base.ToPageResult<SymbolListItem>(options.PageOptions,
                 res.OrderByDescending(o => o.Views).ThenBy(o => o.Path)));
         }
