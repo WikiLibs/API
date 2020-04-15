@@ -1152,7 +1152,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task SearchString_Error_Invalid()
         {
-            var controller = new Symbols.SearchController(Manager);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol();
             Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.SearchSymbols(new SearchQuery() { PageOptions = new PageOptions() { Page = 0 }, Path = "C/TestLib" }));
@@ -1162,12 +1162,16 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task ListSymbols()
         {
-            var controller = new Symbols.SearchController(Manager);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol();
-            var res = controller.GetSymbolsForLib(1, new PageOptions()
+            var res = controller.SearchSymbols(new SearchQuery()
             {
-                Page = 1
+                LibId = 1,
+                PageOptions = new PageOptions()
+                {
+                    Page = 1
+                }
             }) as JsonResult;
             var obj = res.Value as PageResult<SymbolListItem>;
             Assert.AreEqual(1, obj.Data.Count());
@@ -1182,13 +1186,17 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task ListSymbols_Complex()
         {
-            var controller = new Symbols.SearchController(Manager);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol_Complex();
             await Manager.OptimizeAsync();
-            var res = controller.GetSymbolsForLib(1, new PageOptions()
+            var res = controller.SearchSymbols(new SearchQuery()
             {
-                Page = 1
+                LibId = 1,
+                PageOptions = new PageOptions()
+                {
+                    Page = 1
+                }
             }) as JsonResult;
             var obj = res.Value as PageResult<SymbolListItem>;
             Assert.AreEqual(3, obj.Data.Count());
@@ -1197,7 +1205,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task SearchString()
         {
-            var controller = new Symbols.SearchController(Manager);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol();
             var res = controller.SearchSymbols(new SearchQuery()
@@ -1221,7 +1229,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task SearchString_2()
         {
-            var controller = new Symbols.SearchController(Manager);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol();
             var res = controller.SearchSymbols(new SearchQuery()
@@ -1246,7 +1254,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task SearchString_3()
         {
-            var controller = new Symbols.SearchController(Manager);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol();
             var res = controller.SearchSymbols(new SearchQuery()
@@ -1271,7 +1279,7 @@ namespace WikiLibs.API.Tests
         [Test]
         public async Task SearchString_4()
         {
-            var controller = new Symbols.SearchController(Manager);
+            var controller = new Symbols.SymbolController(Manager, User);
 
             await PostTestSymbol();
             var res = controller.SearchSymbols(new SearchQuery()
