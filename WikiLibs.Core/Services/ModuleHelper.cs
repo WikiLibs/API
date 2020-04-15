@@ -55,7 +55,7 @@ namespace WikiLibs.Core.Services
             object config = null;
 
             if (!inf.Exists)
-                return (null);
+                throw new ArgumentException("Cannot find module");
             Assembly asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(inf.FullName);
             info.Version = asm.GetName().Version.ToString();
             foreach (Type t in asm.GetExportedTypes())
