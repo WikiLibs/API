@@ -21,6 +21,7 @@
     <ProjectReference Include="..\WikiLibs.API\WikiLibs.API.csproj" />
     <ProjectReference Include="..\WikiLibs.Auth\WikiLibs.Auth.csproj" />
     <ProjectReference Include="..\WikiLibs.Data\WikiLibs.Data.csproj" />
+    <ProjectReference Include="..\WikiLibs.Examples\WikiLibs.Examples.csproj" />
     <ProjectReference Include="..\WikiLibs.Models\WikiLibs.Models.csproj" />
     <ProjectReference Include="..\WikiLibs.Shared\WikiLibs.Shared.csproj" />
     <ProjectReference Include="..\WikiLibs.Smtp\WikiLibs.Smtp.csproj" />

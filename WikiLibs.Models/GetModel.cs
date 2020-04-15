@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace WikiLibs.Models
@@ -22,7 +23,7 @@ namespace WikiLibs.Models
         {
             var lst = new HashSet<Model>();
 
-            foreach (var mdl in models)
+            foreach (var mdl in models.ToList())
                 lst.Add(CreateModel(mdl));
             return (lst);
         }
