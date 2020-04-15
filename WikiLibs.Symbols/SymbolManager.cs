@@ -285,7 +285,7 @@ namespace WikiLibs.Symbols
             if (options.TypeId != null)
                 res = res.Where(sym => options.TypeId == sym.TypeId);
             if (options.Path != null)
-                res = Set.Where(sym => sym.Path.Contains(options.Path));
+                res = res.Where(sym => sym.Path.Contains(options.Path));
             return (base.ToPageResult<SymbolListItem>(options.PageOptions,
                 res.OrderByDescending(o => o.Views).ThenBy(o => o.Path)));
         }
