@@ -138,10 +138,10 @@ namespace WikiLibs.API.Tests
 
             var mdl = await Manager.ApiKeyManager.GetAsync(key);
             Assert.AreEqual(2, mdl.UseNum);
-            await Manager.ApiKeyManager.UseAPIKey(key);
+            await Manager.ApiKeyManager.Use(key);
             mdl = await Manager.ApiKeyManager.GetAsync(key);
             Assert.AreEqual(1, mdl.UseNum);
-            await Manager.ApiKeyManager.UseAPIKey(key);
+            await Manager.ApiKeyManager.Use(key);
             Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => Manager.ApiKeyManager.GetAsync(key));
         }
 
