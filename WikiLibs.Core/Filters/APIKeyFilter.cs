@@ -12,7 +12,7 @@ using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Core.Filters
 {
-    public class APIKeyFilter : IAsyncAuthorizationFilter
+    public class ApiKeyFilter : IAsyncAuthorizationFilter
     {
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
@@ -69,7 +69,7 @@ namespace WikiLibs.Core.Filters
                     ResourceType = typeof(Data.Models.ApiKey)
                 };
             }
-            await adminmgr.ApiKeyManager.UseAPIKey(auth);
+            await adminmgr.ApiKeyManager.Use(auth);
         }
     }
 }

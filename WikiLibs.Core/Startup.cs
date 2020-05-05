@@ -39,7 +39,7 @@ namespace WikiLibs.Core
             {
                 o.EnableEndpointRouting = false;
                 o.ModelMetadataDetailsProviders.Add(new ModelRequiredBinding());
-                o.Filters.Add(new Filters.APIKeyFilter());
+                o.Filters.Add(new Filters.ApiKeyFilter());
                 o.Filters.Add(new Filters.ModelStateFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
               .AddNewtonsoftJson(o =>

@@ -45,7 +45,7 @@ namespace WikiLibs.Admin
             return (apiKey);
         }
 
-        public async Task UseAPIKey(string key)
+        public async Task Use(string key)
         {
             var apiKey = await GetAsync(key);
 
