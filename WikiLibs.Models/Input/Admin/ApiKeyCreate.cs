@@ -10,7 +10,6 @@ namespace WikiLibs.Models.Input.Admin
     {
         [Required]
         public string Description { get; set; }
-        [Required]
         public string Origin { get; set; }
         [Required]
         public int Flags { get; set; }
