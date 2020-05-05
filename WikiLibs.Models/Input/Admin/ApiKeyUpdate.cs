@@ -15,7 +15,7 @@ namespace WikiLibs.Models.Input.Admin
 
         public override ApiKey CreatePatch(in ApiKey current)
         {
-            return (new ApiKey()
+            var key = new ApiKey()
             {
                 Id = current.Id,
                 Description = Description != null ? Description : current.Description,
@@ -23,7 +23,10 @@ namespace WikiLibs.Models.Input.Admin
                 Flags = Flags != null ? Flags.Value : current.Flags,
                 UseNum = UseNum != null ? UseNum.Value : current.UseNum,
                 ExpirationDate = ExpirationDate != null ? ExpirationDate.Value : current.ExpirationDate
-            });
+            };
+            if (key.Origin == "")
+                key.Origin = null;
+            return (key);
         }
     }
 }
