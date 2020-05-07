@@ -24,17 +24,23 @@ namespace WikiLibs.Data.Migrations
             modelBuilder.Entity("WikiLibs.Data.Models.ApiKey", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ExpirationDate");
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("Flags");
+                    b.Property<int>("Flags")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Origin");
+                    b.Property<string>("Origin")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UseNum");
+                    b.Property<int>("UseNum")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -45,19 +51,26 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreationDate");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastModificationDate");
+                    b.Property<DateTime>("LastModificationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<long?>("RequestId");
+                    b.Property<long?>("RequestId")
+                        .HasColumnType("bigint");
 
-                    b.Property<long>("SymbolId");
+                    b.Property<long>("SymbolId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -72,13 +85,17 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Comment");
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Data");
+                    b.Property<string>("Data")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("ExampleId");
+                    b.Property<long>("ExampleId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -91,17 +108,23 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("ApplyToId");
+                    b.Property<long?>("ApplyToId")
+                        .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CreationDate");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<long?>("DataId");
+                    b.Property<long?>("DataId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("Message");
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Type");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -118,9 +141,11 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -131,11 +156,14 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("GroupId");
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("Perm");
+                    b.Property<string>("Perm")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -148,9 +176,11 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -161,13 +191,17 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("DisplayName");
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Icon");
+                    b.Property<byte[]>("Icon")
+                        .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -182,9 +216,11 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -195,13 +231,17 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Data");
+                    b.Property<string>("Data")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("SymbolId");
+                    b.Property<long>("SymbolId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -214,13 +254,17 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Data");
+                    b.Property<string>("Data")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("PrototypeId");
+                    b.Property<long>("PrototypeId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -233,13 +277,17 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("PrototypeParamId");
+                    b.Property<long>("PrototypeParamId")
+                        .HasColumnType("bigint");
 
-                    b.Property<long?>("RefId");
+                    b.Property<long?>("RefId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("RefPath");
+                    b.Property<string>("RefPath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -255,25 +303,35 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreationDate");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<long?>("ImportId");
+                    b.Property<long?>("ImportId")
+                        .HasColumnType("bigint");
 
-                    b.Property<long>("LangId");
+                    b.Property<long>("LangId")
+                        .HasColumnType("bigint");
 
-                    b.Property<DateTime>("LastModificationDate");
+                    b.Property<DateTime>("LastModificationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<long>("LibId");
+                    b.Property<long>("LibId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("Path");
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<long>("TypeId");
+                    b.Property<long>("TypeId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<long>("Views");
+                    b.Property<long>("Views")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -298,13 +356,17 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("RefId");
+                    b.Property<long?>("RefId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("RefPath");
+                    b.Property<string>("RefPath")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("SymbolId");
+                    b.Property<long>("SymbolId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -319,11 +381,14 @@ namespace WikiLibs.Data.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("DisplayName");
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -337,33 +402,47 @@ namespace WikiLibs.Data.Migrations
             modelBuilder.Entity("WikiLibs.Data.Models.User", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Confirmation");
+                    b.Property<string>("Confirmation")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Email");
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("GroupId");
+                    b.Property<long?>("GroupId")
+                        .HasColumnType("bigint");
 
-                    b.Property<byte[]>("Icon");
+                    b.Property<byte[]>("Icon")
+                        .HasColumnType("varbinary(max)");
 
-                    b.Property<bool>("IsBot");
+                    b.Property<bool>("IsBot")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Pass");
+                    b.Property<string>("Pass")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Points");
+                    b.Property<int>("Points")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("Private");
+                    b.Property<bool>("Private")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("ProfileMsg");
+                    b.Property<string>("ProfileMsg")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Pseudo");
+                    b.Property<string>("Pseudo")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("RegistrationDate");
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
