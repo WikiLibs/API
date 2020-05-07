@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Shared;
@@ -41,7 +42,16 @@ namespace WikiLibs.API.Admin
                 };
             var created = mdl.CreateModel();
             created.Pass = PasswordUtils.NewPassword(PasswordOptions.Reinforced);
-            created.Group = _adminManager.GroupManager.DefaultGroup;
+            if (mdl.GroupId != null)
+            {
+                var group = _adminManager.GroupManager.Get().Where(e => e.Id == mdl.GroupId.Value).FirstOrDefault();
+                if (group != null)
+                    created.Group = group;
+                else
+                    created.Group = _adminManager.GroupManager.DefaultGroup;
+            }
+            else
+                created.Group = _adminManager.GroupManager.DefaultGroup;
             var obj = await _userManager.PostAsync(created);
             return (Json(Models.Output.Bot.CreateModel(obj)));
         }
