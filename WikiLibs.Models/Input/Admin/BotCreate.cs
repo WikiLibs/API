@@ -13,6 +13,7 @@ namespace WikiLibs.Models.Input.Admin
         [Required]
         public string Email { get; set; }
         public bool? Private { get; set; }
+        public long? GroupId { get; set; }
         public string ProfileMsg { get; set; }
         [Required]
         public string Pseudo { get; set; }
@@ -29,7 +30,8 @@ namespace WikiLibs.Models.Input.Admin
                 Points = 0,
                 Private = Private != null ? Private.Value : false,
                 ProfileMsg = ProfileMsg,
-                Pseudo = Pseudo
+                Pseudo = Pseudo,
+                GroupId = GroupId != null ? GroupId.Value : 0
             });
         }
     }
