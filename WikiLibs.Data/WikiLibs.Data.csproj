@@ -35,12 +35,20 @@
     <Compile Remove="Migrations\20190804150212_Init.cs" />
     <Compile Remove="Migrations\20190804151124_Init.cs" />
     <Compile Remove="Migrations\20190804151124_Init.Designer.cs" />
+    <Compile Remove="Migrations\20200507145112_FixDBCorruptions.cs" />
+    <Compile Remove="Migrations\20200507145112_FixDBCorruptions.Designer.cs" />
+    <Compile Remove="Migrations\20200507145801_FixDBCorruptions.cs" />
+    <Compile Remove="Migrations\20200507145801_FixDBCorruptions.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
