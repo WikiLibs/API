@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules.Auth;
 
@@ -44,11 +45,48 @@ namespace WikiLibs.API.Auth
             return (Ok());
         }
 
-        [HttpGet("confirm/{*code}")]
-        public async Task<IActionResult> Confirm([FromRoute] string code)
+        public class ConfirmQuery
         {
-            await _internal.LegacyVerifyEmail(code);
-            return (Ok());
+            public string Code { get; set; }
+            public string RedirectOK { get; set; }
+            public string RedirectKO { get; set; }
+        }
+
+        [HttpGet("confirm")]
+        public async Task<IActionResult> Confirm([FromQuery] ConfirmQuery query)
+        {
+            try
+            {
+                await _internal.LegacyVerifyEmail(query.Code);
+                if (query.RedirectOK != null)
+                    return (Redirect(query.RedirectOK));
+                else
+                    return (Ok());
+            }
+            catch (InvalidCredentials e)
+            {
+                if (query.RedirectKO == null)
+                    return (Unauthorized());
+                string url = query.RedirectKO;
+                if (url.Contains("?"))
+                    url += "&error=";
+                else
+                    url += "?error=";
+                url += HttpUtility.UrlEncode(e.Message);
+                return (Redirect(url));
+            }
+            catch (Shared.Exceptions.ResourceNotFound e)
+            {
+                if (query.RedirectKO == null)
+                    return (NotFound());
+                string url = query.RedirectKO;
+                if (url.Contains("?"))
+                    url += "&error=";
+                else
+                    url += "?error=";
+                url += HttpUtility.UrlEncode("Resource not found: " + e.ResourceId);
+                return (Redirect(url));
+            }
         }
     }
 }

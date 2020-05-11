@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using WikiLibs.Admin;
 using WikiLibs.API.Auth;
 using WikiLibs.API.Tests.Helper;
 using WikiLibs.Auth;
 using WikiLibs.Shared.Modules.Auth;
 using WikiLibs.Users;
+using static WikiLibs.API.Auth.InternalController;
 
 namespace WikiLibs.API.Tests
 {
@@ -115,7 +117,7 @@ namespace WikiLibs.API.Tests
             }));
 
             //Confirmation
-            await controller.Confirm(data.ConfirmCode);
+            await controller.Confirm(new ConfirmQuery() { Code = data.ConfirmCode });
             Assert.AreEqual(2, Context.Users.Count());
             Assert.IsNull(Context.Users.ToList().Last().Confirmation);
 
@@ -173,29 +175,46 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
-        public void Confirm_Error_Null()
+        public async Task Confirm_Error_Null()
         {
             var controller = new InternalController(Manager);
 
-            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Confirm(null));
+            var res = await controller.Confirm(new ConfirmQuery() { Code = null });
+            Assert.AreEqual(res.GetType(), typeof(UnauthorizedResult));
+            var redirect = await controller.Confirm(new ConfirmQuery() { Code = null, RedirectKO = "" }) as RedirectResult;
+            Assert.AreEqual(redirect.Url, "?error=" + HttpUtility.UrlEncode("Code is null"));
+            var redirect1 = await controller.Confirm(new ConfirmQuery() { Code = null, RedirectKO = "?test=test" }) as RedirectResult;
+            Assert.AreEqual(redirect1.Url, "?test=test&error=" + HttpUtility.UrlEncode("Code is null"));
         }
 
         [Test]
-        public void Confirm_Error_Invalid()
+        public async Task Confirm_Error_Invalid()
         {
             var controller = new InternalController(Manager);
 
-            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Confirm("abcd"));
-            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Confirm("abcd.efgh"));
+            var res = await controller.Confirm(new ConfirmQuery() { Code = "abcd" });
+            var res1 = await controller.Confirm(new ConfirmQuery() { Code = "abcd.efgh" });
+            Assert.AreEqual(res.GetType(), typeof(UnauthorizedResult));
+            Assert.AreEqual(res1.GetType(), typeof(UnauthorizedResult));
+            var redirect = await controller.Confirm(new ConfirmQuery() { Code = "abcd", RedirectKO = "" }) as RedirectResult;
+            var redirect1 = await controller.Confirm(new ConfirmQuery() { Code = "abcd.efgh", RedirectKO = "" }) as RedirectResult;
+            Assert.AreEqual(redirect.Url, "?error=" + HttpUtility.UrlEncode("Invalid code format"));
+            Assert.AreEqual(redirect1.Url, "?error=" + HttpUtility.UrlEncode("Invalid code format"));
         }
 
         [Test]
-        public void Confirm_Error_NonExistant()
+        public async Task Confirm_Error_NonExistant()
         {
             var controller = new InternalController(Manager);
 
-            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Confirm("abcd.efgh.123456789"));
-            Assert.ThrowsAsync<InvalidCredentials>(() => controller.Confirm("abcd." + new Guid().ToString() + ".123456789"));
+            var res = await controller.Confirm(new ConfirmQuery() { Code = "abcd.efgh.123456789" });
+            var res1 = await controller.Confirm(new ConfirmQuery() { Code = "abcd." + new Guid().ToString() + ".123456789" });
+            Assert.AreEqual(res.GetType(), typeof(NotFoundResult));
+            Assert.AreEqual(res1.GetType(), typeof(UnauthorizedResult));
+            var redirect = await controller.Confirm(new ConfirmQuery() { Code = "abcd.efgh.123456789", RedirectKO = "" }) as RedirectResult;
+            var redirect1 = await controller.Confirm(new ConfirmQuery() { Code = "abcd." + new Guid().ToString() + ".123456789", RedirectKO = "" }) as RedirectResult;
+            Assert.AreEqual(redirect.Url, "?error=" + HttpUtility.UrlEncode("Resource not found: efgh"));
+            Assert.AreEqual(redirect1.Url, "?error=" + HttpUtility.UrlEncode("Bad code"));
         }
 
         [Test]
