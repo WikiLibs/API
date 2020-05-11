@@ -6,5 +6,9 @@ namespace WikiLibs.Shared.Modules.Auth
 {
     public class InvalidCredentials : Exception
     {
+        public InvalidCredentials(string msg)
+            : base(msg)
+        {
+        }
     }
 }

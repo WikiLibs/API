@@ -56,7 +56,7 @@ namespace WikiLibs.Auth
                 {
                     ConfirmCode = usr.Confirmation,
                     UserName = usr.FirstName + " " + usr.LastName,
-                    Link = _manager.Config.Internal.RegistrationUrlBase + "/auth/internal/confirm/" + usr.Confirmation
+                    Link = _manager.Config.Internal.RegistrationUrlBase + "/auth/internal/confirm?Code=" + usr.Confirmation + "&RedirectOK=" + _manager.Config.Internal.RedirectUrlOK + "&RedirectKO=" + _manager.Config.Internal.RedirectUrlKO
                 },
                 Recipients = new List<Recipient>()
                 {
@@ -104,15 +104,15 @@ namespace WikiLibs.Auth
         public async Task LegacyVerifyEmail(string code)
         {
             if (code == null)
-                throw new InvalidCredentials();
+                throw new InvalidCredentials("Code is null");
             var arr = code.Split('.');
 
             if (arr.Length != 3)
-                throw new InvalidCredentials();
+                throw new InvalidCredentials("Invalid code format");
             var uid = arr[1];
             var usr = await _userManager.GetAsync(uid);
             if (usr.Confirmation != code)
-                throw new InvalidCredentials();
+                throw new InvalidCredentials("Bad code");
             if (_userManager.Get().Count() == 1)
                 usr.Group = _manager.AdminGroup;
             usr.Confirmation = null;

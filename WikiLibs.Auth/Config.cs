@@ -15,6 +15,8 @@ namespace WikiLibs.Auth
             public string TokenSecret { get; set; }
             public int TokenLifeMinutes { get; set; }
             public string RegistrationUrlBase { get; set; }
+            public string RedirectUrlOK { get; set; }
+            public string RedirectUrlKO { get; set; }
         }
 
         public CInternal Internal { get; set; }
