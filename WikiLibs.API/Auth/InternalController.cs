@@ -58,16 +58,33 @@ namespace WikiLibs.API.Auth
             try
             {
                 await _internal.LegacyVerifyEmail(query.Code);
-                return (Redirect(query.RedirectOK));
+                if (query.RedirectOK != null)
+                    return (Redirect(query.RedirectOK));
+                else
+                    return (Ok());
             }
             catch (InvalidCredentials e)
             {
+                if (query.RedirectKO == null)
+                    return (Unauthorized());
                 string url = query.RedirectKO;
                 if (url.Contains("?"))
                     url += "&error=";
                 else
                     url += "?error=";
                 url += HttpUtility.UrlEncode(e.Message);
+                return (Redirect(url));
+            }
+            catch (Shared.Exceptions.ResourceNotFound e)
+            {
+                if (query.RedirectKO == null)
+                    return (NotFound());
+                string url = query.RedirectKO;
+                if (url.Contains("?"))
+                    url += "&error=";
+                else
+                    url += "?error=";
+                url += HttpUtility.UrlEncode("Resource not found: " + e.ResourceId);
                 return (Redirect(url));
             }
         }

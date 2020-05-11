@@ -10,5 +10,10 @@ namespace WikiLibs.Shared.Modules.Auth
             : base(msg)
         {
         }
+
+        public InvalidCredentials()
+            : base()
+        {
+        }
     }
 }
