@@ -423,8 +423,12 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("this is a test", obj.Message);
             Assert.AreEqual(1, obj.Data.SymbolId);
             Assert.AreEqual("Test example", obj.Data.Description);
+            await controller.ApplyRequest(obj.Id);
+            Assert.AreEqual(Context.ExampleRequests.Count(), 0);
+            Assert.AreEqual(Context.Examples.Count(), 1);
             User.SetPermissions(new string[] { });
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PostAsync(new ExampleRequestCreate() { Method = Data.Models.Examples.ExampleRequestType.POST }));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.ApplyRequest(1));
         }
 
         [Test]
