@@ -136,7 +136,7 @@ namespace WikiLibs.API.Examples
             return (Json(Models.Output.Examples.ExampleRequest.CreateModel(await _manager.GetAsync(id))));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("apply/{id}")]
         public async Task<IActionResult> ApplyRequest([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.APPLY_EXAMPLE_REQUEST))
