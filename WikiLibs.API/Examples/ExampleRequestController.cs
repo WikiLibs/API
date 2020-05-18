@@ -136,6 +136,21 @@ namespace WikiLibs.API.Examples
             return (Json(Models.Output.Examples.ExampleRequest.CreateModel(await _manager.GetAsync(id))));
         }
 
+        [HttpPut("apply/{id}")]
+        public async Task<IActionResult> ApplyRequest([FromRoute] long id)
+        {
+            if (!_user.HasPermission(Permissions.APPLY_EXAMPLE_REQUEST))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    MissingPermission = Permissions.APPLY_EXAMPLE_REQUEST,
+                    ResourceId = id.ToString(),
+                    ResourceName = id.ToString(),
+                    ResourceType = typeof(Data.Models.Examples.ExampleRequest)
+                };
+            await _manager.ApplyRequest(id);
+            return (Ok());
+        }
+
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(PageResult<Models.Output.Examples.ExampleRequest>))]
         public IActionResult Get([FromQuery] ExampleRequestQuery query)

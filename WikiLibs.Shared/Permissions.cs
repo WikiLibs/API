@@ -55,14 +55,9 @@ namespace WikiLibs.Shared
         public const string DELETE_EXAMPLE_REQUEST = "example.requests.delete";
 
         /// <summary>
-        /// Accept an example request
+        /// Apply an example request
         /// </summary>
-        public const string VALIDATE_EXAMPLE_REQUEST = "example.requests.validate";
-
-        /// <summary>
-        /// Decline an example request
-        /// </summary>
-        public const string INVALIDATE_EXAMPLE_REQUEST = "example.requests.invalidate";
+        public const string APPLY_EXAMPLE_REQUEST = "example.requests.apply";
 
         /// <summary>
         /// List example requests
