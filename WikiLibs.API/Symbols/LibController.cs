@@ -34,12 +34,11 @@ namespace WikiLibs.API.Symbols
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.LightweightSymbol))]
         public async Task<IActionResult> GetTreeRoot([FromRoute] long id)
         {
-            var symbols = await _symmgr.Get(e => e.LibId == id).ToListAsync();
-            var ordered = symbols.AsQueryable().OrderBy(e => e.Path.Length);
+            var symbols = await _symmgr.Get(e => e.LibId == id && !e.Type.Name.Contains("member")).OrderBy(e => e.Path.Length).ToListAsync();
             var map = new Dictionary<long, bool>();
             var lst = new List<Models.Output.Symbols.LightweightSymbol>();
 
-            foreach (var sym in ordered)
+            foreach (var sym in symbols)
             {
                 foreach (var rf in sym.Symbols)
                 {
@@ -47,7 +46,7 @@ namespace WikiLibs.API.Symbols
                         map.Add(rf.RefId.Value, true);
                 }
                 if (map.ContainsKey(sym.Id))
-                    continue; //I'm a bad symbol, as our symbol list is ordered by number of deps
+                    continue; //I'm a bad symbol
                 lst.Add(Models.Output.Symbols.LightweightSymbol.CreateModel(sym)); //I'm a good symbol
             }
             return (Json(lst));
@@ -67,7 +66,7 @@ namespace WikiLibs.API.Symbols
                 };
             var lst = new List<Models.Output.Symbols.LightweightSymbol>();
 
-            foreach (var rf in sym.Symbols)
+            foreach (var rf in sym.Symbols.OrderBy(e => e.RefPath.Length))
             {
                 if (rf.Ref != null)
                     lst.Add(Models.Output.Symbols.LightweightSymbol.CreateModel(rf.Ref));
