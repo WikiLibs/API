@@ -26,7 +26,7 @@ namespace WikiLibs.Shared.Modules.Symbols
         {
             Id = model.Id;
             Path = model.Path;
-            Type = model.Type.Name;
+            Type = model.Type.DisplayName;
             UserId = model.UserId;
             UserName = model.User != null ? model.User.Pseudo : null;
             LastModificationDate = model.LastModificationDate;
