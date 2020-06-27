@@ -1177,7 +1177,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
             Assert.AreEqual(1, obj.Data.First().Id);
-            Assert.AreEqual("function", obj.Data.First().Type);
+            Assert.AreEqual(1, obj.Data.First().TypeId);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
             Assert.AreEqual(10, obj.Count);
@@ -1220,7 +1220,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
             Assert.AreEqual(1, obj.Data.First().Id);
-            Assert.AreEqual("function", obj.Data.First().Type);
+            Assert.AreEqual(1, obj.Data.First().TypeId);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
             Assert.AreEqual(10, obj.Count);
@@ -1245,7 +1245,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
             Assert.AreEqual(1, obj.Data.First().Id);
-            Assert.AreEqual("function", obj.Data.First().Type);
+            Assert.AreEqual(1, obj.Data.First().TypeId);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
             Assert.AreEqual(10, obj.Count);
@@ -1270,7 +1270,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
             Assert.AreEqual(1, obj.Data.First().Id);
-            Assert.AreEqual("function", obj.Data.First().Type);
+            Assert.AreEqual(1, obj.Data.First().TypeId);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
             Assert.AreEqual(1, obj.Count);
@@ -1291,7 +1291,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Data.Count());
             Assert.AreEqual("C/TestLib/TestFunc", obj.Data.First().Path);
             Assert.AreEqual(1, obj.Data.First().Id);
-            Assert.AreEqual("function", obj.Data.First().Type);
+            Assert.AreEqual(1, obj.Data.First().TypeId);
             Assert.IsFalse(obj.HasMorePages);
             Assert.AreEqual(1, obj.Page);
             Assert.AreEqual(10, obj.Count);

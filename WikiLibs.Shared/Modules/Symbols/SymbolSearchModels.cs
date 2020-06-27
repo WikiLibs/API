@@ -11,7 +11,8 @@ namespace WikiLibs.Shared.Modules.Symbols
     {
         public long Id { get; set; }
         public string Path { get; set; }
-        public string Type { get; set; }
+        public string TypeName { get; set; }
+        public long TypeId { get; set; }
         public string UserId { get; set; }
         public string UserName { get; set; }
         public DateTime CreationDate { get; set; }
@@ -26,7 +27,8 @@ namespace WikiLibs.Shared.Modules.Symbols
         {
             Id = model.Id;
             Path = model.Path;
-            Type = model.Type.Name;
+            TypeName = model.Type.DisplayName;
+            TypeId = model.Type.Id;
             UserId = model.UserId;
             UserName = model.User != null ? model.User.Pseudo : null;
             LastModificationDate = model.LastModificationDate;
