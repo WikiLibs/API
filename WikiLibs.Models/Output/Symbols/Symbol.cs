@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WikiLibs.Data.Models;
+using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Shared.Modules.Symbols;
 
 namespace WikiLibs.Models.Output.Symbols
@@ -26,6 +27,12 @@ namespace WikiLibs.Models.Output.Symbols
             public Parameter[] Parameters { get; set; }
         }
 
+        public class Exception
+        {
+            public string Description { get; set; }
+            public SymbolReference Ref { get; set; }
+        }
+
         public long Id { get; set; }
         public long Views { get; set; }
         public string UserId { get; set; }
@@ -38,6 +45,7 @@ namespace WikiLibs.Models.Output.Symbols
         public string Path { get; set; }
         public Prototype[] Prototypes { get; set; }
         public List<SymbolReference> Symbols { get; set; }
+        public List<Exception> Exceptions { get; set; }
 
         public override void Map(in Data.Models.Symbols.Symbol model)
         {
@@ -52,6 +60,7 @@ namespace WikiLibs.Models.Output.Symbols
             Import = model.Import != null ? model.Import.Name : null;
             Path = model.Path;
             Symbols = new List<SymbolReference>();
+            Exceptions = new List<Exception>();
             Prototypes = new Prototype[model.Prototypes.Count];
             int i = 0;
             foreach (var proto in model.Prototypes)
@@ -84,6 +93,21 @@ namespace WikiLibs.Models.Output.Symbols
                         Path = sref.RefPath,
                         Type = sref.Ref.Type.Name,
                         FirstPrototype = sref.Ref.Prototypes.FirstOrDefault() != null ? sref.Ref.Prototypes.FirstOrDefault().Data : null
+                    });
+            }
+            foreach (var eref in model.Exceptions)
+            {
+                if (eref.RefId != null)
+                    Exceptions.Add(new Exception()
+                    {
+                        Description = eref.Description,
+                        Ref = new SymbolReference()
+                        {
+                            Id = eref.RefId.Value,
+                            Path = eref.RefPath,
+                            Type = eref.Ref.Type.Name,
+                            FirstPrototype = eref.Ref.Prototypes.FirstOrDefault() != null ? eref.Ref.Prototypes.FirstOrDefault().Data : null
+                        }
                     });
             }
         }

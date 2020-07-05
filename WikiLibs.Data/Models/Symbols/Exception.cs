@@ -12,5 +12,6 @@ namespace WikiLibs.Data.Models.Symbols
         public string Description { get; set; }
 
         public virtual Symbol Symbol { get; set; }
+        public virtual Symbol Ref { get; set; }
     }
 }
