@@ -267,6 +267,28 @@ namespace WikiLibs.Symbols
                 }
             }
             await SaveChanges();
+
+            //Pass 3 optimize exceptions to symbol references
+            //First clean duplications
+            var dupes2 = Context.Exceptions.ToList().GroupBy(e => e.RefPath).SelectMany(e => e.Skip(1));
+            Context.RemoveRange(dupes2);
+            await SaveChanges();
+            //Now identify references
+            var serefs = Context.Exceptions.Where(e => e.RefId == null).ToList();
+            foreach (var sref in serefs)
+            {
+                var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
+                if (symbol != null)
+                    sref.RefId = symbol.Id;
+                else
+                {
+                    string str = sref.Symbol.Lib.Name + "/" + sref.RefPath;
+                    symbol = Set.Where(o => o.Path == str).FirstOrDefault();
+                    if (symbol != null)
+                        sref.RefId = symbol.Id;
+                }
+            }
+            await SaveChanges();
         }
 
         [ModuleInitializer(Debug = true, Release = true)]
