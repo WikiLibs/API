@@ -10,6 +10,7 @@ namespace WikiLibs.Data
     {
         #region SYMBOLS
         public DbSet<Symbol> Symbols { get; set; }
+        public DbSet<Models.Symbols.Exception> Exceptions { get; set; }
         public DbSet<Prototype> Prototypes { get; set; }
         public DbSet<PrototypeParam> PrototypeParams { get; set; }
         public DbSet<SymbolRef> SymbolRefs { get; set; }
@@ -102,6 +103,14 @@ namespace WikiLibs.Data
             {
                 builder.HasOne(e => e.Symbol)
                     .WithMany(e => e.Prototypes)
+                    .HasForeignKey(e => e.SymbolId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            modelBuilder.Entity<Models.Symbols.Exception>(builder =>
+            {
+                builder.HasOne(e => e.Symbol)
+                    .WithMany(e => e.Exceptions)
                     .HasForeignKey(e => e.SymbolId)
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);

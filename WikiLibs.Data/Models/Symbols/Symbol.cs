@@ -28,5 +28,6 @@ namespace WikiLibs.Data.Models.Symbols
         public virtual ICollection<SymbolRef> Symbols { get; set; } = new HashSet<SymbolRef>();
         public virtual ICollection<Example> Examples { get; set; } = new HashSet<Example>();
         public virtual ICollection<Prototype> Prototypes { get; set; } = new HashSet<Prototype>();
+        public virtual ICollection<Exception> Exceptions { get; set; } = new HashSet<Exception>();
     }
 }
