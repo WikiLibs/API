@@ -109,11 +109,16 @@ namespace WikiLibs.Data
             });
             modelBuilder.Entity<Models.Symbols.Exception>(builder =>
             {
-                builder.HasOne(e => e.Symbol)
+                builder.HasOne(e => e.Prototype)
                     .WithMany(e => e.Exceptions)
-                    .HasForeignKey(e => e.SymbolId)
+                    .HasForeignKey(e => e.PrototypeId)
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
+                builder.HasOne(e => e.Ref)
+                    .WithMany()
+                    .HasForeignKey(e => e.RefId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
             modelBuilder.Entity<PrototypeParam>(builder =>
             {
@@ -131,11 +136,10 @@ namespace WikiLibs.Data
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
                 builder.HasOne(e => e.Ref)
-                    .WithOne()
-                    .HasForeignKey<PrototypeParamSymbolRef>(e => e.RefId)
+                    .WithMany()
+                    .HasForeignKey(e => e.RefId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
-                builder.HasIndex(e => e.RefId).IsUnique(false);
             });
             modelBuilder.Entity<SymbolRef>(builder =>
             {
@@ -145,11 +149,10 @@ namespace WikiLibs.Data
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
                 builder.HasOne(e => e.Ref)
-                    .WithOne()
-                    .HasForeignKey<SymbolRef>(e => e.RefId)
+                    .WithMany()
+                    .HasForeignKey(e => e.RefId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
-                builder.HasIndex(e => e.RefId).IsUnique(false);
             });
             modelBuilder.Entity<Models.Symbols.Type>(builder =>
             {
