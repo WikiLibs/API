@@ -282,7 +282,7 @@ namespace WikiLibs.Symbols
                     sref.RefId = symbol.Id;
                 else
                 {
-                    string str = sref.Symbol.Lib.Name + "/" + sref.RefPath;
+                    string str = sref.Prototype.Symbol.Lib.Name + "/" + sref.RefPath;
                     symbol = Set.Where(o => o.Path == str).FirstOrDefault();
                     if (symbol != null)
                         sref.RefId = symbol.Id;
