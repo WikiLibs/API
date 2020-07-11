@@ -14,7 +14,7 @@ namespace WikiLibs.Data.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SymbolId = table.Column<long>(nullable: false),
+                    PrototypeId = table.Column<long>(nullable: false),
                     RefId = table.Column<long>(nullable: true),
                     RefPath = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
@@ -23,17 +23,28 @@ namespace WikiLibs.Data.Migrations
                 {
                     table.PrimaryKey("PK_Exceptions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Exceptions_Symbols_SymbolId",
-                        column: x => x.SymbolId,
-                        principalTable: "Symbols",
+                        name: "FK_Exceptions_Prototypes_PrototypeId",
+                        column: x => x.PrototypeId,
+                        principalTable: "Prototypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Exceptions_Symbols_RefId",
+                        column: x => x.RefId,
+                        principalTable: "Symbols",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exceptions_SymbolId",
+                name: "IX_Exceptions_PrototypeId",
                 table: "Exceptions",
-                column: "SymbolId");
+                column: "PrototypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Exceptions_RefId",
+                table: "Exceptions",
+                column: "RefId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

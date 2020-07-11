@@ -182,18 +182,20 @@ namespace WikiLibs.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long>("PrototypeId")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("RefId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("RefPath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("SymbolId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("SymbolId");
+                    b.HasIndex("PrototypeId");
+
+                    b.HasIndex("RefId");
 
                     b.ToTable("Exceptions");
                 });
@@ -524,11 +526,16 @@ namespace WikiLibs.Data.Migrations
 
             modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Exception", b =>
                 {
-                    b.HasOne("WikiLibs.Data.Models.Symbols.Symbol", "Symbol")
+                    b.HasOne("WikiLibs.Data.Models.Symbols.Prototype", "Prototype")
                         .WithMany("Exceptions")
-                        .HasForeignKey("SymbolId")
+                        .HasForeignKey("PrototypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("WikiLibs.Data.Models.Symbols.Symbol", "Ref")
+                        .WithMany()
+                        .HasForeignKey("RefId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("WikiLibs.Data.Models.Symbols.Prototype", b =>
@@ -558,8 +565,8 @@ namespace WikiLibs.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("WikiLibs.Data.Models.Symbols.Symbol", "Ref")
-                        .WithOne()
-                        .HasForeignKey("WikiLibs.Data.Models.Symbols.PrototypeParamSymbolRef", "RefId")
+                        .WithMany()
+                        .HasForeignKey("RefId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -597,8 +604,8 @@ namespace WikiLibs.Data.Migrations
             modelBuilder.Entity("WikiLibs.Data.Models.Symbols.SymbolRef", b =>
                 {
                     b.HasOne("WikiLibs.Data.Models.Symbols.Symbol", "Ref")
-                        .WithOne()
-                        .HasForeignKey("WikiLibs.Data.Models.Symbols.SymbolRef", "RefId")
+                        .WithMany()
+                        .HasForeignKey("RefId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("WikiLibs.Data.Models.Symbols.Symbol", "Symbol")
