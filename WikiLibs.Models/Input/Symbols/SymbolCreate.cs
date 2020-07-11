@@ -10,6 +10,13 @@ namespace WikiLibs.Models.Input.Symbols
 {
     public class SymbolCreate : PostModel<SymbolCreate, Symbol>
     {
+        public class Exception
+        {
+            public string Description { get; set; }
+            [Required]
+            public string Ref { get; set; }
+        }
+
         public class Prototype
         {
             public class Parameter
@@ -27,13 +34,7 @@ namespace WikiLibs.Models.Input.Symbols
             public string Description { get; set; }
             [Required]
             public Parameter[] Parameters { get; set; }
-        }
-
-        public class Exception
-        {
-            public string Description { get; set; }
-            [Required]
-            public string Ref { get; set; }
+            public Exception[] Exceptions { get; set; }
         }
 
         [Required]
@@ -45,8 +46,6 @@ namespace WikiLibs.Models.Input.Symbols
         public Prototype[] Prototypes { get; set; }
         [Required]
         public string[] Symbols { get; set; }
-        [Required]
-        public Exception[] Exceptions { get; set; }
 
         public override Symbol CreateModel()
         {
@@ -77,17 +76,20 @@ namespace WikiLibs.Models.Input.Symbols
                     };
                     p.Parameters.Add(param);
                 }
-                sym.Prototypes.Add(p);
-            }
-            foreach (var eref in Exceptions)
-            {
-                var exref = new Data.Models.Symbols.Exception()
+                if (proto.Exceptions != null)
                 {
-                    Description = eref.Description,
-                    RefPath = eref.Ref,
-                    Symbol = sym
-                };
-                sym.Exceptions.Add(exref);
+                    foreach (var eref in proto.Exceptions)
+                    {
+                        var exref = new Data.Models.Symbols.Exception()
+                        {
+                            Description = eref.Description,
+                            RefPath = eref.Ref,
+                            Prototype = p
+                        };
+                        p.Exceptions.Add(exref);
+                    }
+                }
+                sym.Prototypes.Add(p);
             }
             foreach (var sref in Symbols)
             {

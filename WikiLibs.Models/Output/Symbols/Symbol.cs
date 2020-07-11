@@ -11,6 +11,12 @@ namespace WikiLibs.Models.Output.Symbols
 {
     public class Symbol : GetModel<Symbol, Data.Models.Symbols.Symbol>
     {
+        public class Exception
+        {
+            public string Description { get; set; }
+            public SymbolReference Ref { get; set; }
+        }
+
         public class Prototype
         {
             public class Parameter
@@ -25,12 +31,7 @@ namespace WikiLibs.Models.Output.Symbols
             public string Proto { get; set; }
             public string Description { get; set; }
             public Parameter[] Parameters { get; set; }
-        }
-
-        public class Exception
-        {
-            public string Description { get; set; }
-            public SymbolReference Ref { get; set; }
+            public List<Exception> Exceptions { get; set; }
         }
 
         public long Id { get; set; }
@@ -45,7 +46,6 @@ namespace WikiLibs.Models.Output.Symbols
         public string Path { get; set; }
         public Prototype[] Prototypes { get; set; }
         public List<SymbolReference> Symbols { get; set; }
-        public List<Exception> Exceptions { get; set; }
 
         public override void Map(in Data.Models.Symbols.Symbol model)
         {
@@ -60,7 +60,6 @@ namespace WikiLibs.Models.Output.Symbols
             Import = model.Import != null ? model.Import.Name : null;
             Path = model.Path;
             Symbols = new List<SymbolReference>();
-            Exceptions = new List<Exception>();
             Prototypes = new Prototype[model.Prototypes.Count];
             int i = 0;
             foreach (var proto in model.Prototypes)
@@ -69,7 +68,8 @@ namespace WikiLibs.Models.Output.Symbols
                 {
                     Proto = proto.Data,
                     Description = proto.Description,
-                    Parameters = new Prototype.Parameter[proto.Parameters.Count]
+                    Parameters = new Prototype.Parameter[proto.Parameters.Count],
+                    Exceptions = new List<Exception>()
                 };
                 int j = 0;
                 foreach (var param in proto.Parameters)
@@ -83,6 +83,21 @@ namespace WikiLibs.Models.Output.Symbols
                     ++j;
                 }
                 ++i;
+                foreach (var eref in proto.Exceptions)
+                {
+                    if (eref.RefId != null)
+                        Prototypes[i].Exceptions.Add(new Exception()
+                        {
+                            Description = eref.Description,
+                            Ref = new SymbolReference()
+                            {
+                                Id = eref.RefId.Value,
+                                Path = eref.RefPath,
+                                Type = eref.Ref.Type.Name,
+                                FirstPrototype = eref.Ref.Prototypes.FirstOrDefault() != null ? eref.Ref.Prototypes.FirstOrDefault().Data : null
+                            }
+                        });
+                }
             }
             foreach (var sref in model.Symbols)
             {
@@ -93,21 +108,6 @@ namespace WikiLibs.Models.Output.Symbols
                         Path = sref.RefPath,
                         Type = sref.Ref.Type.Name,
                         FirstPrototype = sref.Ref.Prototypes.FirstOrDefault() != null ? sref.Ref.Prototypes.FirstOrDefault().Data : null
-                    });
-            }
-            foreach (var eref in model.Exceptions)
-            {
-                if (eref.RefId != null)
-                    Exceptions.Add(new Exception()
-                    {
-                        Description = eref.Description,
-                        Ref = new SymbolReference()
-                        {
-                            Id = eref.RefId.Value,
-                            Path = eref.RefPath,
-                            Type = eref.Ref.Type.Name,
-                            FirstPrototype = eref.Ref.Prototypes.FirstOrDefault() != null ? eref.Ref.Prototypes.FirstOrDefault().Data : null
-                        }
                     });
             }
         }
