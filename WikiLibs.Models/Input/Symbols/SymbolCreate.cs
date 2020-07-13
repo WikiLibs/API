@@ -10,15 +10,15 @@ namespace WikiLibs.Models.Input.Symbols
 {
     public class SymbolCreate : PostModel<SymbolCreate, Symbol>
     {
-        public class Exception
-        {
-            public string Description { get; set; }
-            [Required]
-            public string Ref { get; set; }
-        }
-
         public class Prototype
         {
+            public class Exception
+            {
+                public string Description { get; set; }
+                [Required]
+                public string Ref { get; set; }
+            }
+
             public class Parameter
             {
                 [Required]

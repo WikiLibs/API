@@ -10,14 +10,14 @@ namespace WikiLibs.Models.Input.Symbols
 {
     public class SymbolUpdate : PatchModel<SymbolUpdate, Symbol>
     {
-        public class Exception
-        {
-            public string Description { get; set; }
-            public string Ref { get; set; }
-        }
-
         public class Prototype
         {
+            public class Exception
+            {
+                public string Description { get; set; }
+                public string Ref { get; set; }
+            }
+
             public class Parameter
             {
                 [JsonProperty(PropertyName = "prototype")]
