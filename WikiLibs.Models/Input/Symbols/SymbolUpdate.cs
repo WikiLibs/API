@@ -83,20 +83,25 @@ namespace WikiLibs.Models.Input.Symbols
                     }
                     else
                     {
-                        foreach (var par in old.Parameters)
+                        if (old == null)
+                            Console.Error.WriteLine("The impossible has occured: C# has corrupted it's own memory");
+                        else
                         {
-                            p.Parameters.Add(new PrototypeParam()
+                            foreach (var par in old.Parameters)
                             {
-                                Data = par.Data,
-                                Description = par.Description,
-                                Id = par.Id,
-                                SymbolRef = par.SymbolRef != null ? new PrototypeParamSymbolRef()
+                                p.Parameters.Add(new PrototypeParam()
                                 {
-                                    RefPath = par.SymbolRef.RefPath,
-                                    RefId = par.SymbolRef.RefId
-                                } : null,
-                                Prototype = p
-                            });
+                                    Data = par.Data,
+                                    Description = par.Description,
+                                    Id = par.Id,
+                                    SymbolRef = par.SymbolRef != null ? new PrototypeParamSymbolRef()
+                                    {
+                                        RefPath = par.SymbolRef.RefPath,
+                                        RefId = par.SymbolRef.RefId
+                                    } : null,
+                                    Prototype = p
+                                });
+                            }
                         }
                     }
                     if (proto.Exceptions != null)
@@ -117,16 +122,21 @@ namespace WikiLibs.Models.Input.Symbols
                     }
                     else
                     {
-                        foreach (var ex in old.Exceptions)
+                        if (old == null)
+                            Console.Error.WriteLine("The impossible has occured: C# has corrupted it's own memory");
+                        else
                         {
-                            p.Exceptions.Add(new Data.Models.Symbols.Exception()
+                            foreach (var ex in old.Exceptions)
                             {
-                                Description = ex.Description,
-                                Id = ex.Id,
-                                RefId = ex.RefId,
-                                RefPath = ex.RefPath,
-                                Prototype = p
-                            });
+                                p.Exceptions.Add(new Data.Models.Symbols.Exception()
+                                {
+                                    Description = ex.Description,
+                                    Id = ex.Id,
+                                    RefId = ex.RefId,
+                                    RefPath = ex.RefPath,
+                                    Prototype = p
+                                });
+                            }
                         }
                     }
                     sym.Prototypes.Add(p);

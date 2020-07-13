@@ -34,7 +34,6 @@ namespace WikiLibs.Models.Input.Symbols
             public string Description { get; set; }
             [Required]
             public Parameter[] Parameters { get; set; }
-            [Required]
             public Exception[] Exceptions { get; set; }
         }
 
@@ -63,7 +62,7 @@ namespace WikiLibs.Models.Input.Symbols
                         Proto = p.Proto,
                         Ref = p.Ref
                     }).ToArray(),
-                    Exceptions = e.Exceptions.Select((p) => new SymbolCreate.Prototype.Exception()
+                    Exceptions = e.Exceptions == null ? null : e.Exceptions.Select((p) => new SymbolCreate.Prototype.Exception()
                     {
                         Description = p.Description,
                         Ref = p.Ref
