@@ -149,6 +149,14 @@ namespace WikiLibs.API.Tests
                                 Description = "bad raw pointer",
                                 Proto = "void *bad"
                             }
+                        },
+                        Exceptions = new Models.Input.Symbols.SymbolCreate.Prototype.Exception[]
+                        {
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Exception()
+                            {
+                                Description = "Testing exceptions",
+                                Ref = broken ? "NON_EXISTANT" : "C/TestLib/fint"
+                            }
                         }
                     }
                 },
@@ -242,8 +250,11 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
+            Assert.AreEqual(1, Context.Exceptions.Count());
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().PrototypeParam);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().PrototypeParamId);
+            Assert.IsNotNull(Context.Exceptions.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().Description);
         }
 
         [Test]
@@ -389,14 +400,21 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(1, Context.SymbolLibs.Count());
+            Assert.AreEqual(1, Context.Exceptions.Count());
             Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().RefPath);
+            Assert.IsNull(Context.Exceptions.First().RefId);
+            Assert.IsNull(Context.Exceptions.First().Ref);
             await controller.OptimizeAsync();
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().RefId);
+            Assert.IsNotNull(Context.Exceptions.First().Ref);
         }
 
         [Test]
@@ -413,10 +431,16 @@ namespace WikiLibs.API.Tests
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().RefPath);
+            Assert.IsNull(Context.Exceptions.First().RefId);
+            Assert.IsNull(Context.Exceptions.First().Ref);
             await controller.OptimizeAsync();
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().RefPath);
+            Assert.IsNull(Context.Exceptions.First().RefId);
+            Assert.IsNull(Context.Exceptions.First().Ref);
         }
 
         [Test]
@@ -1056,6 +1080,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(1, Context.SymbolLibs.Count());
+            Assert.AreEqual(1, Context.Exceptions.Count());
             Assert.AreEqual(0, Context.PrototypeParamSymbolRefs.Count());
             Assert.IsNull(Context.PrototypeParams.First().SymbolRef);
         }
