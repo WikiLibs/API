@@ -188,6 +188,8 @@ namespace WikiLibs.Symbols
                 {
                     foreach (var param in proto.Parameters)
                         param.Id = 0;
+                    foreach (var ex in proto.Exceptions)
+                        ex.Id = 0;
                     proto.Id = 0;
                     proto.Symbol = s;
                     s.Prototypes.Add(proto);
