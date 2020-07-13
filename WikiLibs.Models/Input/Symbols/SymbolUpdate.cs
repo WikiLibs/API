@@ -10,6 +10,12 @@ namespace WikiLibs.Models.Input.Symbols
 {
     public class SymbolUpdate : PatchModel<SymbolUpdate, Symbol>
     {
+        public class Exception
+        {
+            public string Description { get; set; }
+            public string Ref { get; set; }
+        }
+
         public class Prototype
         {
             public class Parameter
@@ -24,6 +30,7 @@ namespace WikiLibs.Models.Input.Symbols
             public string Proto { get; set; }
             public string Description { get; set; }
             public Parameter[] Parameters { get; set; }
+            public Exception[] Exceptions { get; set; }
         }
 
         public string Type { get; set; }
@@ -88,6 +95,36 @@ namespace WikiLibs.Models.Input.Symbols
                                     RefPath = par.SymbolRef.RefPath,
                                     RefId = par.SymbolRef.RefId
                                 } : null,
+                                Prototype = p
+                            });
+                        }
+                    }
+                    if (proto.Exceptions != null)
+                    {
+                        for (int j = 0; j != proto.Exceptions.Length; ++j)
+                        {
+                            var ex = proto.Exceptions[j];
+                            var oldEx = (old != null && j < old.Exceptions.Count) ? old.Exceptions.ElementAt(j) : null;
+                            var exception = new Data.Models.Symbols.Exception()
+                            {
+                                Id = oldEx != null ? oldEx.Id : 0,
+                                Description = ex.Description != null ? ex.Description : (oldEx != null ? oldEx.Description : null),
+                                RefPath = ex.Ref != null ? ex.Ref : null,
+                                Prototype = p
+                            };
+                            p.Exceptions.Add(exception);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var ex in old.Exceptions)
+                        {
+                            p.Exceptions.Add(new Data.Models.Symbols.Exception()
+                            {
+                                Description = ex.Description,
+                                Id = ex.Id,
+                                RefId = ex.RefId,
+                                RefPath = ex.RefPath,
                                 Prototype = p
                             });
                         }
