@@ -11,14 +11,14 @@ namespace WikiLibs.Models.Output.Symbols
 {
     public class Symbol : GetModel<Symbol, Data.Models.Symbols.Symbol>
     {
-        public class Exception
-        {
-            public string Description { get; set; }
-            public SymbolReference Ref { get; set; }
-        }
-
         public class Prototype
         {
+            public class Exception
+            {
+                public string Description { get; set; }
+                public SymbolReference Ref { get; set; }
+            }
+
             public class Parameter
             {
                 [JsonProperty(PropertyName = "prototype")]
@@ -69,7 +69,7 @@ namespace WikiLibs.Models.Output.Symbols
                     Proto = proto.Data,
                     Description = proto.Description,
                     Parameters = new Prototype.Parameter[proto.Parameters.Count],
-                    Exceptions = new List<Exception>()
+                    Exceptions = new List<Prototype.Exception>()
                 };
                 int j = 0;
                 foreach (var param in proto.Parameters)
@@ -82,11 +82,10 @@ namespace WikiLibs.Models.Output.Symbols
                     };
                     ++j;
                 }
-                ++i;
                 foreach (var eref in proto.Exceptions)
                 {
                     if (eref.RefId != null)
-                        Prototypes[i].Exceptions.Add(new Exception()
+                        Prototypes[i].Exceptions.Add(new Prototype.Exception()
                         {
                             Description = eref.Description,
                             Ref = new SymbolReference()
@@ -98,6 +97,7 @@ namespace WikiLibs.Models.Output.Symbols
                             }
                         });
                 }
+                ++i;
             }
             foreach (var sref in model.Symbols)
             {

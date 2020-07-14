@@ -1117,6 +1117,23 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task Get_Path_Complex_1()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+            await PostTestSymbol_Complex_1();
+            await controller.OptimizeAsync();
+            var res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Path = "C/TestLib/TestFunc" }) as JsonResult;
+            var obj = res.Value as Models.Output.Symbols.Symbol;
+
+            Assert.AreEqual(obj.Prototypes.Count(), 1);
+            Assert.AreEqual(obj.Prototypes.First().Exceptions.Count(), 1);
+            Assert.AreEqual(obj.Prototypes.First().Exceptions.First().Description, "Testing exceptions");
+            Assert.NotNull(obj.Prototypes.First().Exceptions.First().Ref);
+            Assert.NotNull(obj.Prototypes.First().Exceptions.First().Ref.Path);
+            Assert.AreEqual(obj.Prototypes.First().Exceptions.First().Ref.Path, "C/TestLib/fint");
+        }
+
+        [Test]
         public async Task Get_Id()
         {
             var controller = new Symbols.SymbolController(Manager, User);
