@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "WikiLibs.ImportMySQLDB": {
-      "commandName": "Project",
-      "commandLineArgs": "\"server=yuristudio.net;port=3306;uid=WikiLibsDev;password=12Poissons2hOt4U;database=WikiLibs\" \"Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=WikiLibs;Integrated Security=True;Pooling=False\""
-    }
-  }
-}
