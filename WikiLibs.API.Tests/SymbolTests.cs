@@ -322,6 +322,81 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task Put_Create_Complex()
+        {
+            if (!Context.SymbolLangs.Any(e => e.Name == "C"))
+                Context.SymbolLangs.Add(new Data.Models.Symbols.Lang()
+                {
+                    Name = "C",
+                });
+            if (!Context.SymbolTypes.Any(e => e.Name == "function"))
+                Context.SymbolTypes.Add(new Data.Models.Symbols.Type()
+                {
+                    Name = "function"
+                });
+            await Context.SaveChangesAsync();
+            var controller = new Symbols.SymbolController(Manager, User);
+            var res = await controller.PutSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolMerge()
+            {
+                Type = "function",
+                Prototypes = new Models.Input.Symbols.SymbolMerge.Prototype[]
+                {
+                    new Models.Input.Symbols.SymbolMerge.Prototype()
+                    {
+                        Description = "This is a test function",
+                        Proto = "void TestFunc(int a, const int b, int c, int d, void *bad)",
+                        Parameters = new Models.Input.Symbols.SymbolMerge.Prototype.Parameter[]
+                        {
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "a",
+                                Proto = "int a"
+                            },
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "b",
+                                Proto = "const int b"
+                            },
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "c",
+                                Proto = "int c"
+                            },
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "d",
+                                Proto = "int d"
+                            },
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "bad raw pointer",
+                                Proto = "void *bad"
+                            }
+                        },
+                        Exceptions = new Models.Input.Symbols.SymbolMerge.Prototype.Exception[]
+                        {
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Exception()
+                            {
+                                Description = "Bad exception",
+                                Ref = "C/TestLib/TestFunc"
+                            }
+                        }
+                    }
+                },
+                Symbols = new string[] { }
+            });
+            Assert.AreEqual(1, Context.Symbols.Count());
+            Assert.AreEqual(1, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
+            Assert.AreEqual(1, Context.Exceptions.Count());
+            Assert.AreEqual("C", Context.Symbols.First().Lang.Name);
+            Assert.AreEqual("C/TestLib", Context.Symbols.First().Lib.Name);
+            Assert.AreEqual("Bad exception", Context.Symbols.First().Prototypes.First().Exceptions.First().Description);
+            Assert.AreEqual("C/TestLib/TestFunc", Context.Symbols.First().Prototypes.First().Exceptions.First().RefPath);
+        }
+
+        [Test]
         public async Task Put_Update()
         {
             await PostTestSymbol();
@@ -357,6 +432,54 @@ namespace WikiLibs.API.Tests
             foreach (var obj in Context.Symbols.First().Symbols)
                 str += obj.RefPath;
             Assert.AreEqual("testtest2", str);
+        }
+
+        [Test]
+        public async Task Put_Update_Complex()
+        {
+            await PostTestSymbol_Complex_1();
+            var controller = new Symbols.SymbolController(Manager, User);
+            await controller.OptimizeAsync();
+            var res = await controller.PutSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolMerge()
+            {
+                Type = "function",
+                Prototypes = new Models.Input.Symbols.SymbolMerge.Prototype[]
+                {
+                    new Models.Input.Symbols.SymbolMerge.Prototype()
+                    {
+                        Description = "This is a test function",
+                        Proto = "void TestFunc(int a)",
+                        Parameters = new Models.Input.Symbols.SymbolMerge.Prototype.Parameter[]
+                        {
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "a",
+                                Proto = "int a"
+                            }
+                        },
+                        Exceptions = new Models.Input.Symbols.SymbolMerge.Prototype.Exception[]
+                        {
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Exception()
+                            {
+                                Description = "Bad exception",
+                                Ref = "C/TestLib/TestFunc"
+                            }
+                        }
+                    }
+                },
+                Symbols = new string[] { "test", "test2" }
+            });
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(3, Context.Prototypes.Count());
+            Assert.AreEqual(6, Context.PrototypeParams.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
+            Assert.AreEqual(2, Context.Exceptions.Count());
+            Assert.AreEqual("C", Context.Symbols.First().Lang.Name);
+            Assert.AreEqual("C/TestLib", Context.Symbols.First().Lib.Name);
+            Assert.AreEqual("Bad exception", Context.Symbols.ToList()[1].Prototypes.First().Exceptions.First().Description);
+            Assert.AreEqual("C/TestLib/TestFunc", Context.Symbols.ToList()[1].Prototypes.First().Exceptions.First().RefPath);
+            Assert.AreEqual("Testing exceptions", Context.Symbols.ToList()[1].Prototypes.ToList()[1].Exceptions.First().Description);
+            Assert.AreEqual("C/TestLib/fint", Context.Symbols.ToList()[1].Prototypes.ToList()[1].Exceptions.First().RefPath);
         }
 
         [Test]

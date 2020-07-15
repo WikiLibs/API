@@ -115,7 +115,7 @@ namespace WikiLibs.Models.Input.Symbols
                         Proto = p.Proto,
                         Ref = p.Ref
                     }).ToArray(),
-                    Exceptions = e.Parameters.Select((p) => new SymbolUpdate.Prototype.Exception()
+                    Exceptions = e.Exceptions.Select((p) => new SymbolUpdate.Prototype.Exception()
                     {
                         Description = p.Description,
                         Ref = p.Ref
