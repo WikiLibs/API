@@ -88,7 +88,7 @@ namespace WikiLibs.Models.Input.Symbols
                             Proto = p.Data,
                             Ref = p.SymbolRef != null ? p.SymbolRef.RefPath : null
                         }).ToArray(),
-                        Exceptions = proto.Exceptions.Select((p) => new Prototype.Exception()
+                        Exceptions = proto.Exceptions == null ? null : proto.Exceptions.Select((p) => new Prototype.Exception()
                         {
                             Description = p.Description,
                             Ref = p.RefPath != null ? p.RefPath : null
@@ -115,7 +115,7 @@ namespace WikiLibs.Models.Input.Symbols
                         Proto = p.Proto,
                         Ref = p.Ref
                     }).ToArray(),
-                    Exceptions = e.Exceptions.Select((p) => new SymbolUpdate.Prototype.Exception()
+                    Exceptions = e.Exceptions == null ? null : e.Exceptions.Select((p) => new SymbolUpdate.Prototype.Exception()
                     {
                         Description = p.Description,
                         Ref = p.Ref
