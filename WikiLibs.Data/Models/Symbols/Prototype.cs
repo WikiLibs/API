@@ -14,5 +14,6 @@ namespace WikiLibs.Data.Models.Symbols
 
         public virtual Symbol Symbol { get; set; }
         public virtual ICollection<PrototypeParam> Parameters { get; set; } = new HashSet<PrototypeParam>();
+        public virtual ICollection<Exception> Exceptions { get; set; } = new HashSet<Exception>();
     }
 }

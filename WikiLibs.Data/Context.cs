@@ -10,6 +10,7 @@ namespace WikiLibs.Data
     {
         #region SYMBOLS
         public DbSet<Symbol> Symbols { get; set; }
+        public DbSet<Models.Symbols.Exception> Exceptions { get; set; }
         public DbSet<Prototype> Prototypes { get; set; }
         public DbSet<PrototypeParam> PrototypeParams { get; set; }
         public DbSet<SymbolRef> SymbolRefs { get; set; }
@@ -106,6 +107,19 @@ namespace WikiLibs.Data
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+            modelBuilder.Entity<Models.Symbols.Exception>(builder =>
+            {
+                builder.HasOne(e => e.Prototype)
+                    .WithMany(e => e.Exceptions)
+                    .HasForeignKey(e => e.PrototypeId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.Cascade);
+                builder.HasOne(e => e.Ref)
+                    .WithMany()
+                    .HasForeignKey(e => e.RefId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
             modelBuilder.Entity<PrototypeParam>(builder =>
             {
                 builder.HasOne(e => e.Prototype)
@@ -122,11 +136,10 @@ namespace WikiLibs.Data
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
                 builder.HasOne(e => e.Ref)
-                    .WithOne()
-                    .HasForeignKey<PrototypeParamSymbolRef>(e => e.RefId)
+                    .WithMany()
+                    .HasForeignKey(e => e.RefId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
-                builder.HasIndex(e => e.RefId).IsUnique(false);
             });
             modelBuilder.Entity<SymbolRef>(builder =>
             {
@@ -136,11 +149,10 @@ namespace WikiLibs.Data
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
                 builder.HasOne(e => e.Ref)
-                    .WithOne()
-                    .HasForeignKey<SymbolRef>(e => e.RefId)
+                    .WithMany()
+                    .HasForeignKey(e => e.RefId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
-                builder.HasIndex(e => e.RefId).IsUnique(false);
             });
             modelBuilder.Entity<Models.Symbols.Type>(builder =>
             {

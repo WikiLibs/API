@@ -149,6 +149,14 @@ namespace WikiLibs.API.Tests
                                 Description = "bad raw pointer",
                                 Proto = "void *bad"
                             }
+                        },
+                        Exceptions = new Models.Input.Symbols.SymbolCreate.Prototype.Exception[]
+                        {
+                            new Models.Input.Symbols.SymbolCreate.Prototype.Exception()
+                            {
+                                Description = "Testing exceptions",
+                                Ref = broken ? "NON_EXISTANT" : "C/TestLib/fint"
+                            }
                         }
                     }
                 },
@@ -242,8 +250,11 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(1, Context.SymbolLibs.Count());
             Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
+            Assert.AreEqual(1, Context.Exceptions.Count());
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().PrototypeParam);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().PrototypeParamId);
+            Assert.IsNotNull(Context.Exceptions.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().Description);
         }
 
         [Test]
@@ -311,6 +322,81 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task Put_Create_Complex()
+        {
+            if (!Context.SymbolLangs.Any(e => e.Name == "C"))
+                Context.SymbolLangs.Add(new Data.Models.Symbols.Lang()
+                {
+                    Name = "C",
+                });
+            if (!Context.SymbolTypes.Any(e => e.Name == "function"))
+                Context.SymbolTypes.Add(new Data.Models.Symbols.Type()
+                {
+                    Name = "function"
+                });
+            await Context.SaveChangesAsync();
+            var controller = new Symbols.SymbolController(Manager, User);
+            var res = await controller.PutSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolMerge()
+            {
+                Type = "function",
+                Prototypes = new Models.Input.Symbols.SymbolMerge.Prototype[]
+                {
+                    new Models.Input.Symbols.SymbolMerge.Prototype()
+                    {
+                        Description = "This is a test function",
+                        Proto = "void TestFunc(int a, const int b, int c, int d, void *bad)",
+                        Parameters = new Models.Input.Symbols.SymbolMerge.Prototype.Parameter[]
+                        {
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "a",
+                                Proto = "int a"
+                            },
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "b",
+                                Proto = "const int b"
+                            },
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "c",
+                                Proto = "int c"
+                            },
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "d",
+                                Proto = "int d"
+                            },
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "bad raw pointer",
+                                Proto = "void *bad"
+                            }
+                        },
+                        Exceptions = new Models.Input.Symbols.SymbolMerge.Prototype.Exception[]
+                        {
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Exception()
+                            {
+                                Description = "Bad exception",
+                                Ref = "C/TestLib/TestFunc"
+                            }
+                        }
+                    }
+                },
+                Symbols = new string[] { }
+            });
+            Assert.AreEqual(1, Context.Symbols.Count());
+            Assert.AreEqual(1, Context.Prototypes.Count());
+            Assert.AreEqual(5, Context.PrototypeParams.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
+            Assert.AreEqual(1, Context.Exceptions.Count());
+            Assert.AreEqual("C", Context.Symbols.First().Lang.Name);
+            Assert.AreEqual("C/TestLib", Context.Symbols.First().Lib.Name);
+            Assert.AreEqual("Bad exception", Context.Symbols.First().Prototypes.First().Exceptions.First().Description);
+            Assert.AreEqual("C/TestLib/TestFunc", Context.Symbols.First().Prototypes.First().Exceptions.First().RefPath);
+        }
+
+        [Test]
         public async Task Put_Update()
         {
             await PostTestSymbol();
@@ -346,6 +432,54 @@ namespace WikiLibs.API.Tests
             foreach (var obj in Context.Symbols.First().Symbols)
                 str += obj.RefPath;
             Assert.AreEqual("testtest2", str);
+        }
+
+        [Test]
+        public async Task Put_Update_Complex()
+        {
+            await PostTestSymbol_Complex_1();
+            var controller = new Symbols.SymbolController(Manager, User);
+            await controller.OptimizeAsync();
+            var res = await controller.PutSymbol("C/TestLib/TestFunc", new Models.Input.Symbols.SymbolMerge()
+            {
+                Type = "function",
+                Prototypes = new Models.Input.Symbols.SymbolMerge.Prototype[]
+                {
+                    new Models.Input.Symbols.SymbolMerge.Prototype()
+                    {
+                        Description = "This is a test function",
+                        Proto = "void TestFunc(int a)",
+                        Parameters = new Models.Input.Symbols.SymbolMerge.Prototype.Parameter[]
+                        {
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Parameter()
+                            {
+                                Description = "a",
+                                Proto = "int a"
+                            }
+                        },
+                        Exceptions = new Models.Input.Symbols.SymbolMerge.Prototype.Exception[]
+                        {
+                            new Models.Input.Symbols.SymbolMerge.Prototype.Exception()
+                            {
+                                Description = "Bad exception",
+                                Ref = "C/TestLib/TestFunc"
+                            }
+                        }
+                    }
+                },
+                Symbols = new string[] { "test", "test2" }
+            });
+            Assert.AreEqual(2, Context.Symbols.Count());
+            Assert.AreEqual(3, Context.Prototypes.Count());
+            Assert.AreEqual(6, Context.PrototypeParams.Count());
+            Assert.AreEqual(1, Context.SymbolLibs.Count());
+            Assert.AreEqual(2, Context.Exceptions.Count());
+            Assert.AreEqual("C", Context.Symbols.First().Lang.Name);
+            Assert.AreEqual("C/TestLib", Context.Symbols.First().Lib.Name);
+            Assert.AreEqual("Bad exception", Context.Symbols.ToList()[1].Prototypes.First().Exceptions.First().Description);
+            Assert.AreEqual("C/TestLib/TestFunc", Context.Symbols.ToList()[1].Prototypes.First().Exceptions.First().RefPath);
+            Assert.AreEqual("Testing exceptions", Context.Symbols.ToList()[1].Prototypes.ToList()[1].Exceptions.First().Description);
+            Assert.AreEqual("C/TestLib/fint", Context.Symbols.ToList()[1].Prototypes.ToList()[1].Exceptions.First().RefPath);
         }
 
         [Test]
@@ -389,14 +523,21 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(1, Context.SymbolLibs.Count());
+            Assert.AreEqual(1, Context.Exceptions.Count());
             Assert.AreEqual(1, Context.PrototypeParamSymbolRefs.Count());
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().RefPath);
+            Assert.IsNull(Context.Exceptions.First().RefId);
+            Assert.IsNull(Context.Exceptions.First().Ref);
             await controller.OptimizeAsync();
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().RefId);
+            Assert.IsNotNull(Context.Exceptions.First().Ref);
         }
 
         [Test]
@@ -413,10 +554,16 @@ namespace WikiLibs.API.Tests
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().RefPath);
+            Assert.IsNull(Context.Exceptions.First().RefId);
+            Assert.IsNull(Context.Exceptions.First().Ref);
             await controller.OptimizeAsync();
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().RefId);
             Assert.IsNull(Context.PrototypeParamSymbolRefs.First().Ref);
             Assert.IsNotNull(Context.PrototypeParamSymbolRefs.First().RefPath);
+            Assert.IsNotNull(Context.Exceptions.First().RefPath);
+            Assert.IsNull(Context.Exceptions.First().RefId);
+            Assert.IsNull(Context.Exceptions.First().Ref);
         }
 
         [Test]
@@ -1056,6 +1203,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, Context.Prototypes.Count());
             Assert.AreEqual(5, Context.PrototypeParams.Count());
             Assert.AreEqual(1, Context.SymbolLibs.Count());
+            Assert.AreEqual(1, Context.Exceptions.Count());
             Assert.AreEqual(0, Context.PrototypeParamSymbolRefs.Count());
             Assert.IsNull(Context.PrototypeParams.First().SymbolRef);
         }
@@ -1089,6 +1237,23 @@ namespace WikiLibs.API.Tests
             var obj = res.Value as Models.Output.Symbols.Symbol;
 
             Assert.Greater(obj.Symbols.Count, 0);
+        }
+
+        [Test]
+        public async Task Get_Path_Complex_1()
+        {
+            var controller = new Symbols.SymbolController(Manager, User);
+            await PostTestSymbol_Complex_1();
+            await controller.OptimizeAsync();
+            var res = await controller.GetSymbol(new Symbols.SymbolController.SymbolQuery() { Path = "C/TestLib/TestFunc" }) as JsonResult;
+            var obj = res.Value as Models.Output.Symbols.Symbol;
+
+            Assert.AreEqual(obj.Prototypes.Count(), 1);
+            Assert.AreEqual(obj.Prototypes.First().Exceptions.Count(), 1);
+            Assert.AreEqual(obj.Prototypes.First().Exceptions.First().Description, "Testing exceptions");
+            Assert.NotNull(obj.Prototypes.First().Exceptions.First().Ref);
+            Assert.NotNull(obj.Prototypes.First().Exceptions.First().Ref.Path);
+            Assert.AreEqual(obj.Prototypes.First().Exceptions.First().Ref.Path, "C/TestLib/fint");
         }
 
         [Test]

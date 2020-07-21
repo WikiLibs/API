@@ -188,6 +188,8 @@ namespace WikiLibs.Symbols
                 {
                     foreach (var param in proto.Parameters)
                         param.Id = 0;
+                    foreach (var ex in proto.Exceptions)
+                        ex.Id = 0;
                     proto.Id = 0;
                     proto.Symbol = s;
                     s.Prototypes.Add(proto);
@@ -261,6 +263,28 @@ namespace WikiLibs.Symbols
                 else
                 {
                     string str = sref.PrototypeParam.Prototype.Symbol.Lib.Name + "/" + sref.RefPath;
+                    symbol = Set.Where(o => o.Path == str).FirstOrDefault();
+                    if (symbol != null)
+                        sref.RefId = symbol.Id;
+                }
+            }
+            await SaveChanges();
+
+            //Pass 3 optimize exceptions to symbol references
+            //First clean duplications
+            var dupes2 = Context.Exceptions.ToList().GroupBy(e => e.RefPath).SelectMany(e => e.Skip(1));
+            Context.RemoveRange(dupes2);
+            await SaveChanges();
+            //Now identify references
+            var serefs = Context.Exceptions.Where(e => e.RefId == null).ToList();
+            foreach (var sref in serefs)
+            {
+                var symbol = Set.Where(o => o.Path == sref.RefPath).FirstOrDefault();
+                if (symbol != null)
+                    sref.RefId = symbol.Id;
+                else
+                {
+                    string str = sref.Prototype.Symbol.Lib.Name + "/" + sref.RefPath;
                     symbol = Set.Where(o => o.Path == str).FirstOrDefault();
                     if (symbol != null)
                         sref.RefId = symbol.Id;

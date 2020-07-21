@@ -12,6 +12,13 @@ namespace WikiLibs.Models.Input.Symbols
     {
         public class Prototype
         {
+            public class Exception
+            {
+                public string Description { get; set; }
+                [Required]
+                public string Ref { get; set; }
+            }
+
             public class Parameter
             {
                 [Required]
@@ -27,6 +34,7 @@ namespace WikiLibs.Models.Input.Symbols
             public string Description { get; set; }
             [Required]
             public Parameter[] Parameters { get; set; }
+            public Exception[] Exceptions { get; set; }
         }
 
         [Required]
@@ -47,7 +55,7 @@ namespace WikiLibs.Models.Input.Symbols
                 CreationDate = DateTime.UtcNow,
                 Path = Path,
                 Type = new Data.Models.Symbols.Type() { Name = Type },
-                Import = Import != null ? new Data.Models.Symbols.Import() { Name = Import } : null
+                Import = Import != null ? new Import() { Name = Import } : null
             };
             foreach (var proto in Prototypes)
             {
@@ -67,6 +75,19 @@ namespace WikiLibs.Models.Input.Symbols
                         Prototype = p
                     };
                     p.Parameters.Add(param);
+                }
+                if (proto.Exceptions != null)
+                {
+                    foreach (var eref in proto.Exceptions)
+                    {
+                        var exref = new Data.Models.Symbols.Exception()
+                        {
+                            Description = eref.Description,
+                            RefPath = eref.Ref,
+                            Prototype = p
+                        };
+                        p.Exceptions.Add(exref);
+                    }
                 }
                 sym.Prototypes.Add(p);
             }

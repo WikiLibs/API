@@ -39,6 +39,10 @@
     <Compile Remove="Migrations\20200507145112_FixDBCorruptions.Designer.cs" />
     <Compile Remove="Migrations\20200507145801_FixDBCorruptions.cs" />
     <Compile Remove="Migrations\20200507145801_FixDBCorruptions.Designer.cs" />
+    <Compile Remove="Migrations\20200705140117_AddExceptions.cs" />
+    <Compile Remove="Migrations\20200705140117_AddExceptions.Designer.cs" />
+    <Compile Remove="Migrations\20200711091803_AddExceptions.cs" />
+    <Compile Remove="Migrations\20200711091803_AddExceptions.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,6 +12,13 @@ namespace WikiLibs.Models.Input.Symbols
     {
         public class Prototype
         {
+            public class Exception
+            {
+                public string Description { get; set; }
+                [Required]
+                public string Ref { get; set; }
+            }
+
             public class Parameter
             {
                 [Required]
@@ -27,6 +34,7 @@ namespace WikiLibs.Models.Input.Symbols
             public string Description { get; set; }
             [Required]
             public Parameter[] Parameters { get; set; }
+            public Exception[] Exceptions { get; set; }
         }
 
         [Required]
@@ -53,6 +61,11 @@ namespace WikiLibs.Models.Input.Symbols
                         Description = p.Description,
                         Proto = p.Proto,
                         Ref = p.Ref
+                    }).ToArray(),
+                    Exceptions = e.Exceptions == null ? null : e.Exceptions.Select((p) => new SymbolCreate.Prototype.Exception()
+                    {
+                        Description = p.Description,
+                        Ref = p.Ref
                     }).ToArray()
                 }).ToArray(),
                 Symbols = Symbols
@@ -74,6 +87,11 @@ namespace WikiLibs.Models.Input.Symbols
                             Description = p.Description,
                             Proto = p.Data,
                             Ref = p.SymbolRef != null ? p.SymbolRef.RefPath : null
+                        }).ToArray(),
+                        Exceptions = proto.Exceptions == null ? null : proto.Exceptions.Select((p) => new Prototype.Exception()
+                        {
+                            Description = p.Description,
+                            Ref = p.RefPath != null ? p.RefPath : null
                         }).ToArray()
                     });
             }
@@ -95,6 +113,11 @@ namespace WikiLibs.Models.Input.Symbols
                     {
                         Description = p.Description,
                         Proto = p.Proto,
+                        Ref = p.Ref
+                    }).ToArray(),
+                    Exceptions = e.Exceptions == null ? null : e.Exceptions.Select((p) => new SymbolUpdate.Prototype.Exception()
+                    {
+                        Description = p.Description,
                         Ref = p.Ref
                     }).ToArray()
                 }).ToArray(),
