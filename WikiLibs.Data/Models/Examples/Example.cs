@@ -18,5 +18,6 @@ namespace WikiLibs.Data.Models.Examples
         public virtual Symbol Symbol { get; set; }
         public virtual ExampleRequest Request { get; set; }
         public virtual ICollection<ExampleCodeLine> Code { get; set; } = new HashSet<ExampleCodeLine>();
+        public virtual ICollection<ExampleComment> Comments { get; set; } = new HashSet<ExampleComment>();
     }
 }
