@@ -11,6 +11,8 @@ namespace WikiLibs.Examples
 
         public IExampleRequestManager RequestManager { get; }
 
+        public IExampleCommentsManager CommentsManager { get; } = null;
+
         public ExampleModule(Data.Context ctx, Config cfg)
         {
             Manager = new ExampleManager(ctx);
