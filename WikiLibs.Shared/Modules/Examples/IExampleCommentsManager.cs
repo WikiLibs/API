@@ -9,6 +9,6 @@ namespace WikiLibs.Shared.Modules.Examples
 {
     public interface IExampleCommentsManager : ICRUDOperations<ExampleComment>
     {
-        IQueryable<ExampleComment> GetByExample(long example, PageOptions options);
+        PageResult<ExampleComment> GetByExample(long example, PageOptions options);
     }
 }
