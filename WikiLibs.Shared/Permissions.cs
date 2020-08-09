@@ -30,6 +30,21 @@ namespace WikiLibs.Shared
         public const string DELETE_EXAMPLE = "example.delete";
 
         /// <summary>
+        /// Create an example comment
+        /// </summary>
+        public const string CREATE_EXAMPLE_COMMENT = "example.comment.create";
+
+        /// <summary>
+        /// Patch an existing example comment
+        /// </summary>
+        public const string UPDATE_EXAMPLE_COMMENT = "example.comment.update";
+
+        /// <summary>
+        /// Delete an example comment
+        /// </summary>
+        public const string DELETE_EXAMPLE_COMMENT = "example.comment.delete";
+
+        /// <summary>
         /// Create an example by requesting admin review
         /// </summary>
         public const string CREATE_EXAMPLE_REQUEST_POST = "example.requests.create.post";
