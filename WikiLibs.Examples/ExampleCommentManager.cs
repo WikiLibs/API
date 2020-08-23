@@ -20,10 +20,15 @@ namespace WikiLibs.Examples
             _cfg = cfg;
         }
 
+        public override IQueryable<ExampleComment> OrderBy(IQueryable<ExampleComment> models)
+        {
+            return (models.OrderByDescending(e => e.CreationDate));
+        }
+
         public PageResult<ExampleComment> GetByExample(long example, PageOptions options)
         {
             options.EnsureValid(typeof(ExampleComment), "ExampleComment", _cfg.MaxExampleRequestsPerPage);
-            return (ToPageResult(options, Set.Where(e => e.ExampleId == example)));
+            return (ToPageResult(options, OrderBy(Set.Where(e => e.ExampleId == example))));
         }
 
         public override async Task<ExampleComment> PatchAsync(long key, ExampleComment mdl)

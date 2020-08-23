@@ -1,8 +1,10 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Mvc;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WikiLibs.API.Examples;
 using WikiLibs.API.Symbols;
@@ -11,6 +13,7 @@ using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Examples;
 using WikiLibs.Models.Input.Examples;
 using WikiLibs.Models.Input.Symbols;
+using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Symbols;
 
@@ -185,6 +188,59 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(Context.ExampleComments.First().Data, "Updated comment by owner");
             User.User.Id = "asjdiasjdiaj";
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(1, new ExampleCommentUpdate() { }));
+        }
+
+        [Test]
+        public async Task Delete()
+        {
+            await PostTestExample();
+            var controller = NewController();
+
+            await controller.PostAsync(new ExampleCommentCreate()
+            {
+                ExampleId = 1,
+                Data = "This is a test comment"
+            });
+            Assert.AreEqual(Context.ExampleComments.Count(), 1);
+            Assert.AreEqual(Context.ExampleComments.First().Data, "This is a test comment");
+            await controller.DeleteAsync(1);
+            Assert.AreEqual(Context.ExampleComments.Count(), 0);
+            User.SetPermissions(new string[] { });
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.DeleteAsync(1));
+        }
+
+        [Test]
+        public async Task Get()
+        {
+            await PostTestExample();
+            var controller = NewController();
+
+            await controller.PostAsync(new ExampleCommentCreate()
+            {
+                ExampleId = 1,
+                Data = "This is a test comment"
+            });
+            Thread.Sleep(1000);
+            await controller.PostAsync(new ExampleCommentCreate()
+            {
+                ExampleId = 1,
+                Data = "This is a test comment 1"
+            });
+            Assert.AreEqual(Context.ExampleComments.Count(), 2);
+            var res = (JsonResult)controller.Get(new ExampleCommentController.ExampleCommentQuery()
+            {
+                ExampleId = 1,
+                PageOptions = new Shared.Helpers.PageOptions()
+                {
+                    Count = 100,
+                    Page = 1
+                }
+            });
+            var obj = (PageResult<Models.Output.Examples.ExampleComment>)res.Value;
+            Assert.AreEqual(obj.Data.Count(), 2);
+            Assert.AreEqual(obj.HasMorePages, false);
+            Assert.AreEqual(obj.Data.First().Data, "This is a test comment 1");
+            Assert.AreEqual(obj.Data.Last().Data, "This is a test comment");
         }
     }
 }
