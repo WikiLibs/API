@@ -42,7 +42,7 @@ namespace WikiLibs.API.Examples
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
                     ResourceName = "ExampleComment",
-                    ResourceType = typeof(Data.Models.Examples.Example),
+                    ResourceType = typeof(Data.Models.Examples.ExampleComment),
                     MissingPermission = Permissions.CREATE_EXAMPLE
                 };
             var ex = example.CreateModel();
@@ -62,7 +62,7 @@ namespace WikiLibs.API.Examples
                 {
                     ResourceId = id.ToString(),
                     ResourceName = "ExampleComment",
-                    ResourceType = typeof(Data.Models.Examples.Example),
+                    ResourceType = typeof(Data.Models.Examples.ExampleComment),
                     MissingPermission = Permissions.UPDATE_EXAMPLE
                 };
             var m = await _manager.PatchAsync(id, example.CreatePatch(mdl));
@@ -77,20 +77,11 @@ namespace WikiLibs.API.Examples
                 {
                     ResourceId = id.ToString(),
                     ResourceName = id.ToString(),
-                    ResourceType = typeof(Data.Models.Examples.Example),
+                    ResourceType = typeof(Data.Models.Examples.ExampleComment),
                     MissingPermission = Permissions.DELETE_EXAMPLE
                 };
             await _manager.DeleteAsync(id);
             return (Ok());
-        }
-
-        [AllowAnonymous]
-        [HttpGet("{id}")]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
-        [ProducesResponseType(200, Type = typeof(Models.Output.Examples.Example))]
-        public async Task<IActionResult> GetAsync([FromRoute] long id)
-        {
-            return (Json(Models.Output.Examples.ExampleComment.CreateModel(await _manager.GetAsync(id))));
         }
 
         [AllowAnonymous]

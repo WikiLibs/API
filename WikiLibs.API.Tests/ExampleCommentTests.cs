@@ -241,6 +241,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(obj.HasMorePages, false);
             Assert.AreEqual(obj.Data.First().Data, "This is a test comment 1");
             Assert.AreEqual(obj.Data.Last().Data, "This is a test comment");
+            Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(null));
         }
     }
 }
