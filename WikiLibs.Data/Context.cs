@@ -25,6 +25,7 @@ namespace WikiLibs.Data
         public DbSet<Example> Examples { get; set; }
         public DbSet<ExampleRequest> ExampleRequests { get; set; }
         public DbSet<ExampleCodeLine> ExampleCodeLines { get; set; }
+        public DbSet<ExampleComment> ExampleComments { get; set; }
         #endregion
 
         #region BASE
@@ -61,6 +62,10 @@ namespace WikiLibs.Data
             modelBuilder.Entity<User>(builder =>
             {
                 builder.HasMany<Example>()
+                    .WithOne(e => e.User)
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.SetNull);
+                builder.HasMany<ExampleComment>()
                     .WithOne(e => e.User)
                     .HasForeignKey(e => e.UserId)
                     .OnDelete(DeleteBehavior.SetNull);
@@ -177,6 +182,14 @@ namespace WikiLibs.Data
                     .HasForeignKey<Example>(e => e.RequestId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.SetNull);
+            });
+            modelBuilder.Entity<ExampleComment>(builder =>
+            {
+                builder.HasOne(e => e.Example)
+                    .WithMany(e => e.Comments)
+                    .HasForeignKey(e => e.ExampleId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<ExampleCodeLine>(builder =>
             {

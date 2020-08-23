@@ -8,5 +8,6 @@ namespace WikiLibs.Shared.Modules.Examples
     {
         IExampleManager Manager { get; }
         IExampleRequestManager RequestManager { get; }
+        IExampleCommentsManager CommentsManager { get; }
     }
 }
