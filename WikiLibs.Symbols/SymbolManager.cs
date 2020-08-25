@@ -228,7 +228,7 @@ namespace WikiLibs.Symbols
         {
             //Pass 1 optimize symbol references
             //First clean duplications
-            var dupes = Context.SymbolRefs.ToList().GroupBy(e => e.RefPath).SelectMany(e => e.Skip(1));
+            var dupes = Context.SymbolRefs.ToList().GroupBy(e => new { e.RefPath, e.SymbolId }).Where(q => q.Count() > 1).SelectMany(e => e.Skip(1));
             Context.RemoveRange(dupes);
             await SaveChanges();
             //Now identify references
@@ -250,7 +250,7 @@ namespace WikiLibs.Symbols
 
             //Pass 2 optimize parameter to symbol references
             //First clean duplications
-            var dupes1 = Context.PrototypeParamSymbolRefs.ToList().GroupBy(e => e.RefPath).SelectMany(e => e.Skip(1));
+            var dupes1 = Context.PrototypeParamSymbolRefs.ToList().GroupBy(e => new { e.RefPath, e.PrototypeParamId }).Where(q => q.Count() > 1).SelectMany(e => e.Skip(1)); //EF Core is a peace of shit: unable to support GroupBy I mean M$ you have to go learn SQL you mother fucker
             Context.RemoveRange(dupes1);
             await SaveChanges();
             //Now identify references
@@ -272,7 +272,7 @@ namespace WikiLibs.Symbols
 
             //Pass 3 optimize exceptions to symbol references
             //First clean duplications
-            var dupes2 = Context.Exceptions.ToList().GroupBy(e => e.RefPath).SelectMany(e => e.Skip(1));
+            var dupes2 = Context.Exceptions.ToList().GroupBy(e => new { e.RefPath, e.PrototypeId }).Where(q => q.Count() > 1).SelectMany(e => e.Skip(1)); //EF Core is a peace of shit: unable to support GroupBy I mean M$ you have to go learn SQL you mother fucker
             Context.RemoveRange(dupes2);
             await SaveChanges();
             //Now identify references
