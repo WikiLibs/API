@@ -43,7 +43,7 @@ namespace WikiLibs.API.Symbols
                 foreach (var rf in sym.Symbols)
                 {
                     if (rf.RefId != null)
-                        map.Add(rf.RefId.Value, true);
+                        map[rf.RefId.Value] = true;
                 }
                 if (map.ContainsKey(sym.Id))
                     continue; //I'm a bad symbol
