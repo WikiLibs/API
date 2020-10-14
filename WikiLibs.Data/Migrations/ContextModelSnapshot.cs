@@ -278,6 +278,13 @@ namespace WikiLibs.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("Icon")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Copyright");
+
                     b.HasKey("Id");
 
                     b.ToTable("SymbolLibs");
