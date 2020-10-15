@@ -146,7 +146,7 @@ namespace WikiLibs.API.Tests
             var controller = new InternalController(Manager);
 
             //Reset development account password
-            await controller.Reset(mew InternalController.ResetObject() { Email = "dev@localhost" });
+            await controller.Reset(new InternalController.ResetObject() { Email = "dev@localhost" });
             Assert.AreEqual(1, Smtp.SentEmailCount);
             Assert.AreEqual("WikiLibs API Server", Smtp.LastSendEmail.Subject);
             Assert.AreEqual(Shared.Modules.Smtp.Models.UserReset.Template, Smtp.LastSendEmail.Template);
@@ -169,9 +169,9 @@ namespace WikiLibs.API.Tests
         {
             var controller = new InternalController(Manager);
 
-            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Reset(mew InternalController.ResetObject() { Email = "doesnotexist@doesnotexist.com" }));
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Reset(new InternalController.ResetObject() { Email = "doesnotexist@doesnotexist.com" }));
             Context.Users.First().IsBot = true;
-            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Reset(mew InternalController.ResetObject() { Email = "dev@localhost" }));
+            Assert.ThrowsAsync<Shared.Exceptions.ResourceNotFound>(() => controller.Reset(new InternalController.ResetObject() { Email = "dev@localhost" }));
         }
 
         [Test]
