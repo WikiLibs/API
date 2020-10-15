@@ -29,7 +29,7 @@ namespace WikiLibs.API.Auth
             return (Json(token));
         }
 
-        class ResetObject
+        public class ResetObject
         {
             public string Email { get; set; }
         }
