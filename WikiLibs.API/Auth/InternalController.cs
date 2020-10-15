@@ -29,11 +29,16 @@ namespace WikiLibs.API.Auth
             return (Json(token));
         }
 
+        public class ResetObject
+        {
+            public string Email { get; set; }
+        }
+
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Registration)]
         [HttpPost("reset")]
-        public async Task<IActionResult> Reset([FromBody, Required] string email)
+        public async Task<IActionResult> Reset([FromBody, Required] ResetObject obj)
         {
-            await _internal.LegacyReset(email);
+            await _internal.LegacyReset(obj.Email);
             return (Ok());
         }
 
