@@ -34,12 +34,6 @@ namespace WikiLibs.Models.Output.Symbols
             public List<Exception> Exceptions { get; set; }
         }
 
-        public class LangObject
-        {
-            public string Name { get; set; }
-            public string DisplayName { get; set; }
-        }
-
         public class LibObject
         {
             public long Id { get; set; }
@@ -56,7 +50,7 @@ namespace WikiLibs.Models.Output.Symbols
         public long Views { get; set; }
         public string UserId { get; set; }
         public DateTime LastModificationDate { get; set; }
-        public LangObject Lang { get; set; }
+        public Lang Lang { get; set; }
         public LibObject Lib { get; set; }
         public string Import { get; set; }
         public TypeObject Type { get; set; }
@@ -70,11 +64,7 @@ namespace WikiLibs.Models.Output.Symbols
             Views = model.Views;
             UserId = model.UserId;
             LastModificationDate = model.LastModificationDate;
-            Lang = new LangObject()
-            {
-                Name = model.Lang.Name,
-                DisplayName = model.Lang.DisplayName
-            };
+            Lang = Lang.CreateModel(model.Lang);
             Lib = new LibObject()
             {
                 Name = model.Lib.Name,
