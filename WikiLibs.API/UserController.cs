@@ -25,13 +25,13 @@ namespace WikiLibs.API
         }
 
         [AllowAnonymous]
-        [ProducesResponseType(200, Type = typeof(Models.Output.User))]
+        [ProducesResponseType(200, Type = typeof(Models.Output.UserGlobal))]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet("{uid}")]
         public async Task<IActionResult> GetUser([FromRoute] string uid)
         {
             var mdl = await _ummgr.GetAsync(uid);
-            var data = Models.Output.User.CreateModel(mdl);
+            var data = Models.Output.UserGlobal.CreateModel(mdl);
 
             if (data.Private)
             {
@@ -42,12 +42,12 @@ namespace WikiLibs.API
             return (Json(data));
         }
 
-        [ProducesResponseType(200, Type = typeof(Models.Output.User))]
+        [ProducesResponseType(200, Type = typeof(Models.Output.UserLocal))]
         [HttpGet("me")]
         public async Task<IActionResult> GetMe()
         {
             var mdl = await _ummgr.GetAsync(_user.UserId);
-            return (Json(Models.Output.User.CreateModel(mdl)));
+            return (Json(Models.Output.UserLocal.CreateModel(mdl)));
         }
 
         [HttpDelete("{uid}")]
@@ -82,6 +82,7 @@ namespace WikiLibs.API
             return (Ok());
         }
 
+        [ProducesResponseType(200, Type = typeof(Models.Output.UserGlobal))]
         [HttpPatch("{uid}")]
         public async Task<IActionResult> PatchUser([FromRoute] string uid, [FromBody] UserUpdateGlobal usr)
         {
@@ -95,9 +96,10 @@ namespace WikiLibs.API
                 };
 
             var mdl = await _ummgr.PatchAsync(uid, usr.CreatePatch(await _ummgr.GetAsync(uid)));
-            return (Json(Models.Output.User.CreateModel(mdl)));
+            return (Json(Models.Output.UserGlobal.CreateModel(mdl)));
         }
 
+        [ProducesResponseType(200, Type = typeof(Models.Output.UserLocal))]
         [HttpPatch("me")]
         public async Task<IActionResult> PatchMe([FromBody] UserUpdate usr)
         {
@@ -119,7 +121,7 @@ namespace WikiLibs.API
                 };
 
             var mdl = await _ummgr.PatchAsync(_user.UserId, usr.CreatePatch(_user.User));
-            return (Json(Models.Output.User.CreateModel(mdl)));
+            return (Json(Models.Output.UserLocal.CreateModel(mdl)));
         }
 
         [AllowAnonymous]
