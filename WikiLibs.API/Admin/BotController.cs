@@ -108,7 +108,7 @@ namespace WikiLibs.API.Admin
         }
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.User>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.UserGlobal>))]
         public IActionResult Get()
         {
             if (!_user.HasPermission(Permissions.LIST_BOT))
@@ -118,7 +118,7 @@ namespace WikiLibs.API.Admin
                     ResourceType = typeof(Data.Models.User),
                     MissingPermission = Permissions.LIST_BOT
                 };
-            return (Json(Models.Output.User.CreateModels(_userManager.Get(e => e.IsBot))));
+            return (Json(Models.Output.UserGlobal.CreateModels(_userManager.Get(e => e.IsBot))));
         }
     }
 }

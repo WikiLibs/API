@@ -34,7 +34,7 @@ namespace WikiLibs.Shared.Modules.Symbols
         {
             Id = model.Id;
             Path = model.Path;
-            TypeName = model.Type.DisplayName;
+            TypeName = model.Type.DisplayName != null ? model.Type.DisplayName : model.Type.Name;
             Lib = new LibObject()
             {
                 Name = model.Lib.Name,

@@ -28,7 +28,7 @@ namespace WikiLibs.API.Tests
             await Context.SaveChangesAsync();
             var controller = new UserController(User, Manager);
             var res = await controller.GetMe() as JsonResult;
-            var usr = res.Value as Models.Output.User;
+            var usr = res.Value as Models.Output.UserLocal;
             Assert.AreEqual("Dev", usr.FirstName);
             Assert.AreEqual("DEV", usr.LastName);
             Assert.AreEqual("dev@localhost", usr.Email);
@@ -42,7 +42,7 @@ namespace WikiLibs.API.Tests
             await Context.SaveChangesAsync();
             var controller = new UserController(User, Manager);
             var res = await controller.GetUser(User.UserId) as JsonResult;
-            var usr = res.Value as Models.Output.User;
+            var usr = res.Value as Models.Output.UserGlobal;
             Assert.IsNull(usr.FirstName);
             Assert.IsNull(usr.LastName);
             Assert.IsNull(usr.Email);
@@ -73,7 +73,7 @@ namespace WikiLibs.API.Tests
                 Pseudo = "dev4"
             }));
             var res = await controller.GetMe() as JsonResult;
-            var usr = res.Value as Models.Output.User;
+            var usr = res.Value as Models.Output.UserLocal;
             Assert.AreEqual("Dev", usr.FirstName);
             Assert.AreEqual("DEV", usr.LastName);
             Assert.AreEqual("dev@localhost", usr.Email);
@@ -114,7 +114,7 @@ namespace WikiLibs.API.Tests
                 Email = "dev123@localhost"
             }));
             var res = await controller.GetMe() as JsonResult;
-            var usr = res.Value as Models.Output.User;
+            var usr = res.Value as Models.Output.UserLocal;
             Assert.AreEqual("Dev", usr.FirstName);
             Assert.AreEqual("DEV", usr.LastName);
             Assert.AreEqual("dev@localhost", usr.Email);
@@ -137,7 +137,7 @@ namespace WikiLibs.API.Tests
                 Pseudo = "dev4"
             }));
             var res = await controller.GetMe() as JsonResult;
-            var usr = res.Value as Models.Output.User;
+            var usr = res.Value as Models.Output.UserLocal;
             Assert.AreEqual("Dev", usr.FirstName);
             Assert.AreEqual("DEV", usr.LastName);
             Assert.AreEqual("dev@localhost", usr.Email);

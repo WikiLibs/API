@@ -105,7 +105,7 @@ namespace WikiLibs.API.Tests
             var controller = new BotController(Manager, new AdminManager(Context, LogUtils.FakeLogger<AdminManager>()), User);
             await PostTestBot(controller);
             var res = controller.Get() as JsonResult;
-            var elems = res.Value as IEnumerable<Models.Output.User>;
+            var elems = res.Value as IEnumerable<Models.Output.UserGlobal>;
 
             Assert.AreEqual(1, elems.Count());
             User.SetPermissions(new string[] { });
