@@ -42,7 +42,10 @@ namespace WikiLibs.Examples
                     ResourceName = mdl.Description,
                     ResourceType = typeof(Example)
                 };
-            return await base.PostAsync(mdl);
+            var data = await base.PostAsync(mdl);
+            data.User.Points += ExampleRequestManager.NB_POINTS_ACCEPT;
+            await SaveChanges();
+            return data;
         }
 
         public override async Task<Example> PatchAsync(long key, Example mdl)

@@ -13,7 +13,7 @@ namespace WikiLibs.Examples
 {
     public class ExampleRequestManager : BaseCRUDOperations<Context, ExampleRequest>, IExampleRequestManager
     {
-        private const int NB_POINTS_ACCEPT = 5;
+        public const int NB_POINTS_ACCEPT = 5;
         private const int NB_POINTS_REJECT = -5;
 
         public ExampleRequestManager(Context ctx, Config cfg) : base(ctx)
