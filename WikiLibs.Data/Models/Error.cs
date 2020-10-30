@@ -15,5 +15,8 @@ namespace WikiLibs.Data.Models
 
         //The error data (exception.ToString in C#)
         public string ErrorData { get; set; }
+
+        //Date and time of error
+        public DateTime ErrorDate { get; set; }
     }
 }

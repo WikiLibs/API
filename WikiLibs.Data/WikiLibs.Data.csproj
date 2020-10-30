@@ -45,6 +45,8 @@
     <Compile Remove="Migrations\20200711091803_AddExceptions.Designer.cs" />
     <Compile Remove="Migrations\20201030084556_AddExampleVotes.cs" />
     <Compile Remove="Migrations\20201030084556_AddExampleVotes.Designer.cs" />
+    <Compile Remove="Migrations\20201030143506_AddErrorReporting.cs" />
+    <Compile Remove="Migrations\20201030143506_AddErrorReporting.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

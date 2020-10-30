@@ -10,7 +10,7 @@ using WikiLibs.Data;
 namespace WikiLibs.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20201030143506_AddErrorReporting")]
+    [Migration("20201030152441_AddErrorReporting")]
     partial class AddErrorReporting
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,9 @@ namespace WikiLibs.Data.Migrations
 
                     b.Property<string>("ErrorData")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ErrorDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ErrorMessage")
                         .HasColumnType("nvarchar(max)");

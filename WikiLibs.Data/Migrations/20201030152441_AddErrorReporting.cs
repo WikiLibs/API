@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WikiLibs.Data.Migrations
 {
@@ -16,7 +17,8 @@ namespace WikiLibs.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(nullable: true),
                     ErrorMessage = table.Column<string>(nullable: true),
-                    ErrorData = table.Column<string>(nullable: true)
+                    ErrorData = table.Column<string>(nullable: true),
+                    ErrorDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {

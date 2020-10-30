@@ -60,6 +60,9 @@ namespace WikiLibs.Data.Migrations
                     b.Property<string>("ErrorData")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("ErrorDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ErrorMessage")
                         .HasColumnType("nvarchar(max)");
 
