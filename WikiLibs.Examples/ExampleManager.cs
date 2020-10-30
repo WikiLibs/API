@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Data;
+using WikiLibs.Data.Models;
 using WikiLibs.Data.Models.Examples;
 using WikiLibs.Shared;
 using WikiLibs.Shared.Modules.Examples;
+using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Examples
 {
@@ -42,7 +44,10 @@ namespace WikiLibs.Examples
                     ResourceName = mdl.Description,
                     ResourceType = typeof(Example)
                 };
-            return await base.PostAsync(mdl);
+            var data = await base.PostAsync(mdl);
+            data.User.Points += ExampleRequestManager.NB_POINTS_ACCEPT;
+            await SaveChanges();
+            return data;
         }
 
         public override async Task<Example> PatchAsync(long key, Example mdl)
@@ -61,6 +66,59 @@ namespace WikiLibs.Examples
             }
             await SaveChanges();
             return (ex);
+        }
+
+        public async Task UpVote(IUser user, long exampleId)
+        {
+            var tbl = await Context.ExampleVotes.FindAsync(new object[] { user.UserId, exampleId });
+
+            if (tbl != null)
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceType = typeof(ExampleVote),
+                    ResourceName = "ExampleVote",
+                    ResourceId = exampleId.ToString(),
+                    MissingPermission = "User has already voted"
+                };
+            var ex = await GetAsync(exampleId);
+            ++ex.VoteCount;
+            await SaveChanges();
+            await Context.ExampleVotes.AddAsync(new ExampleVote()
+            {
+                UserId = user.UserId,
+                ExampleId = exampleId
+            });
+            await SaveChanges();
+        }
+
+        public async Task DownVote(IUser user, long exampleId)
+        {
+            var tbl = await Context.ExampleVotes.FindAsync(new object[] { user.UserId, exampleId });
+
+            if (tbl != null)
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceType = typeof(ExampleVote),
+                    ResourceName = "ExampleVote",
+                    ResourceId = exampleId.ToString(),
+                    MissingPermission = "User has already voted"
+                };
+            var ex = await GetAsync(exampleId);
+            --ex.VoteCount;
+            await SaveChanges();
+            await Context.ExampleVotes.AddAsync(new ExampleVote()
+            {
+                UserId = user.UserId,
+                ExampleId = exampleId
+            });
+            await SaveChanges();
+        }
+
+        public bool HasAlreadyVoted(IUser user, long exampleId)
+        {
+            var tbl = Context.ExampleVotes.Find(new object[] { user.UserId, exampleId });
+
+            return tbl != null;
         }
     }
 }

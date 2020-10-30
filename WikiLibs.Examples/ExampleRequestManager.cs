@@ -13,6 +13,9 @@ namespace WikiLibs.Examples
 {
     public class ExampleRequestManager : BaseCRUDOperations<Context, ExampleRequest>, IExampleRequestManager
     {
+        public const int NB_POINTS_ACCEPT = 5;
+        private const int NB_POINTS_REJECT = -5;
+
         public ExampleRequestManager(Context ctx, Config cfg) : base(ctx)
         {
             MaxResults = cfg.MaxExampleRequestsPerPage;
@@ -22,6 +25,11 @@ namespace WikiLibs.Examples
         {
             var ex = await GetAsync(key);
 
+            if (ex.Data != null)
+            {
+                ex.Data.User.Points += NB_POINTS_ACCEPT;
+                await SaveChanges();
+            }
             if (ex.Type == ExampleRequestType.POST)
             {
                 ex.Data.RequestId = null;
@@ -51,6 +59,16 @@ namespace WikiLibs.Examples
                 Context.Examples.Remove(ex.Data);
                 await SaveChanges();
             }
+        }
+
+        public override async Task<ExampleRequest> DeleteAsync(ExampleRequest model)
+        {
+            if (model.Data != null)
+            {
+                model.Data.User.Points += NB_POINTS_REJECT;
+                await SaveChanges();
+            }
+            return await base.DeleteAsync(model);
         }
 
         public IQueryable<ExampleRequest> GetForSymbol(long symbol)

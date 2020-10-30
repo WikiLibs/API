@@ -262,6 +262,40 @@ namespace WikiLibs.API.Tests
         }
 
         [Test]
+        public async Task Vote_1()
+        {
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
+            {
+                MaxSymsPerPage = 15
+            }), User));
+            await PostTestExample(sym);
+
+            Assert.IsFalse(Manager.HasAlreadyVoted(User, 1));
+            await Manager.UpVote(User, 1);
+            Assert.IsTrue(Manager.HasAlreadyVoted(User, 1));
+            Assert.AreEqual(1, Context.Examples.First().VoteCount);
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => Manager.UpVote(User, 1));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => Manager.DownVote(User, 1));
+        }
+
+        [Test]
+        public async Task Vote_2()
+        {
+            var sym = await PostTestSymbol(new Symbols.SymbolController(new SymbolManager(Context, new WikiLibs.Symbols.Config()
+            {
+                MaxSymsPerPage = 15
+            }), User));
+            await PostTestExample(sym);
+
+            Assert.IsFalse(Manager.HasAlreadyVoted(User, 1));
+            await Manager.DownVote(User, 1);
+            Assert.IsTrue(Manager.HasAlreadyVoted(User, 1));
+            Assert.AreEqual(-1, Context.Examples.First().VoteCount);
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => Manager.UpVote(User, 1));
+            Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => Manager.DownVote(User, 1));
+        }
+
+        [Test]
         public async Task Controller_Post()
         {
             var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()

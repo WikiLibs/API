@@ -318,7 +318,9 @@ namespace WikiLibs.API.Tests
             await PostTestExampleRequest();
             Assert.AreEqual(1, Context.Examples.Count());
             Assert.IsNotNull(Context.Examples.First().Request);
+            Assert.AreEqual(0, User.Points);
             await Manager.ApplyRequest(Context.ExampleRequests.First().Id);
+            Assert.AreEqual(5, User.Points);
             Assert.AreEqual(1, Context.Examples.Count());
             Assert.IsNull(Context.Examples.First().Request);
         }
@@ -329,7 +331,9 @@ namespace WikiLibs.API.Tests
             //POST request
             await PostTestExampleRequest();
             Assert.AreEqual(1, Context.ExampleRequests.Count());
+            Assert.AreEqual(0, User.Points);
             await Manager.ApplyRequest(Context.ExampleRequests.First().Id);
+            Assert.AreEqual(5, User.Points);
             Assert.AreEqual(0, Context.ExampleRequests.Count());
             Assert.AreEqual(1, Context.Examples.Count());
             Assert.IsNull(Context.Examples.First().Request);
@@ -359,7 +363,9 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, Context.ExampleRequests.Count());
             Assert.IsNull(Context.Examples.First().Request);
             Assert.IsNotNull(Context.Examples.ToList().Last().Request);
+            Assert.AreEqual(5, User.Points);
             await Manager.ApplyRequest(Context.ExampleRequests.First().Id);
+            Assert.AreEqual(10, User.Points);
             Assert.AreEqual(0, Context.ExampleRequests.Count());
             Assert.AreEqual("This has been updated", Context.Examples.First().Description);
             Assert.AreEqual(1, Context.ExampleCodeLines.Count());
@@ -599,7 +605,9 @@ namespace WikiLibs.API.Tests
             await PostTestExampleRequest();
 
             Assert.AreEqual(1, Context.ExampleRequests.Count());
+            Assert.AreEqual(0, User.Points);
             await controller.DeleteAsync(1);
+            Assert.AreEqual(-5, User.Points);
             Assert.AreEqual(0, Context.ExampleRequests.Count());
             Context.RemoveRange(Context.Symbols);
             await Context.SaveChangesAsync();
