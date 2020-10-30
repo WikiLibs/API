@@ -10,7 +10,7 @@ using WikiLibs.Data;
 namespace WikiLibs.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20201030084556_AddExampleVotes")]
+    [Migration("20201030092928_AddExampleVotes")]
     partial class AddExampleVotes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,6 +84,9 @@ namespace WikiLibs.Data.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("VoteCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

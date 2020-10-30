@@ -8,6 +8,12 @@ namespace WikiLibs.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "VoteCount",
+                table: "Examples",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.CreateTable(
                 name: "ExampleVotes",
                 columns: table => new
@@ -25,6 +31,10 @@ namespace WikiLibs.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ExampleVotes");
+
+            migrationBuilder.DropColumn(
+                name: "VoteCount",
+                table: "Examples");
         }
     }
 }
