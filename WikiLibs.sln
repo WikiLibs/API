@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.API.Tests", "WikiL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiLibs.Examples", "WikiLibs.Examples\WikiLibs.Examples.csproj", "{CADA800F-A61F-4C6A-B573-862392F3AE2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiLibs.Error", "WikiLibs.Error\WikiLibs.Error.csproj", "{F93D95C9-46C2-4D8B-91B1-4487F9E18124}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{CADA800F-A61F-4C6A-B573-862392F3AE2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CADA800F-A61F-4C6A-B573-862392F3AE2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CADA800F-A61F-4C6A-B573-862392F3AE2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F93D95C9-46C2-4D8B-91B1-4487F9E18124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F93D95C9-46C2-4D8B-91B1-4487F9E18124}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F93D95C9-46C2-4D8B-91B1-4487F9E18124}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F93D95C9-46C2-4D8B-91B1-4487F9E18124}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
