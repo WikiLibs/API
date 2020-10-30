@@ -119,5 +119,7 @@ namespace WikiLibs.Shared
         public const string UPDATE_SYMBOL_TYPE = "symbol.type.update";
         public const string DELETE_SYMBOL_TYPE = "symbol.type.delete";
         #endregion
+
+        public const string MANAGE_ERRORS = "errors";
     }
 }
