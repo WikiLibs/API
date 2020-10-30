@@ -270,7 +270,9 @@ namespace WikiLibs.API.Tests
             }), User));
             await PostTestExample(sym);
 
+            Assert.IsFalse(Manager.HasAlreadyVoted(User, 1));
             await Manager.UpVote(User, 1);
+            Assert.IsTrue(Manager.HasAlreadyVoted(User, 1));
             Assert.AreEqual(1, Context.Examples.First().VoteCount);
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => Manager.UpVote(User, 1));
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => Manager.DownVote(User, 1));
@@ -285,7 +287,9 @@ namespace WikiLibs.API.Tests
             }), User));
             await PostTestExample(sym);
 
+            Assert.IsFalse(Manager.HasAlreadyVoted(User, 1));
             await Manager.DownVote(User, 1);
+            Assert.IsTrue(Manager.HasAlreadyVoted(User, 1));
             Assert.AreEqual(-1, Context.Examples.First().VoteCount);
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => Manager.UpVote(User, 1));
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => Manager.DownVote(User, 1));
