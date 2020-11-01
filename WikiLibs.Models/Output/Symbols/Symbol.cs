@@ -99,8 +99,8 @@ namespace WikiLibs.Models.Output.Symbols
                         {
                             Id = param.SymbolRef.RefId.Value,
                             Path = param.SymbolRef.RefPath,
-                            Type = param.SymbolRef.Type.Name,
-                            FirstPrototype = param.SymbolRef.Prototypes.FirstOrDefault() != null ? param.SymbolRef.Prototypes.FirstOrDefault().Data : null
+                            Type = param.SymbolRef.Ref.Type.Name,
+                            FirstPrototype = param.SymbolRef.Ref.Prototypes.FirstOrDefault() != null ? param.SymbolRef.Ref.Prototypes.FirstOrDefault().Data : null
                         } : null,
                         Proto = param.Data
                     };
