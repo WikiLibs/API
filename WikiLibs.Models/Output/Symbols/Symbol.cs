@@ -98,7 +98,7 @@ namespace WikiLibs.Models.Output.Symbols
                         Ref = (param.SymbolRef != null && param.SymbolRef.RefId != null) ? new SymbolReference()
                         {
                             Id = param.SymbolRef.RefId.Value,
-                            Path = param.SymbolRef.RefPath
+                            Path = param.SymbolRef.RefPath,
                             Type = param.SymbolRef.Type.Name,
                             FirstPrototype = param.SymbolRef.Prototypes.FirstOrDefault() != null ? param.SymbolRef.Prototypes.FirstOrDefault().Data : null
                         } : null,
