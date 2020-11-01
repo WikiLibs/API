@@ -95,7 +95,13 @@ namespace WikiLibs.Models.Output.Symbols
                     Prototypes[i].Parameters[j] = new Prototype.Parameter()
                     {
                         Description = param.Description,
-                        Ref = (param.SymbolRef != null && param.SymbolRef.RefId != null) ? new SymbolReference() { Id = param.SymbolRef.RefId.Value, Path = param.SymbolRef.RefPath } : null,
+                        Ref = (param.SymbolRef != null && param.SymbolRef.RefId != null) ? new SymbolReference()
+                        {
+                            Id = param.SymbolRef.RefId.Value,
+                            Path = param.SymbolRef.RefPath
+                            Type = param.SymbolRef.Type.Name,
+                            FirstPrototype = param.SymbolRef.Prototypes.FirstOrDefault() != null ? param.SymbolRef.Prototypes.FirstOrDefault().Data : null
+                        } : null,
                         Proto = param.Data
                     };
                     ++j;
