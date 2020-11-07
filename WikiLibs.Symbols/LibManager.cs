@@ -1,51 +1,93 @@
-using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
-using Wikilibs.Data.Models.Lib;
-using WikiLibs.Shared;
 using System.Threading.Tasks;
-using WikiLibs.Shared.Helpers;
+using WikiLibs.Data;
+using WikiLibs.Data.Models.Symbols;
+using WikiLibs.Shared;
 using WikiLibs.Shared.Attributes;
-using Newtonsoft.Json;
-using Microsoft.EntityFrameworkCore;
-using WikiLibs.Shared.Modules.Symbol;
-using System.Configuration;
+using WikiLibs.Shared.Helpers;
+using WikiLibs.Shared.Modules.File;
+using WikiLibs.Shared.Modules.Symbols;
 
-namespace Wikilibs.Libs
+namespace WikiLibs.Symbols
 {
-    [Module(interface = typeof(ILibManager))]
-    public class LibManager : BaseCRUDOperations<Data.context, Lib>, ILibManager
+    public class LibManager : BaseCRUDOperations<Context, Lib>, ILibManager
     {
-        public ILibManager LibManager { get; }
-
-        public ICRUDOperations<Data.Models.Lib.Type> TypeManager { get; }
-
-        public LibManager(Data.Context db, Config cfg) : base(db)
+        public LibManager(Context db) : base(db)
         {
-            
+
         }
 
-        private void GetLibLangFromPath(Symbol sym, out string lib, out string lang)
+        public override Task<Lib> PostAsync(Lib mdl)
         {
-            string[] objs = sym.Path.Split('/');
-
-            lib = objs[1];
-            lang = objs[0];
+            if (Set.Any(e => e.Name == mdl.Name || e.DisplayName == mdl.DisplayName))
+                throw new Shared.Exceptions.ResourceAlreadyExists
+                {
+                    ResourceId = "0",
+                    ResourceName = mdl.Name,
+                    ResourceType = typeof(Lib)
+                };
+            return base.PostAsync(mdl);
         }
 
-        public override async Task<Lib> DeleteAsync(Lib lib)
+        public override async Task<Lib> PatchAsync(long key, Lib mdl)
         {
-            await base.DeleteAsync(sym);
-            string lib;
-            string lang;
-            GetLibLangFromPath(sym, out lib, out lang);
-            string libl = lang + "/" + lib;
+            if (Set.Any(e => e.Id == mdl.Id || e.DisplayName == mdl.DisplayName))
+                throw new Shared.Exceptions.ResourceAlreadyExists
+                {
+                    ResourceId = "0",
+                    ResourceName = mdl.Name,
+                    ResourceType = typeof(Lib)
+                };
+            var model = await GetAsync(key);
 
-            if (!Set.Any(sy => sy.Path.StartsWith(libl)))
-                Context.SymbolLibs.RemoveRange(Context.SymbolLibs.Where(e => e.Name == libl));
-            if (sym.Import != null && !Set.Any(sy => sy.Import != null && sy.Import.Name == sym.Import.Name))
-                Context.SymbolImports.RemoveRange(Context.SymbolImports.Where(e => e.Name == sym.Import.Name));
+            model.Copyright = mdl.Copyright;
+            model.Description = mdl.Description;
+            model.DisplayName = mdl.DisplayName;
             await SaveChanges();
-            return (sym);
+            return model;
         }
+
+        public async Task PostFileAsync(Lib data, ImageFile fle)
+        {
+            data.Icon = ImageUtils.ResizeImage(fle.OpenReadStream(), new Size(128, 128), ImageFormat.Png);
+            await SaveChanges();
+        }
+
+        class LibIcon : ImageFile
+        {
+            public override string ContentType => "image/png";
+
+            public override long Length => _data.Length;
+
+            public override string Name => "Image";
+
+            private byte[] _data;
+
+            public LibIcon(byte[] data)
+            {
+                _data = data;
+            }
+
+            public override Stream OpenReadStream()
+            {
+                return (new MemoryStream(_data));
+            }
+        }
+
+        public ImageFile GetFile(Lib data)
+        {
+            if (data.Icon == null || data.Icon.Length <= 0)
+                throw new Shared.Exceptions.ResourceNotFound()
+                {
+                    ResourceId = data.Id.ToString(),
+                    ResourceName = "Icon",
+                    ResourceType = typeof(Lib)
+                };
+            return new LibIcon(data.Icon);
+        }
+    }
 }
