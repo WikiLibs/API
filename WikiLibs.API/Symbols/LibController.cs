@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Threading.Tasks;
+using WikiLibs.Models.Input.Symbols;
+using WikiLibs.Models.Output.Symbols;
+using WikiLibs.Shared;
 using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Shared.Service;
@@ -10,6 +15,7 @@ using WikiLibs.Shared.Service;
 namespace WikiLibs.API.Symbols
 {
     [Route("/symbol/lib")]
+    [Authorize]
     public class LibController : Controller
     {
         private readonly ISymbolManager _symmgr;
@@ -30,6 +36,7 @@ namespace WikiLibs.API.Symbols
          */
 
         [HttpGet("{id}/tree/root")]
+        [AllowAnonymous]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.LightweightSymbol))]
         public async Task<IActionResult> GetTreeRoot([FromRoute] long id)
@@ -53,6 +60,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpGet("{id}/tree/{symid}")]
+        [AllowAnonymous]
         [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.LightweightSymbol))]
         public async Task<IActionResult> GetTree([FromRoute] long id, [FromRoute] long symid)
@@ -72,6 +80,43 @@ namespace WikiLibs.API.Symbols
                     lst.Add(Models.Output.Symbols.LightweightSymbol.CreateModel(rf.Ref));
             }
             return (Json(lst));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(Lib))]
+        public async Task<IActionResult> PostAsync([FromBody] LibCreate mdl)
+        {
+            if (!_user.HasPermission(Permissions.CREATE_LIB))
+                throw new Shared.Exceptions.InsuficientPermission
+                {
+                    ResourceId = "0",
+                    ResourceName = mdl.Name,
+                    ResourceType = typeof(Data.Models.Symbols.Lib),
+                    MissingPermission = Permissions.CREATE_LIB
+                };
+            var tmp = mdl.CreateModel();
+
+            tmp.UserId = _user.UserId;
+            var obj = await _symmgr.LibManager.PostAsync(tmp);
+            return Json(Lib.CreateModel(obj));
+        }
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200, Type = typeof(Lib))]
+        public async Task<IActionResult> PatchAsync([FromRoute] long id, [FromBody] LibUpdate mdl)
+        {
+            if (!_user.HasPermission(Permissions.UPDATE_LIB))
+                throw new Shared.Exceptions.InsuficientPermission
+                {
+                    ResourceId = "0",
+                    ResourceName = mdl.DisplayName,
+                    ResourceType = typeof(Data.Models.Symbols.Lib),
+                    MissingPermission = Permissions.UPDATE_LIB
+                };
+            var tmp = mdl.CreatePatch(await _symmgr.LibManager.GetAsync(id));
+            var obj = await _symmgr.LibManager.PatchAsync(id, tmp);
+
+            return Json(Lib.CreateModel(obj));
         }
     }
 }
