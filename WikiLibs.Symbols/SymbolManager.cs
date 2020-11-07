@@ -131,12 +131,13 @@ namespace WikiLibs.Symbols
             sym.Type = Context.SymbolTypes.Where(e => e.Name == type).FirstOrDefault();
             Lib l = await LibManager.Get(e => e.Name == libl).FirstOrDefaultAsync();
             if (l == null)
-                throw new ResourceNotFound
+            {
+                l = await LibManager.PostAsync(new Lib
                 {
-                    ResourceId = "0",
-                    ResourceName = libl,
-                    ResourceType = typeof(Lib)
-                };
+                    User = sym.User,
+                    Name = libl
+                });
+            }
             if (sym.Import != null)
             {
                 Import import = null;
