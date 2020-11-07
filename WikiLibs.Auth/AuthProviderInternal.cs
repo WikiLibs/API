@@ -88,6 +88,7 @@ namespace WikiLibs.Auth
                 Template = Shared.Modules.Smtp.Models.UserReset.Template,
                 Model = new Shared.Modules.Smtp.Models.UserReset()
                 {
+                    UserName = usr.FirstName + " " + usr.LastName,
                     NewPassword = usr.Pass
                 },
                 Recipients = new List<Recipient>()

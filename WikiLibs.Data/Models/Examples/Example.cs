@@ -13,6 +13,7 @@ namespace WikiLibs.Data.Models.Examples
         public string Description { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
+        public int VoteCount { get; set; }
 
         public virtual User User { get; set; }
         public virtual Symbol Symbol { get; set; }

@@ -65,14 +65,14 @@ namespace WikiLibs.Symbols
 
         public async Task PostFileAsync(Lang data, ImageFile fle)
         {
-            var res = ImageUtils.ResizeImage(fle.OpenReadStream(), new System.Drawing.Size(128, 128), System.Drawing.Imaging.ImageFormat.Jpeg);
+            var res = ImageUtils.ResizeImage(fle.OpenReadStream(), new System.Drawing.Size(128, 128), System.Drawing.Imaging.ImageFormat.Png);
             data.Icon = res;
             await SaveChanges();
         }
 
         class LangIcon : ImageFile
         {
-            public override string ContentType => "image/jpeg";
+            public override string ContentType => "image/png";
 
             public override long Length => _data.Length;
 

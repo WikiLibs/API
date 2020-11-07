@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Shared.Helpers;
 
@@ -9,35 +7,49 @@ namespace WikiLibs.Shared.Modules.Symbols
 {
     public class SymbolListItem : IPageResultModel<SymbolListItem, Symbol>
     {
+        public class LangObject
+        {
+            public long Id { get; set; }
+            public string Name { get; set; }
+            public string DisplayName { get; set; }
+        }
+
+        public class LibObject
+        {
+            public long Id { get; set; }
+            public string Name { get; set; }
+        }
+
         public long Id { get; set; }
         public string Path { get; set; }
         public string TypeName { get; set; }
-        public long TypeId { get; set; }
         public string UserId { get; set; }
         public string UserName { get; set; }
-        public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
-        public long LangId { get; set; }
-        public string LangName { get; set; }
-        public long LibId { get; set; }
-        public string LibName { get; set; }
+        public LangObject Lang { get; set; }
+        public LibObject Lib { get; set; }
         public long Views { get; set; }
 
         public SymbolListItem Map(Symbol model)
         {
             Id = model.Id;
             Path = model.Path;
-            TypeName = model.Type.DisplayName;
-            TypeId = model.Type.Id;
+            TypeName = model.Type.DisplayName != null ? model.Type.DisplayName : model.Type.Name;
+            Lib = new LibObject()
+            {
+                Name = model.Lib.Name,
+                Id = model.LibId
+            };
             UserId = model.UserId;
             UserName = model.User != null ? model.User.Pseudo : null;
             LastModificationDate = model.LastModificationDate;
-            CreationDate = model.CreationDate;
-            LangName = model.Lang.DisplayName;
-            LibName = model.Lib.Name;
             Views = model.Views;
-            LibId = model.LibId;
-            LangId = model.LangId;
+            Lang = new LangObject()
+            {
+                Id = model.LangId,
+                Name = model.Lang.Name,
+                DisplayName = model.Lang.DisplayName
+            };
             return (this);
         }
     }

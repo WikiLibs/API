@@ -26,6 +26,7 @@ namespace WikiLibs.Data
         public DbSet<ExampleRequest> ExampleRequests { get; set; }
         public DbSet<ExampleCodeLine> ExampleCodeLines { get; set; }
         public DbSet<ExampleComment> ExampleComments { get; set; }
+        public DbSet<ExampleVote> ExampleVotes { get; set; }
         #endregion
 
         #region BASE
@@ -215,6 +216,10 @@ namespace WikiLibs.Data
                     .HasForeignKey(e => e.ApplyToId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<ExampleVote>(builder =>
+            {
+                builder.HasKey(e => new { e.UserId, e.ExampleId });
             });
             #endregion
         }
