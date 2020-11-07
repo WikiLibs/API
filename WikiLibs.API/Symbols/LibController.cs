@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Permissions;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace WikiLibs.API.Symbols
 {
     [Route("/symbol/lib")]
     [Authorize]
-    public class LibController : Controller
+    public class LibController : FileController
     {
         private readonly ISymbolManager _symmgr;
         private readonly IUser _user;
@@ -105,18 +106,50 @@ namespace WikiLibs.API.Symbols
         [ProducesResponseType(200, Type = typeof(Lib))]
         public async Task<IActionResult> PatchAsync([FromRoute] long id, [FromBody] LibUpdate mdl)
         {
-            if (!_user.HasPermission(Permissions.UPDATE_LIB))
+            var obj1 = await _symmgr.LibManager.GetAsync(id);
+
+            if (!_user.HasPermission(Permissions.UPDATE_LIB) && _user.UserId  != obj1.UserId)
                 throw new Shared.Exceptions.InsuficientPermission
                 {
-                    ResourceId = "0",
+                    ResourceId = obj1.Id.ToString(),
                     ResourceName = mdl.DisplayName,
                     ResourceType = typeof(Data.Models.Symbols.Lib),
                     MissingPermission = Permissions.UPDATE_LIB
                 };
-            var tmp = mdl.CreatePatch(await _symmgr.LibManager.GetAsync(id));
+            var tmp = mdl.CreatePatch(obj1);
             var obj = await _symmgr.LibManager.PatchAsync(id, tmp);
 
             return Json(Lib.CreateModel(obj));
+        }
+
+        [AllowAnonymous]
+        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [HttpGet("{id}/icon")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        public async Task<IActionResult> GetIcon([FromRoute] long id)
+        {
+            var mdl = await _symmgr.LibManager.GetAsync(id);
+            var img = _symmgr.LibManager.GetFile(mdl);
+            return (Json(await img.ToBase64()));
+        }
+
+        [HttpPut("{id}/icon")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        //Parameter name is forced to be meaningless otherwise useless warning
+        public async Task<IActionResult> PutIcon([FromRoute] long id, [FromForm, Required] FormFile seryhk)
+        {
+            var obj1 = await _symmgr.LibManager.GetAsync(id);
+
+            if (!_user.HasPermission(Permissions.UPDATE_LIB) && _user.UserId != obj1.UserId)
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceName = "Icon",
+                    ResourceId = id.ToString(),
+                    ResourceType = typeof(Data.Models.Symbols.Lang),
+                    MissingPermission = Permissions.UPDATE_LIB
+                };
+            await _symmgr.LibManager.PostFileAsync(obj1, ImageFileFromForm(seryhk));
+            return (Ok());
         }
     }
 }
