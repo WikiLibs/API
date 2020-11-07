@@ -121,9 +121,9 @@ namespace WikiLibs.Shared
         #endregion
 
         #region LIB
-        public const string LIB = "lib.create";
-        public const string LIB = "lib.update";
-        public const string LIB = "lib.delete";
+        public const string CREATE_LIB = "lib.create";
+        public const string UPDATE_LIB = "lib.update";
+        public const string DELETE_LIB = "lib.delete";
         #endregion
     }
 }
