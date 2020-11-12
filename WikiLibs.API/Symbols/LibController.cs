@@ -151,5 +151,15 @@ namespace WikiLibs.API.Symbols
             await _symmgr.LibManager.PostFileAsync(obj1, ImageFileFromForm(seryhk));
             return (Ok());
         }
+
+        [AllowAnonymous]
+        [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Lib))]
+        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [HttpGet("/symbol/lib/{id}")]
+        public async Task<IActionResult> Get([FromQuery] long id)
+        {
+            var sym = await _symmgr.LibManager.GetAsync(id);
+            return (Json(Models.Output.Symbols.Lib.CreateModel(sym)));
+        }
     }
 }
