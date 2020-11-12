@@ -34,6 +34,7 @@ namespace WikiLibs.Data
         public DbSet<ApiKey> ApiKeys { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Error> Errors { get; set; }
         #endregion BASE
 
         public Context(DbContextOptions options)
