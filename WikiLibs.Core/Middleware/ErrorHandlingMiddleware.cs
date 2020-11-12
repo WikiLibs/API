@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Modules.Auth;
 
 namespace WikiLibs.Core.Middleware
@@ -42,7 +43,7 @@ namespace WikiLibs.Core.Middleware
             ctx.Response.Headers["Access-Control-Allow-Origin"] = "*";
         }
 
-        public async Task Invoke(HttpContext ctx)
+        public async Task Invoke(HttpContext ctx, IErrorManager manager)
         {
             JsonErrorResult res = null;
 
@@ -128,6 +129,12 @@ namespace WikiLibs.Core.Middleware
             catch (Exception ex)
             {
                 _telemetryClient.TrackException(ex);
+                await manager.PostAsync(new Data.Models.Error
+                {
+                    Description = "WikiLibs API Server",
+                    ErrorData = ex.ToString(),
+                    ErrorMessage = ex.Message
+                });
                 res = new JsonErrorResult()
                 {
                     Code = "500:Internal",

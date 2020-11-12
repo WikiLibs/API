@@ -125,5 +125,7 @@ namespace WikiLibs.Shared
         public const string UPDATE_LIB = "lib.update";
         public const string DELETE_LIB = "lib.delete";
         #endregion
+
+        public const string MANAGE_ERRORS = "errors";
     }
 }

@@ -10,6 +10,7 @@ namespace WikiLibs.Shared.Attributes
     [AttributeUsage(AttributeTargets.Method)]
     public class AuthorizeApiKey : Attribute
     {
+        public const int ErrorReport = 0x1;
         public const int Registration = 0x10;
         public const int Authentication = 0x20;
         public const int Standard = 0x40;
@@ -23,6 +24,8 @@ namespace WikiLibs.Shared.Attributes
         {
             switch (flag)
             {
+                case ErrorReport:
+                    return "ErrorReport";
                 case Registration:
                     return "Registration";
                 case Authentication:
