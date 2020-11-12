@@ -20,7 +20,7 @@ namespace WikiLibs.Core.Filters
             string controller = descriptor?.ControllerName;
             TypeInfo ctrl = descriptor?.ControllerTypeInfo;
             string action = descriptor?.ActionName;
-            IEnumerable<MethodInfo> methods = ctrl.GetMethods().Where(m => m.Name == action);
+            IEnumerable<MethodInfo> methods = ctrl.GetMethods().Where(m => m.Name == action || m.Name == action + "Async");
             var attribute = methods.Count() > 0 ? methods.ElementAt(0).GetCustomAttribute<AuthorizeApiKey>() : null;
             if (attribute == null)
                 return;
