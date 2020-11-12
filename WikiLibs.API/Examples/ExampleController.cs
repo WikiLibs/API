@@ -112,5 +112,43 @@ namespace WikiLibs.API.Examples
             else
                 return (Json(Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)))));
         }
+
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
+        public IActionResult Get([FromQuery] ExampleQuery query)
+        {
+            if (query == null || (query.Token == null && query.SymbolId == null))
+                throw new Shared.Exceptions.InvalidResource()
+                {
+                    ResourceName = "",
+                    PropertyName = "Must specify at lease one query parameter",
+                    ResourceType = typeof(Data.Models.Examples.Example)
+                };
+            if (query.SymbolId != null)
+                return (Json(Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value))));
+            else
+                return (Json(Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)))));
+        }
+
+        [HttpPost("/example/{id}/upvote")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
+        public async Task UpVote(IUser user, long exampleId)
+        {
+
+        }
+
+        [HttpPost("/example/{id}/downvote")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
+        public async Task DownVote(IUser user, long exampleId)
+        {
+
+        }
+
+        [HttpPost("/example/{id}/hasalreadyvoted")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
+        public async bool HasAlreadyVoted(IUser user, long exampleId)
+        {
+
+        }
     }
 }
