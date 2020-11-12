@@ -11,6 +11,7 @@ using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Shared.Service;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 
 namespace WikiLibs.API.Examples
 {
@@ -115,7 +116,7 @@ namespace WikiLibs.API.Examples
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
-        public IActionResult Get([FromQuery] ExampleQuery query)
+        public override IActionResult Get([FromQuery] ExampleQuery query)
         {
             if (query == null || (query.Token == null && query.SymbolId == null))
                 throw new Shared.Exceptions.InvalidResource()
@@ -134,7 +135,15 @@ namespace WikiLibs.API.Examples
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
         public async Task UpVote(IUser user, long exampleId)
         {
-
+            if (!_user.HasPermission(Permissions.UPDATE_EXAMPLE_COMMENT))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceId = "0",
+                    ResourceName = "",
+                    ResourceType = typeof(Data.Models.Examples.ExampleComment),
+                    MissingPermission = Permissions.DELETE_EXAMPLE_COMMENT
+                };
+            return Json();
         }
 
         [HttpPost("/example/{id}/downvote")]
@@ -144,11 +153,9 @@ namespace WikiLibs.API.Examples
 
         }
 
-        [HttpPost("/example/{id}/hasalreadyvoted")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
-        public async bool HasAlreadyVoted(IUser user, long exampleId)
+        public bool HasAlreadyVoted(IUser user, long exampleId)
         {
-
+            return true;
         }
     }
 }
