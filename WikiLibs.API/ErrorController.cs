@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Data.Models;
 using WikiLibs.Models.Input;
@@ -34,7 +32,7 @@ namespace WikiLibs.API
 
         [AuthorizeApiKey(Flag = AuthorizeApiKey.ErrorReport)]
         [HttpPost]
-        public async Task<IActionResult> PostAsync(ErrorCreate error)
+        public async Task<IActionResult> PostAsync([FromBody] ErrorCreate error)
         {
             var mdl = error.CreateModel();
             var key = await _apiKeys.GetAsync(_http.HttpContext.Request.Headers["Authorization"]);
@@ -61,7 +59,7 @@ namespace WikiLibs.API
 
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<IActionResult> DeleteAsync([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.MANAGE_ERRORS))
                 throw new Shared.Exceptions.InsuficientPermission()
