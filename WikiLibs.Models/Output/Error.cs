@@ -10,6 +10,7 @@ namespace WikiLibs.Models.Output
         public string Description { get; set; }
         public string ErrorData { get; set; }
         public string ErrorMessage { get; set; }
+        public DateTime ErrorDate { get; set; }
 
         public override void Map(in Data.Models.Error model)
         {
@@ -17,6 +18,7 @@ namespace WikiLibs.Models.Output
             Description = model.Description;
             ErrorData = model.ErrorData;
             ErrorMessage = model.ErrorMessage;
+            ErrorDate = model.ErrorDate;
         }
     }
 }
