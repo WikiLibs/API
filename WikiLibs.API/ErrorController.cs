@@ -45,6 +45,7 @@ namespace WikiLibs.API
 
         [Authorize]
         [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Error>))]
         public IActionResult GetErrors()
         {
             if (!_user.HasPermission(Permissions.MANAGE_ERRORS))
