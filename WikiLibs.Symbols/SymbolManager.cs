@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using WikiLibs.Data.Models.Symbols;
 using WikiLibs.Shared;
 using System.Threading.Tasks;
 using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Attributes;
-using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
+using WikiLibs.Shared.Exceptions;
 using WikiLibs.Shared.Modules.Symbols;
 
 namespace WikiLibs.Symbols
@@ -17,6 +15,8 @@ namespace WikiLibs.Symbols
     {
         public ILangManager LangManager { get; }
 
+        public ILibManager LibManager { get;  }
+
         public ICRUDOperations<Data.Models.Symbols.Type> TypeManager { get; }
 
         public SymbolManager(Data.Context db, Config cfg) : base(db)
@@ -24,6 +24,7 @@ namespace WikiLibs.Symbols
             MaxResults = cfg.MaxSymsPerPage;
             LangManager = new LangManager(db);
             TypeManager = new TypeManager(db);
+            LibManager = new LibManager(db);
         }
 
         private void GetLibLangFromPath(Symbol sym, out string lib, out string lang)
@@ -128,17 +129,15 @@ namespace WikiLibs.Symbols
                     ResourceName = sym.Path
                 };
             sym.Type = Context.SymbolTypes.Where(e => e.Name == type).FirstOrDefault();
-            Lib l = null;
-            if (!Context.SymbolLibs.Any(e => e.Name == libl))
+            Lib l = await LibManager.Get(e => e.Name == libl).FirstOrDefaultAsync();
+            if (l == null)
             {
-                l = new Lib()
+                l = await LibManager.PostAsync(new Lib
                 {
+                    User = sym.User,
                     Name = libl
-                };
-                Context.SymbolLibs.Add(l);
+                });
             }
-            else
-                l = Context.SymbolLibs.Where(e => e.Name == libl).FirstOrDefault();
             if (sym.Import != null)
             {
                 Import import = null;
