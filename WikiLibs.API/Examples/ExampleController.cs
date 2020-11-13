@@ -12,6 +12,7 @@ using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Shared.Service;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 
 namespace WikiLibs.API.Examples
 {
@@ -116,7 +117,7 @@ namespace WikiLibs.API.Examples
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
-        public override IActionResult Get([FromQuery] ExampleQuery query)
+        public IActionResult GetAuthenticated([FromQuery] ExampleQuery query)
         {
             if (query == null || (query.Token == null && query.SymbolId == null))
                 throw new Shared.Exceptions.InvalidResource()
@@ -126,36 +127,55 @@ namespace WikiLibs.API.Examples
                     ResourceType = typeof(Data.Models.Examples.Example)
                 };
             if (query.SymbolId != null)
-                return (Json(Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value))));
+            {
+                var tmp = Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value));
+                var tmp1 = tmp.Select(e =>
+                {
+                    e.HasVoted = _manager.HasAlreadyVoted(_user, e.Id);
+                    return e;
+                });
+                return (Json(tmp1));
+            }
             else
-                return (Json(Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)))));
+            {
+                var mdl = Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)));
+                var mdl1 = mdl.Select(e =>
+                {
+                    e.HasVoted = _manager.HasAlreadyVoted(_user, e.Id);
+                    return e;
+                });
+                return (Json(mdl1));
+            }
         }
 
         [HttpPost("/example/{id}/upvote")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
-        public async Task UpVote(IUser user, long exampleId)
+        public async Task<IActionResult> UpVote(IUser user, long exampleId)
         {
-            if (!_user.HasPermission(Permissions.UPDATE_EXAMPLE_COMMENT))
+            if (!_user.HasPermission(Permissions.UPDATE_EXAMPLE_VOTE))
                 throw new Shared.Exceptions.InsuficientPermission()
                 {
                     ResourceId = "0",
                     ResourceName = "",
                     ResourceType = typeof(Data.Models.Examples.ExampleComment),
-                    MissingPermission = Permissions.DELETE_EXAMPLE_COMMENT
+                    MissingPermission = Permissions.UPDATE_EXAMPLE_VOTE
                 };
-            return Json();
+            await _manager.UpVote(user, exampleId);
+            return (Ok());
         }
 
         [HttpPost("/example/{id}/downvote")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
-        public async Task DownVote(IUser user, long exampleId)
+        public async Task<IActionResult> DownVote(IUser user, long exampleId)
         {
-
-        }
-
-        public bool HasAlreadyVoted(IUser user, long exampleId)
-        {
-            return true;
+            if (!_user.HasPermission(Permissions.UPDATE_EXAMPLE_VOTE))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceId = "0",
+                    ResourceName = "",
+                    ResourceType = typeof(Data.Models.Examples.ExampleComment),
+                    MissingPermission = Permissions.UPDATE_EXAMPLE_VOTE
+                };
+            await _manager.DownVote(user, exampleId);
+            return (Ok());
         }
     }
 }
