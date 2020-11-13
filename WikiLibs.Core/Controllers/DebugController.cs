@@ -35,27 +35,21 @@ namespace WikiLibs.Core.Controllers
         }
 
 #if DEBUG
-        [HttpGet("/debug/mail")]
-        public async Task<IActionResult> SendTestEmail()
+        [HttpGet("/debug/error")]
+        public IActionResult Throw500()
         {
-            await _smtpManager.SendAsync(new Mail()
+            var g = new Random();
+            string obj = null;
+            var flag = g.Next(100) <= 20;
+            if (flag)
+                obj.Trim();
+            else
             {
-                Subject = "This is a test",
-                Template = "TestEmail",
-                Model = new TestEmailModel()
-                {
-                    Title = "This is a test message"
-                },
-                Recipients = new HashSet<Recipient>()
-                {
-                    new Recipient()
-                    {
-                        Email = "sldt.yuri6037@gmail.com",
-                        Name = "Yuri Edward"
-                    }
-                }
-            });
-            return (Ok());
+                int b = 0;
+                int res = 3 / b;
+                Console.WriteLine(res); //Yeah I know there's very very little chance this gets ever called :)
+            }
+            return Ok();
         }
 
         [HttpGet]
