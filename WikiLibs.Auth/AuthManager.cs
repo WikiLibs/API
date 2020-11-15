@@ -49,7 +49,7 @@ namespace WikiLibs.Auth
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature),
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, uuid)
+                    new Claim(ClaimTypes.NameIdentifier, uuid)
                 })
             };
             var token = handler.CreateToken(desc);

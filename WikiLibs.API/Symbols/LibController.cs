@@ -37,8 +37,7 @@ namespace WikiLibs.API.Symbols
          */
 
         [HttpGet("{id}/tree/root")]
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.LightweightSymbol))]
         public async Task<IActionResult> GetTreeRoot([FromRoute] long id)
         {
@@ -61,8 +60,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpGet("{id}/tree/{symid}")]
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.LightweightSymbol))]
         public async Task<IActionResult> GetTree([FromRoute] long id, [FromRoute] long symid)
         {
@@ -122,8 +120,7 @@ namespace WikiLibs.API.Symbols
             return Json(Lib.CreateModel(obj));
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("{id}/icon")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> GetIcon([FromRoute] long id)
@@ -152,9 +149,8 @@ namespace WikiLibs.API.Symbols
             return (Ok());
         }
 
-        [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Lib))]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("/symbol/lib/{id}")]
         public async Task<IActionResult> Get([FromQuery] long id)
         {

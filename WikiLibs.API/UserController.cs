@@ -24,9 +24,8 @@ namespace WikiLibs.API
             _ummgr = ummgr;
         }
 
-        [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(Models.Output.UserGlobal))]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("{uid}")]
         public async Task<IActionResult> GetUser([FromRoute] string uid)
         {
@@ -124,8 +123,7 @@ namespace WikiLibs.API
             return (Json(Models.Output.UserLocal.CreateModel(mdl)));
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("{uid}/icon")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> GetIconGlobal([FromRoute]string uid)

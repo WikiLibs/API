@@ -31,9 +31,8 @@ namespace WikiLibs.API.Symbols
             public string Path { get; set; }
         }
 
-        [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet]
         public async Task<IActionResult> GetSymbol([FromQuery] SymbolQuery query)
         {
@@ -145,8 +144,7 @@ namespace WikiLibs.API.Symbols
             return (Ok());
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("search")]
         [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
         public IActionResult SearchSymbols([FromQuery]SearchQuery options)

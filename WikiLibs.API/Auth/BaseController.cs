@@ -27,7 +27,7 @@ namespace WikiLibs.API.Auth
         }
 
         [HttpPost("bot")]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.AuthBot)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.AuthBot)]
         public async Task<IActionResult> BotLogin([FromBody, Required] Models.Input.Auth.Bot mdl)
         {
             var usr = await _userManager.GetAsync(mdl.AppId);

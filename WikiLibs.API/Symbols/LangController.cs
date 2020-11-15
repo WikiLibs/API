@@ -27,8 +27,7 @@ namespace WikiLibs.API.Symbols
             _user = usr;
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Symbols.Lang>))]
         public IActionResult AllLangs()
@@ -36,8 +35,7 @@ namespace WikiLibs.API.Symbols
             return (Json(Models.Output.Symbols.Lang.CreateModels(_symmgr.LangManager.GetAllLangs())));
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(PageResult<LibListItem>))]
         public IActionResult AllLibs([FromRoute]long id, [FromQuery]PageOptions options)
@@ -45,8 +43,7 @@ namespace WikiLibs.API.Symbols
             return (Json(_symmgr.LangManager.GetFirstLibs(id, options)));
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("{id}/icon")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> GetIcon([FromRoute]long id)

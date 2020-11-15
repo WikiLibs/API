@@ -85,18 +85,16 @@ namespace WikiLibs.API.Examples
             return (Ok());
         }
 
-        [AllowAnonymous]
         [HttpGet("{id}")]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Examples.Example))]
         public async Task<IActionResult> GetAsync([FromRoute] long id)
         {
             return (Json(Models.Output.Examples.Example.CreateModel(await _manager.GetAsync(id))));
         }
 
-        [AllowAnonymous]
         [HttpGet]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
         public IActionResult Get([FromQuery] ExampleQuery query)
         {

@@ -26,9 +26,8 @@ namespace WikiLibs.API.Symbols
             _user = usr;
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Symbols.Type>))]
         public IActionResult AllTypes()
         {

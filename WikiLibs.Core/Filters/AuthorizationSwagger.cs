@@ -12,35 +12,81 @@ namespace WikiLibs.Core.Filters
 {
     public class AuthorizationSwagger : IOperationFilter
     {
-        private List<string> ConvertAPIKeyFlagToName(IEnumerable<int> flags)
-        {
-            var strs = new List<string>();
-
-            foreach (var i in flags)
-            {
-                switch (i)
-                {
-                    case AuthorizeApiKey.Authentication:
-                        strs.Add("Authentication");
-                        break;
-                    case AuthorizeApiKey.Registration:
-                        strs.Add("Registration");
-                        break;
-                    case AuthorizeApiKey.Standard:
-                        strs.Add("Standard");
-                        break;
-                }
-            }
-            return (strs);
-        }
-
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var authBearer = context.MethodInfo
+            var attrs = context.MethodInfo
                 .GetCustomAttributes(true)
                 .OfType<AuthorizeAttribute>();
 
-            if (!authBearer.Any() && !context.MethodInfo.GetCustomAttributes(true).OfType<AllowAnonymousAttribute>().Any())
+            if (attrs.Any())
+            {
+                operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
+                operation.Security = new List<OpenApiSecurityRequirement>();
+            }
+            foreach (var a in attrs)
+            {
+                if (string.IsNullOrEmpty(a.AuthenticationSchemes) || a.AuthenticationSchemes == AuthPolicy.Bearer)
+                {
+                    //Handle bearer
+                    OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        {securityScheme, new string[] { }}
+                    });
+                }
+                else if (a.AuthenticationSchemes == AuthPolicy.ApiKey)
+                {
+                    //Handle api key
+                    OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Id = "APIKey",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        {securityScheme, new string[] { }}
+                    });
+                }
+                else if (a.AuthenticationSchemes == AuthPolicy.BearerOrApiKey)
+                {
+                    //Handle api key or bearer
+                    OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Id = "APIKey",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
+                    OpenApiSecurityScheme securityScheme1 = new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        {securityScheme, new string[] { }}
+                    });
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        {securityScheme1, new string[] { }}
+                    });
+                }
+            }
+            /*if (!authBearer.Any() && !context.MethodInfo.GetCustomAttributes(true).OfType<AllowAnonymousAttribute>().Any())
                 authBearer = context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
 
             var authApi = context.MethodInfo
@@ -83,7 +129,7 @@ namespace WikiLibs.Core.Filters
                 {
                     {securityScheme, new string[] { }}
                 });
-           }
+           }*/
         }
     }
 }

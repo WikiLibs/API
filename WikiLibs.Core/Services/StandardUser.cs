@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WikiLibs.Core.Auth;
 using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Core.Services
@@ -15,10 +16,12 @@ namespace WikiLibs.Core.Services
 
         public StandardUser(IHttpContextAccessor ctx, Data.Context dbCtx)
         {
-            if (ctx.HttpContext.User != null && ctx.HttpContext.User.Identity.IsAuthenticated)
+            if (ctx.HttpContext.User != null
+                && ctx.HttpContext.User.Identity.IsAuthenticated
+                && ctx.HttpContext.User.Identity.AuthenticationType != ApiKeyAuthentication.SCHEME)
             {
                  _perms = new Dictionary<string, bool>();
-                User = dbCtx.Users.Find(new object[] { ctx.HttpContext.User.FindFirst(ClaimTypes.Name).Value });
+                User = dbCtx.Users.Find(new object[] { ctx.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value });
                 foreach (var perm in User.Group.Permissions)
                     _perms[perm.Perm] = true;
                 _context = dbCtx;

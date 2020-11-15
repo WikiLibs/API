@@ -16,7 +16,7 @@ namespace WikiLibs.Core.Filters
     {
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
+            /*var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
             string controller = descriptor?.ControllerName;
             TypeInfo ctrl = descriptor?.ControllerTypeInfo;
             string action = descriptor?.ActionName;
@@ -69,7 +69,7 @@ namespace WikiLibs.Core.Filters
                     ResourceType = typeof(Data.Models.ApiKey)
                 };
             }
-            await adminmgr.ApiKeyManager.Use(auth);
+            await adminmgr.ApiKeyManager.Use(auth);*/
         }
     }
 }

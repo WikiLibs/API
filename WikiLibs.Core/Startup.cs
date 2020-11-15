@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,8 +17,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
+using WikiLibs.Core.Auth;
 using WikiLibs.Core.Filters;
 using WikiLibs.Core.Services;
+using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Service;
 
 namespace WikiLibs.Core
@@ -39,7 +43,7 @@ namespace WikiLibs.Core
             {
                 o.EnableEndpointRouting = false;
                 o.ModelMetadataDetailsProviders.Add(new ModelRequiredBinding());
-                o.Filters.Add(new Filters.ApiKeyFilter());
+                //o.Filters.Add(new Filters.ApiKeyFilter());
                 o.Filters.Add(new Filters.ModelStateFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
               .AddNewtonsoftJson(o =>
@@ -69,6 +73,25 @@ namespace WikiLibs.Core
             );
 
             services.AddSingleton<IModuleCollection>(collection);
+
+            services.AddAuthentication(ApiKeyAuthentication.SCHEME).AddScheme<AuthenticationSchemeOptions, ApiKeyAuthentication>(ApiKeyAuthentication.SCHEME, null);
+            /*services.AddAuthorization(o =>
+            {
+                var bp = new AuthorizationPolicyBuilder();
+                bp.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                var bp1 = bp.Build();
+                o.DefaultPolicy = bp1;
+                o.AddPolicy(AuthPolicy.Bearer, bp1);
+                o.AddPolicy(AuthPolicy.ApiKey, policy =>
+                {
+                    policy.AuthenticationSchemes.Add(ApiKeyAuthentication.SCHEME);
+                });
+                o.AddPolicy(AuthPolicy.BearerOrApiKey, policy =>
+                {
+                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    policy.AuthenticationSchemes.Add(ApiKeyAuthentication.SCHEME);
+                });
+            });*/
 
             services.AddSwaggerGen(c =>
             {
@@ -111,6 +134,7 @@ namespace WikiLibs.Core
             app.UseHttpsRedirection();
             app.UseCors("AllowAll");
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseMvc();
 
             using (var scope = app.ApplicationServices.CreateScope())

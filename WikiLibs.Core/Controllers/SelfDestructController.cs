@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace WikiLibs.Core.Controllers
             _context = ctx;
         }
 
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.SelfDestruct)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.SelfDestruct)]
         [HttpDelete("symbols")]
         public async Task<IActionResult> SelfDestructSymbols()
         {
@@ -47,7 +48,7 @@ namespace WikiLibs.Core.Controllers
             return (Ok());
         }
 
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.SelfDestruct)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.SelfDestruct)]
         [HttpDelete("all")]
         public async Task<IActionResult> SelfDestructAll()
         {

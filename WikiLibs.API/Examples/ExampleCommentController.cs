@@ -84,9 +84,8 @@ namespace WikiLibs.API.Examples
             return (Ok());
         }
 
-        [AllowAnonymous]
         [HttpGet]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(PageResult<Models.Output.Examples.ExampleComment>))]
         public IActionResult Get([FromQuery] ExampleCommentQuery query)
         {
