@@ -18,12 +18,14 @@ namespace WikiLibs.Core.Filters
                 .GetCustomAttributes(true)
                 .OfType<AuthorizeAttribute>();
 
+            if (!attrs.Any())
+                attrs = context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
             if (attrs.Any())
             {
                 operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
                 operation.Security = new List<OpenApiSecurityRequirement>();
             }
-            foreach (var a in attrs)
+            foreach (var a in attrs) //TODO: Fix missing authorization on some routes
             {
                 if (string.IsNullOrEmpty(a.AuthenticationSchemes) || a.AuthenticationSchemes == AuthPolicy.Bearer)
                 {
