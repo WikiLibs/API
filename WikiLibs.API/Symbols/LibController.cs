@@ -16,7 +16,6 @@ using WikiLibs.Shared.Service;
 namespace WikiLibs.API.Symbols
 {
     [Route("/symbol/lib")]
-    [Authorize]
     public class LibController : FileController
     {
         private readonly ISymbolManager _symmgr;
@@ -37,8 +36,7 @@ namespace WikiLibs.API.Symbols
          */
 
         [HttpGet("{id}/tree/root")]
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.LightweightSymbol))]
         public async Task<IActionResult> GetTreeRoot([FromRoute] long id)
         {
@@ -61,8 +59,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpGet("{id}/tree/{symid}")]
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.LightweightSymbol))]
         public async Task<IActionResult> GetTree([FromRoute] long id, [FromRoute] long symid)
         {
@@ -84,6 +81,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPost]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Lib))]
         public async Task<IActionResult> PostAsync([FromBody] LibCreate mdl)
         {
@@ -103,6 +101,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Lib))]
         public async Task<IActionResult> PatchAsync([FromRoute] long id, [FromBody] LibUpdate mdl)
         {
@@ -122,8 +121,7 @@ namespace WikiLibs.API.Symbols
             return Json(Lib.CreateModel(obj));
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("{id}/icon")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> GetIcon([FromRoute] long id)
@@ -134,6 +132,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPut("{id}/icon")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(string))]
         //Parameter name is forced to be meaningless otherwise useless warning
         public async Task<IActionResult> PutIcon([FromRoute] long id, [FromForm, Required] FormFile seryhk)
@@ -152,9 +151,8 @@ namespace WikiLibs.API.Symbols
             return (Ok());
         }
 
-        [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Lib))]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("/symbol/lib/{id}")]
         public async Task<IActionResult> Get([FromQuery] long id)
         {

@@ -42,7 +42,7 @@ namespace WikiLibs.API.Tests
         public async Task Controller_DELETE()
         {
             await PostTestError();
-            var controller = new ErrorController(User, Manager, null, new AdminManager(Context, LogUtils.FakeLogger<AdminManager>()));
+            var controller = new ErrorController(User, Manager);
 
             Assert.AreEqual(1, Context.Errors.Count());
             await controller.DeleteAsync(1);
@@ -55,7 +55,7 @@ namespace WikiLibs.API.Tests
         public async Task Controller_CLEANUP()
         {
             await PostTestError();
-            var controller = new ErrorController(User, Manager, null, new AdminManager(Context, LogUtils.FakeLogger<AdminManager>()));
+            var controller = new ErrorController(User, Manager);
 
             Assert.AreEqual(1, Context.Errors.Count());
             await controller.CleanupAsync();
@@ -68,7 +68,7 @@ namespace WikiLibs.API.Tests
         public async Task Controller_GET()
         {
             await PostTestError();
-            var controller = new ErrorController(User, Manager, null, new AdminManager(Context, LogUtils.FakeLogger<AdminManager>()));
+            var controller = new ErrorController(User, Manager);
             var res = controller.GetErrors() as JsonResult;
             var obj = res.Value as IEnumerable<Models.Output.Error>;
 

@@ -37,7 +37,7 @@ namespace WikiLibs.Admin
             {
                 manager.ApiKeyManager.PostAsync(new Data.Models.ApiKey()
                 {
-                    Flags = AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard,
+                    Flags = AuthorizeApiKey.FlagAuthentication | AuthorizeApiKey.FlagRegistration | AuthorizeApiKey.FlagStandard,
                     Description = "[WIKILIBS_SUPER_DEV_API_KEY]",
                     ExpirationDate = DateTime.MaxValue,
                     UseNum = -1

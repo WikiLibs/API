@@ -12,78 +12,81 @@ namespace WikiLibs.Core.Filters
 {
     public class AuthorizationSwagger : IOperationFilter
     {
-        private List<string> ConvertAPIKeyFlagToName(IEnumerable<int> flags)
-        {
-            var strs = new List<string>();
-
-            foreach (var i in flags)
-            {
-                switch (i)
-                {
-                    case AuthorizeApiKey.Authentication:
-                        strs.Add("Authentication");
-                        break;
-                    case AuthorizeApiKey.Registration:
-                        strs.Add("Registration");
-                        break;
-                    case AuthorizeApiKey.Standard:
-                        strs.Add("Standard");
-                        break;
-                }
-            }
-            return (strs);
-        }
-
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var authBearer = context.MethodInfo
+            var attrs = context.MethodInfo
                 .GetCustomAttributes(true)
-                .OfType<AuthorizeAttribute>();
+                .OfType<AuthorizeAttribute>()
+                .Concat(context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>());
 
-            if (!authBearer.Any() && !context.MethodInfo.GetCustomAttributes(true).OfType<AllowAnonymousAttribute>().Any())
-                authBearer = context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
-
-            var authApi = context.MethodInfo
-                .GetCustomAttributes(true)
-                .OfType<AuthorizeApiKey>()
-                .Select(attr => attr.Flag)
-                .Distinct();
-
-            if (authBearer.Any() || authApi.Any())
+            if (attrs.Any())
             {
                 operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
                 operation.Security = new List<OpenApiSecurityRequirement>();
             }
-            if (authBearer.Any())
+            foreach (var a in attrs)
             {
-                OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
+                if (a.Policy == AuthPolicy.Bearer)
                 {
-                    Reference = new OpenApiReference()
+                    //Handle bearer
+                    OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
                     {
-                        Id = "Bearer",
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-                operation.Security.Add(new OpenApiSecurityRequirement
+                        Reference = new OpenApiReference()
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        {securityScheme, new string[] { }}
+                    });
+                }
+                else if (a.Policy == AuthPolicy.ApiKey)
                 {
-                    {securityScheme, new string[] { }}
-                });
+                    //Handle api key
+                    OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Id = "APIKey",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        {securityScheme, new string[] { }}
+                    });
+                }
+                else if (a.Policy == AuthPolicy.BearerOrApiKey)
+                {
+                    //Handle api key or bearer
+                    OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Id = "APIKey",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
+                    OpenApiSecurityScheme securityScheme1 = new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        {securityScheme, new string[] { }}
+                    });
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        {securityScheme1, new string[] { }}
+                    });
+                }
             }
-            if (authApi.Any())
-            {
-                OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
-                {
-                    Reference = new OpenApiReference()
-                    {
-                        Id = "APIKey",
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-                operation.Security.Add(new OpenApiSecurityRequirement
-                {
-                    {securityScheme, new string[] { }}
-                });
-           }
         }
     }
 }

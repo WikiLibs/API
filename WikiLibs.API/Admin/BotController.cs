@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Shared;
+using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Modules.Admin;
@@ -15,7 +16,7 @@ using WikiLibs.Shared.Service;
 namespace WikiLibs.API.Admin
 {
     [Route("/bot")]
-    [Authorize]
+    [Authorize(Policy = AuthPolicy.Bearer)]
     public class BotController : FileController
     {
         private readonly IUserManager _userManager;

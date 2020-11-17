@@ -27,7 +27,7 @@ namespace WikiLibs.API.Auth
         }
 
         [HttpPost("bot")]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.AuthBot)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.AuthBot)]
         public async Task<IActionResult> BotLogin([FromBody, Required] Models.Input.Auth.Bot mdl)
         {
             var usr = await _userManager.GetAsync(mdl.AppId);
@@ -39,7 +39,7 @@ namespace WikiLibs.API.Auth
         }
 
         [HttpPatch("refresh")]
-        [Authorize]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public IActionResult Refresh()
         {
             return (Json(_authManager.Refresh(_user.UserId)));
