@@ -88,50 +88,6 @@ namespace WikiLibs.Core.Filters
                     });
                 }
             }
-            /*if (!authBearer.Any() && !context.MethodInfo.GetCustomAttributes(true).OfType<AllowAnonymousAttribute>().Any())
-                authBearer = context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
-
-            var authApi = context.MethodInfo
-                .GetCustomAttributes(true)
-                .OfType<AuthorizeApiKey>()
-                .Select(attr => attr.Flag)
-                .Distinct();
-
-            if (authBearer.Any() || authApi.Any())
-            {
-                operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
-                operation.Security = new List<OpenApiSecurityRequirement>();
-            }
-            if (authBearer.Any())
-            {
-                OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
-                {
-                    Reference = new OpenApiReference()
-                    {
-                        Id = "Bearer",
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-                operation.Security.Add(new OpenApiSecurityRequirement
-                {
-                    {securityScheme, new string[] { }}
-                });
-            }
-            if (authApi.Any())
-            {
-                OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
-                {
-                    Reference = new OpenApiReference()
-                    {
-                        Id = "APIKey",
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-                operation.Security.Add(new OpenApiSecurityRequirement
-                {
-                    {securityScheme, new string[] { }}
-                });
-           }*/
         }
     }
 }
