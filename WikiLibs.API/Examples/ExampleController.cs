@@ -15,7 +15,6 @@ using WikiLibs.Shared.Service;
 namespace WikiLibs.API.Examples
 {
     [Route("example")]
-    [Authorize]
     public class ExampleController : Controller
     {
         private readonly IUser _user;
@@ -36,6 +35,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpPost]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Examples.Example))]
         public async Task<IActionResult> PostAsync([FromBody, Required] Models.Input.Examples.ExampleCreate example)
         {
@@ -55,6 +55,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Examples.Example))]
         public async Task<IActionResult> PatchAsync([FromRoute] long id, [FromBody, Required] Models.Input.Examples.ExampleUpdate example)
         {
@@ -71,6 +72,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> DeleteAsync([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.DELETE_EXAMPLE))
@@ -86,7 +88,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpGet("{id}")]
-        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Examples.Example))]
         public async Task<IActionResult> GetAsync([FromRoute] long id)
         {
@@ -94,7 +96,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpGet]
-        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
         public IActionResult Get([FromQuery] ExampleQuery query)
         {

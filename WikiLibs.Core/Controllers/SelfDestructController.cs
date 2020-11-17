@@ -19,7 +19,7 @@ namespace WikiLibs.Core.Controllers
             _context = ctx;
         }
 
-        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.SelfDestruct)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.SelfDestruct)]
         [HttpDelete("symbols")]
         public async Task<IActionResult> SelfDestructSymbols()
         {
@@ -48,7 +48,7 @@ namespace WikiLibs.Core.Controllers
             return (Ok());
         }
 
-        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.SelfDestruct)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.SelfDestruct)]
         [HttpDelete("all")]
         public async Task<IActionResult> SelfDestructAll()
         {

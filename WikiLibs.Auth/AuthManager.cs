@@ -49,7 +49,8 @@ namespace WikiLibs.Auth
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature),
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, uuid)
+                    new Claim(ClaimTypes.NameIdentifier, uuid),
+                    new Claim(ClaimTypes.AuthenticationMethod, "Bearer")
                 })
             };
             var token = handler.CreateToken(desc);

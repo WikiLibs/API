@@ -12,7 +12,6 @@ using WikiLibs.Shared.Service;
 
 namespace WikiLibs.API.Symbols
 {
-    [Authorize]
     [Route("/symbol")]
     public class SymbolController : Controller
     {
@@ -32,7 +31,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
-        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet]
         public async Task<IActionResult> GetSymbol([FromQuery] SymbolQuery query)
         {
@@ -56,6 +55,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPost]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
         public async Task<IActionResult> PostSymbol([FromBody, Required] Models.Input.Symbols.SymbolCreate sym)
         {
@@ -74,6 +74,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPut("{*path}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
         public async Task<IActionResult> PutSymbol([FromRoute] string path, [FromBody, Required] Models.Input.Symbols.SymbolMerge sym)
         {
@@ -99,6 +100,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Symbol))]
         public async Task<IActionResult> PatchSymbol([FromRoute] long id, [FromBody, Required] Models.Input.Symbols.SymbolUpdate sym)
         {
@@ -115,6 +117,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> DeleteSymbol([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.DELETE_SYMBOL))
@@ -130,6 +133,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPatch("optimize")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> OptimizeAsync()
         {
             if (!_user.HasPermission(Permissions.OPTIMIZE_SYMBOL))
@@ -144,7 +148,7 @@ namespace WikiLibs.API.Symbols
             return (Ok());
         }
 
-        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("search")]
         [ProducesResponseType(200, Type = typeof(PageResult<SymbolListItem>))]
         public IActionResult SearchSymbols([FromQuery]SearchQuery options)

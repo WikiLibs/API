@@ -53,7 +53,8 @@ namespace WikiLibs.Core.Auth
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, mdl.Description),
-                new Claim(ClaimTypes.NameIdentifier, mdl.Id)
+                new Claim(ClaimTypes.NameIdentifier, mdl.Id),
+                new Claim(ClaimTypes.AuthenticationMethod, "APIKey")
             };
             foreach (var f in FLAGS)
             {

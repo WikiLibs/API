@@ -6,12 +6,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 using WikiLibs.Shared;
+using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules.Admin;
 using WikiLibs.Shared.Service;
 
 namespace WikiLibs.API.Admin
 {
-    [Authorize]
+    [Authorize(Policy = AuthPolicy.Bearer)]
     [Route("/admin/apikey")]
     public class ApiKeyController : Controller
     {

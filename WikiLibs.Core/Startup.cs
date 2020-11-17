@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -75,23 +76,25 @@ namespace WikiLibs.Core
             services.AddSingleton<IModuleCollection>(collection);
 
             services.AddAuthentication(ApiKeyAuthentication.SCHEME).AddScheme<AuthenticationSchemeOptions, ApiKeyAuthentication>(ApiKeyAuthentication.SCHEME, null);
-            /*services.AddAuthorization(o =>
+            services.AddAuthorization(o =>
             {
-                var bp = new AuthorizationPolicyBuilder();
-                bp.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-                var bp1 = bp.Build();
-                o.DefaultPolicy = bp1;
-                o.AddPolicy(AuthPolicy.Bearer, bp1);
+                o.AddPolicy(AuthPolicy.Bearer, policy =>
+                {
+                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireClaim(ClaimTypes.AuthenticationMethod, "Bearer");
+                });
                 o.AddPolicy(AuthPolicy.ApiKey, policy =>
                 {
                     policy.AuthenticationSchemes.Add(ApiKeyAuthentication.SCHEME);
+                    policy.RequireClaim(ClaimTypes.AuthenticationMethod, "APIKey");
                 });
                 o.AddPolicy(AuthPolicy.BearerOrApiKey, policy =>
                 {
                     policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                     policy.AuthenticationSchemes.Add(ApiKeyAuthentication.SCHEME);
+                    policy.RequireClaim(ClaimTypes.AuthenticationMethod, "Bearer", "APIKey");
                 });
-            });*/
+            });
 
             services.AddSwaggerGen(c =>
             {

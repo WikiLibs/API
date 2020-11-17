@@ -16,18 +16,17 @@ namespace WikiLibs.Core.Filters
         {
             var attrs = context.MethodInfo
                 .GetCustomAttributes(true)
-                .OfType<AuthorizeAttribute>();
+                .OfType<AuthorizeAttribute>()
+                .Concat(context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>());
 
-            if (!attrs.Any())
-                attrs = context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
             if (attrs.Any())
             {
                 operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
                 operation.Security = new List<OpenApiSecurityRequirement>();
             }
-            foreach (var a in attrs) //TODO: Fix missing authorization on some routes
+            foreach (var a in attrs)
             {
-                if (string.IsNullOrEmpty(a.AuthenticationSchemes) || a.AuthenticationSchemes == AuthPolicy.Bearer)
+                if (a.Policy == AuthPolicy.Bearer)
                 {
                     //Handle bearer
                     OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
@@ -43,7 +42,7 @@ namespace WikiLibs.Core.Filters
                         {securityScheme, new string[] { }}
                     });
                 }
-                else if (a.AuthenticationSchemes == AuthPolicy.ApiKey)
+                else if (a.Policy == AuthPolicy.ApiKey)
                 {
                     //Handle api key
                     OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
@@ -59,7 +58,7 @@ namespace WikiLibs.Core.Filters
                         {securityScheme, new string[] { }}
                     });
                 }
-                else if (a.AuthenticationSchemes == AuthPolicy.BearerOrApiKey)
+                else if (a.Policy == AuthPolicy.BearerOrApiKey)
                 {
                     //Handle api key or bearer
                     OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()

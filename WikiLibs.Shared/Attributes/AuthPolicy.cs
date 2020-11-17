@@ -8,6 +8,6 @@ namespace WikiLibs.Shared.Attributes
     {
         public const string Bearer = "Bearer";
         public const string ApiKey = "ApiKey";
-        public const string BearerOrApiKey = "Bearer, ApiKey";
+        public const string BearerOrApiKey = "BearerOrApiKey";
     }
 }

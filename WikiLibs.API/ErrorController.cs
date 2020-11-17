@@ -26,7 +26,7 @@ namespace WikiLibs.API
             _user = user;
         }
 
-        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.ErrorReport)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.ErrorReport)]
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] ErrorCreate error)
         {
@@ -39,7 +39,7 @@ namespace WikiLibs.API
             return Ok();
         }
 
-        [Authorize]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Error>))]
         public IActionResult GetErrors()
@@ -55,7 +55,7 @@ namespace WikiLibs.API
             return Json(Models.Output.Error.CreateModels(_errors.GetLatestErrors()));
         }
 
-        [Authorize]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] long id)
         {
@@ -71,7 +71,7 @@ namespace WikiLibs.API
             return Ok();
         }
 
-        [Authorize]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [HttpDelete]
         public async Task<IActionResult> CleanupAsync()
         {

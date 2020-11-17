@@ -21,7 +21,7 @@ namespace WikiLibs.API.Auth
             _internal = manager.GetAuthenticator("internal");
         }
 
-        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Authentication)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Authentication)]
         [HttpPost("login")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> Login([FromBody, Required] Models.Input.Auth.Login mdl)
@@ -35,7 +35,7 @@ namespace WikiLibs.API.Auth
             public string Email { get; set; }
         }
 
-        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Registration)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Registration)]
         [HttpPost("reset")]
         public async Task<IActionResult> Reset([FromBody, Required] ResetObject obj)
         {
@@ -43,7 +43,7 @@ namespace WikiLibs.API.Auth
             return (Ok());
         }
 
-        [Authorize(AuthenticationSchemes = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Registration)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Registration)]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody, Required] Models.Input.Users.UserCreate mdl)
         {
