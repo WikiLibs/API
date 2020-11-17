@@ -28,7 +28,7 @@ namespace WikiLibs.API.Tests
                 Description = "TEST_API_KEY",
                 Origin = "test",
                 ExpirationDate = DateTime.MaxValue,
-                Flags = AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard,
+                Flags = AuthorizeApiKey.FlagAuthentication | AuthorizeApiKey.FlagRegistration | AuthorizeApiKey.FlagStandard,
                 UseNum = 2
             });
             return (mdl.Id);
@@ -86,7 +86,7 @@ namespace WikiLibs.API.Tests
                 Description = "SUPER API KEY",
                 Origin = "test1",
                 ExpirationDate = DateTime.MaxValue,
-                Flags = AuthorizeApiKey.Authentication,
+                Flags = AuthorizeApiKey.FlagAuthentication,
                 UseNum = 3
             }.CreatePatch(await Manager.ApiKeyManager.GetAsync(key)));
             Assert.AreEqual(1, Context.ApiKeys.Count());
@@ -95,7 +95,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("test1", Context.ApiKeys.First().Origin);
             Assert.AreEqual(3, Context.ApiKeys.First().UseNum);
             Assert.AreEqual(DateTime.MaxValue, Context.ApiKeys.First().ExpirationDate);
-            Assert.AreEqual(AuthorizeApiKey.Authentication, Context.ApiKeys.First().Flags);
+            Assert.AreEqual(AuthorizeApiKey.FlagAuthentication, Context.ApiKeys.First().Flags);
         }
 
         [Test]
@@ -118,7 +118,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, mdl.UseNum);
             Assert.AreEqual(DateTime.MaxValue, mdl.ExpirationDate);
             Assert.AreEqual(key, mdl.Id);
-            Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, mdl.Flags);
+            Assert.AreEqual(AuthorizeApiKey.FlagAuthentication | AuthorizeApiKey.FlagRegistration | AuthorizeApiKey.FlagStandard, mdl.Flags);
         }
 
         [Test]
@@ -156,7 +156,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, res.First().UseNum);
             Assert.AreEqual(DateTime.MaxValue, res.First().ExpirationDate);
             Assert.AreEqual(key, res.First().Id);
-            Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, res.First().Flags);
+            Assert.AreEqual(AuthorizeApiKey.FlagAuthentication | AuthorizeApiKey.FlagRegistration | AuthorizeApiKey.FlagStandard, res.First().Flags);
         }
 
         [Test]
@@ -170,7 +170,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(2, res.First().UseNum);
             Assert.AreEqual(DateTime.MaxValue, res.First().ExpirationDate);
             Assert.AreEqual(key, res.First().Id);
-            Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, res.First().Flags);
+            Assert.AreEqual(AuthorizeApiKey.FlagAuthentication | AuthorizeApiKey.FlagRegistration | AuthorizeApiKey.FlagStandard, res.First().Flags);
         }
 
         public async Task PostTestGroup()
@@ -314,7 +314,7 @@ namespace WikiLibs.API.Tests
             {
                 Description = "TestKey",
                 ExpirationDate = DateTime.MaxValue,
-                Flags = AuthorizeApiKey.Standard,
+                Flags = AuthorizeApiKey.FlagStandard,
                 UseNum = -1
             }) as JsonResult;
             var obj = res.Value as Models.Output.Admin.ApiKey;
@@ -340,7 +340,7 @@ namespace WikiLibs.API.Tests
             var obj = res.Value as Models.Output.Admin.ApiKey;
 
             Assert.AreEqual("TestKey", obj.Description);
-            Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, obj.Flags);
+            Assert.AreEqual(AuthorizeApiKey.FlagAuthentication | AuthorizeApiKey.FlagRegistration | AuthorizeApiKey.FlagStandard, obj.Flags);
             Assert.AreEqual(0, obj.UseNum);
             User.SetPermissions(new string[] { });
             Assert.ThrowsAsync<Shared.Exceptions.InsuficientPermission>(() => controller.PatchAsync(str, null));
@@ -371,7 +371,7 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual(1, obj.Count());
             Assert.AreEqual("TEST_API_KEY", obj.First().Description);
             Assert.AreEqual(DateTime.MaxValue, obj.First().ExpirationDate);
-            Assert.AreEqual(AuthorizeApiKey.Authentication | AuthorizeApiKey.Registration | AuthorizeApiKey.Standard, obj.First().Flags);
+            Assert.AreEqual(AuthorizeApiKey.FlagAuthentication | AuthorizeApiKey.FlagRegistration | AuthorizeApiKey.FlagStandard, obj.First().Flags);
             Assert.AreEqual(2, obj.First().UseNum);
             User.SetPermissions(new string[] { });
             Assert.Throws<Shared.Exceptions.InsuficientPermission>(() => controller.Get());
