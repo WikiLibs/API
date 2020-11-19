@@ -13,6 +13,7 @@ using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Shared.Service;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using System.Security.Claims;
 
 namespace WikiLibs.API.Examples
 {
@@ -110,41 +111,34 @@ namespace WikiLibs.API.Examples
                     ResourceType = typeof(Data.Models.Examples.Example)
                 };
             if (query.SymbolId != null)
-                return (Json(Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value))));
-            else
-                return (Json(Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)))));
-        }
-
-        [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
-        public IActionResult GetAuthenticated([FromQuery] ExampleQuery query)
-        {
-            if (query == null || (query.Token == null && query.SymbolId == null))
-                throw new Shared.Exceptions.InvalidResource()
-                {
-                    ResourceName = "",
-                    PropertyName = "Must specify at lease one query parameter",
-                    ResourceType = typeof(Data.Models.Examples.Example)
-                };
-            if (query.SymbolId != null)
             {
-                var tmp = Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value));
-                var tmp1 = tmp.Select(e =>
+                if (User.FindFirst(ClaimTypes.AuthenticationMethod).Value == "Bearer")
                 {
-                    e.HasVoted = _manager.HasAlreadyVoted(_user, e.Id);
-                    return e;
-                });
-                return (Json(tmp1));
+                    var tmp = Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value));
+                    var tmp1 = tmp.Select(e =>
+                    {
+                        e.HasVoted = _manager.HasAlreadyVoted(_user, e.Id);
+                        return e;
+                    });
+                    return (Json(tmp1));
+                }
+                else
+                    return (Json(Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value))));
             }
             else
             {
-                var mdl = Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)));
-                var mdl1 = mdl.Select(e =>
+                if (User.FindFirst(ClaimTypes.AuthenticationMethod).Value == "Bearer")
                 {
-                    e.HasVoted = _manager.HasAlreadyVoted(_user, e.Id);
-                    return e;
-                });
-                return (Json(mdl1));
+                    var mdl = Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)));
+                    var mdl1 = mdl.Select(e =>
+                    {
+                        e.HasVoted = _manager.HasAlreadyVoted(_user, e.Id);
+                        return e;
+                    });
+                    return (Json(mdl1));
+                }
+                else 
+                    return (Json(Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)))));
             }
         }
 
