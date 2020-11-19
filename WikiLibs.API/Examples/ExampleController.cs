@@ -11,6 +11,9 @@ using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Shared.Service;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
+using System.Security.Claims;
 
 namespace WikiLibs.API.Examples
 {
@@ -96,10 +99,21 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpGet]
-        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.BearerOrApiKey)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
         public IActionResult Get([FromQuery] ExampleQuery query)
         {
+            if (User.FindFirst(ClaimTypes.AuthenticationMethod).Value == "APIKey")
+            {
+                if (!User.IsInRole(AuthorizeApiKey.Standard))
+                    throw new Shared.Exceptions.InsuficientPermission()
+                    {
+                        ResourceId = "0",
+                        ResourceName = "",
+                        ResourceType = typeof(Data.Models.Examples.ExampleComment),
+                        MissingPermission = "APIKey:Standard"
+                    };
+            }
             if (query == null || (query.Token == null && query.SymbolId == null))
                 throw new Shared.Exceptions.InvalidResource()
                 {
@@ -107,10 +121,50 @@ namespace WikiLibs.API.Examples
                     PropertyName = "Must specify at lease one query parameter",
                     ResourceType = typeof(Data.Models.Examples.Example)
                 };
+            IEnumerable<Models.Output.Examples.Example> tmp = null;
             if (query.SymbolId != null)
-                return (Json(Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value))));
+                tmp = Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value));
             else
-                return (Json(Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)))));
+                tmp = Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)));
+            if (User.FindFirst(ClaimTypes.AuthenticationMethod).Value == "Bearer")
+            { 
+                tmp = tmp.Select(e =>
+                {
+                    e.HasVoted = _manager.HasAlreadyVoted(_user, e.Id);
+                    return e;
+                });
+            }
+            return (Json(tmp));
+        }
+
+        [HttpPost("/example/{id}/upvote")]
+        public async Task<IActionResult> UpVote(IUser user, long exampleId)
+        {
+            if (!_user.HasPermission(Permissions.UPDATE_EXAMPLE_VOTE))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceId = "0",
+                    ResourceName = "",
+                    ResourceType = typeof(Data.Models.Examples.ExampleComment),
+                    MissingPermission = Permissions.UPDATE_EXAMPLE_VOTE
+                };
+            await _manager.UpVote(user, exampleId);
+            return (Ok());
+        }
+
+        [HttpPost("/example/{id}/downvote")]
+        public async Task<IActionResult> DownVote(IUser user, long exampleId)
+        {
+            if (!_user.HasPermission(Permissions.UPDATE_EXAMPLE_VOTE))
+                throw new Shared.Exceptions.InsuficientPermission()
+                {
+                    ResourceId = "0",
+                    ResourceName = "",
+                    ResourceType = typeof(Data.Models.Examples.ExampleComment),
+                    MissingPermission = Permissions.UPDATE_EXAMPLE_VOTE
+                };
+            await _manager.DownVote(user, exampleId);
+            return (Ok());
         }
     }
 }

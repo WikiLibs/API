@@ -19,6 +19,8 @@ namespace WikiLibs.Models.Output.Examples
         public string Description { get; set; }
         public DateTime CreationDate { get; set; }
         public ExampleCodeLine[] Code { get; set; }
+        public int VoteCount { get; set; }
+        public bool? HasVoted { get; set; }
 
         public override void Map(in Data.Models.Examples.Example model)
         {

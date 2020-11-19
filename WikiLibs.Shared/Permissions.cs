@@ -78,6 +78,11 @@ namespace WikiLibs.Shared
         /// List example requests
         /// </summary>
         public const string LIST_EXAMPLE_REQUEST = "example.requests.list";
+
+        /// <summary>
+        /// List example requests
+        /// </summary>
+        public const string UPDATE_EXAMPLE_VOTE = "example.vote";
         #endregion
 
         #region USERS
