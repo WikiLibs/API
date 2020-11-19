@@ -403,9 +403,37 @@ namespace WikiLibs.API.Tests
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
+            SetupUser(controller, "APIKey", "Standard");
             var res = controller.Get(new ExampleController.ExampleQuery() { SymbolId = 1 }) as JsonResult;
             var obj = res.Value as IEnumerable<Models.Output.Examples.Example>;
             Assert.AreEqual(1, obj.Count());
+            Assert.IsNull(obj.First().HasVoted);
+            Assert.AreEqual("This is a test example", obj.First().Description);
+            res = controller.Get(new ExampleController.ExampleQuery() { Token = "test" }) as JsonResult;
+            obj = res.Value as IEnumerable<Models.Output.Examples.Example>;
+            Assert.AreEqual(1, obj.Count());
+            Assert.AreEqual("This is a test example", obj.First().Description);
+        }
+
+        [Test]
+        public async Task Controller_GetByQuery_Authenticated()
+        {
+            var smanager = new SymbolManager(Context, new WikiLibs.Symbols.Config()
+            {
+                MaxSymsPerPage = 15
+            });
+            var controller = new ExampleController(User, new ExampleModule(Context, new WikiLibs.Examples.Config()
+            {
+                MaxExampleRequestsPerPage = 100
+            }), smanager);
+            var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
+            await PostTestExample(sym);
+
+            SetupUser(controller, "Bearer");
+            var res = controller.Get(new ExampleController.ExampleQuery() { SymbolId = 1 }) as JsonResult;
+            var obj = res.Value as IEnumerable<Models.Output.Examples.Example>;
+            Assert.AreEqual(1, obj.Count());
+            Assert.IsFalse(obj.First().HasVoted);
             Assert.AreEqual("This is a test example", obj.First().Description);
             res = controller.Get(new ExampleController.ExampleQuery() { Token = "test" }) as JsonResult;
             obj = res.Value as IEnumerable<Models.Output.Examples.Example>;
@@ -461,6 +489,7 @@ namespace WikiLibs.API.Tests
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
+            SetupUser(controller, "APIKey", "Standard");
             Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(new ExampleController.ExampleQuery()));
             Assert.Throws<Shared.Exceptions.InvalidResource>(() => controller.Get(null));
         }

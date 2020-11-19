@@ -1,10 +1,10 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using WikiLibs.Shared.Service;
+using System.Security.Claims;
 
 namespace WikiLibs.API.Tests.Helper
 {
@@ -36,6 +36,25 @@ namespace WikiLibs.API.Tests.Helper
             Context.Dispose();
             _connection.Close();
             Smtp = null;
+        }
+
+        public static void SetupUser(ControllerBase controller, string method, string role = "")
+        {
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, "Test User"),
+                new Claim(ClaimTypes.NameIdentifier, "userId"),
+                new Claim(ClaimTypes.AuthenticationMethod, method),
+                new Claim(ClaimTypes.Role, role)
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext()
+                {
+                    User = new ClaimsPrincipal(identity)
+                }
+            };
         }
     }
 }
