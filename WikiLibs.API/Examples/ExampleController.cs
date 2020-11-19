@@ -99,10 +99,21 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpGet]
-        [Authorize(Policy = AuthPolicy.BearerOrApiKey, Roles = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.BearerOrApiKey)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
         public IActionResult Get([FromQuery] ExampleQuery query)
         {
+            if (User.FindFirst(ClaimTypes.AuthenticationMethod).Value == "APIKey")
+            {
+                if (!User.IsInRole(AuthorizeApiKey.Standard))
+                    throw new Shared.Exceptions.InsuficientPermission()
+                    {
+                        ResourceId = "0",
+                        ResourceName = "",
+                        ResourceType = typeof(Data.Models.Examples.ExampleComment),
+                        MissingPermission = "APIKey:Standard"
+                    };
+            }
             if (query == null || (query.Token == null && query.SymbolId == null))
                 throw new Shared.Exceptions.InvalidResource()
                 {
