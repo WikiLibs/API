@@ -99,7 +99,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpGet]
-        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.BearerOrApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Examples.Example>))]
         public IActionResult Get([FromQuery] ExampleQuery query)
         {
@@ -110,36 +110,20 @@ namespace WikiLibs.API.Examples
                     PropertyName = "Must specify at lease one query parameter",
                     ResourceType = typeof(Data.Models.Examples.Example)
                 };
+            IEnumerable<Models.Output.Examples.Example> tmp = null;
             if (query.SymbolId != null)
-            {
-                if (User.FindFirst(ClaimTypes.AuthenticationMethod).Value == "Bearer")
-                {
-                    var tmp = Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value));
-                    var tmp1 = tmp.Select(e =>
-                    {
-                        e.HasVoted = _manager.HasAlreadyVoted(_user, e.Id);
-                        return e;
-                    });
-                    return (Json(tmp1));
-                }
-                else
-                    return (Json(Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value))));
-            }
+                tmp = Models.Output.Examples.Example.CreateModels(_manager.GetForSymbol(query.SymbolId.Value));
             else
-            {
-                if (User.FindFirst(ClaimTypes.AuthenticationMethod).Value == "Bearer")
+                tmp = Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)));
+            if (User.FindFirst(ClaimTypes.AuthenticationMethod).Value == "Bearer")
+            { 
+                tmp = tmp.Select(e =>
                 {
-                    var mdl = Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)));
-                    var mdl1 = mdl.Select(e =>
-                    {
-                        e.HasVoted = _manager.HasAlreadyVoted(_user, e.Id);
-                        return e;
-                    });
-                    return (Json(mdl1));
-                }
-                else 
-                    return (Json(Models.Output.Examples.Example.CreateModels(_manager.Get(e => e.Description.Contains(query.Token)))));
+                    e.HasVoted = _manager.HasAlreadyVoted(_user, e.Id);
+                    return e;
+                });
             }
+            return (Json(tmp));
         }
 
         [HttpPost("/example/{id}/upvote")]
