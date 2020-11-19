@@ -13,6 +13,8 @@ using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Symbols;
 using WikiLibs.API.Examples;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Threading;
 
 namespace WikiLibs.API.Tests
 {
@@ -411,6 +413,18 @@ namespace WikiLibs.API.Tests
             Assert.AreEqual("This is a test example", obj.First().Description);
         }
 
+        private void SetClaim()
+        {
+            var claims = new List<Claim>()
+            { 
+                new Claim(ClaimTypes.Name, "Test User"),
+                new Claim(ClaimTypes.NameIdentifier, "userId"),
+                new Claim(ClaimTypes.AuthenticationMethod, "Bearer")
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            Thread.CurrentPrincipal = new ClaimsPrincipal(identity);
+        }
+
         [Test]
         public async Task Controller_GetById()
         {
@@ -422,6 +436,7 @@ namespace WikiLibs.API.Tests
             {
                 MaxExampleRequestsPerPage = 100
             }), smanager);
+            SetClaim();
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
@@ -442,6 +457,7 @@ namespace WikiLibs.API.Tests
             {
                 MaxExampleRequestsPerPage = 100
             }), smanager);
+            SetClaim();
             var sym = await PostTestSymbol(new Symbols.SymbolController(smanager, User));
             await PostTestExample(sym);
 
