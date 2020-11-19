@@ -7,30 +7,42 @@ using System.Text;
 namespace WikiLibs.Shared.Attributes
 {
     [ExcludeFromCodeCoverage]
-    [AttributeUsage(AttributeTargets.Method)]
-    public class AuthorizeApiKey : Attribute
+    //[AttributeUsage(AttributeTargets.Method)]
+    public class AuthorizeApiKey/* : Attribute*/
     {
-        public const int Registration = 0x10;
-        public const int Authentication = 0x20;
-        public const int Standard = 0x40;
-        public const int AuthBot = 0x80;
-        public const int SelfDestruct = 0x100;
+        public const string ErrorReport = "ErrorReport";
+        public const string Registration = "Registration";
+        public const string Authentication = "Authentication";
+        public const string Standard = "Standard";
+        public const string AuthBot = "BotAuthentication";
+        public const string SelfDestruct = "SelfDestruct";
 
-        [Required]
-        public int Flag { get; set; }
+        public const int FlagErrorReport = 0x1;
+        public const int FlagRegistration = 0x10;
+        public const int FlagAuthentication = 0x20;
+        public const int FlagStandard = 0x40;
+        public const int FlagAuthBot = 0x80;
+        public const int FlagSelfDestruct = 0x100;
+
+        //[Required]
+        //public int Flag { get; set; }
 
         public static string GetFlagName(int flag)
         {
             switch (flag)
             {
-                case Registration:
-                    return "Registration";
-                case Authentication:
-                    return "Authentication";
-                case Standard:
-                    return "Standard";
-                case AuthBot:
-                    return "BotAuthentication";
+                case FlagErrorReport:
+                    return ErrorReport;
+                case FlagRegistration:
+                    return Registration;
+                case FlagAuthentication:
+                    return Authentication;
+                case FlagStandard:
+                    return Standard;
+                case FlagAuthBot:
+                    return AuthBot;
+                case FlagSelfDestruct:
+                    return SelfDestruct;
                 default:
                     return "Null";
             }

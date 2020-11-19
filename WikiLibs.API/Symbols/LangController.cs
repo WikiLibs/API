@@ -14,7 +14,6 @@ using WikiLibs.Shared.Service;
 
 namespace WikiLibs.API.Symbols
 {
-    [Authorize]
     [Route("/symbol/lang")]
     public class LangController : FileController
     {
@@ -27,8 +26,7 @@ namespace WikiLibs.API.Symbols
             _user = usr;
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Symbols.Lang>))]
         public IActionResult AllLangs()
@@ -36,8 +34,7 @@ namespace WikiLibs.API.Symbols
             return (Json(Models.Output.Symbols.Lang.CreateModels(_symmgr.LangManager.GetAllLangs())));
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(PageResult<LibListItem>))]
         public IActionResult AllLibs([FromRoute]long id, [FromQuery]PageOptions options)
@@ -45,8 +42,7 @@ namespace WikiLibs.API.Symbols
             return (Json(_symmgr.LangManager.GetFirstLibs(id, options)));
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("{id}/icon")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> GetIcon([FromRoute]long id)
@@ -57,6 +53,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPut("{id}/icon")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(string))]
         //Parameter name is forced to be meaningless otherwise useless warning
         public async Task<IActionResult> PutIcon([FromRoute]long id, [FromForm, Required]FormFile seryhk)
@@ -75,6 +72,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPost]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Lang))]
         public async Task<IActionResult> PostLang([FromBody, Required]LangCreate lang)
         {
@@ -91,6 +89,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Lang))]
         public async Task<IActionResult> PatchLang([FromRoute]long id, [FromBody, Required]LangUpdate lang)
         {
@@ -107,6 +106,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> DeleteLang([FromRoute]long id)
         {
             if (!_user.HasPermission(Permissions.DELETE_SYMBOL_LANG))

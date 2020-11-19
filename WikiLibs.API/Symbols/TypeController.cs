@@ -13,7 +13,6 @@ using WikiLibs.Shared.Service;
 
 namespace WikiLibs.API.Symbols
 {
-    [Authorize]
     [Route("/symbol/type")]
     public class TypeController : Controller
     {
@@ -26,9 +25,8 @@ namespace WikiLibs.API.Symbols
             _user = usr;
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
         [HttpGet]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Models.Output.Symbols.Type>))]
         public IActionResult AllTypes()
         {
@@ -36,6 +34,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPost]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Type))]
         public async Task<IActionResult> PostAsync([FromBody, Required]TypeCreate type)
         {
@@ -52,6 +51,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Type))]
         public async Task<IActionResult> PatchAsync([FromRoute]long id, [FromBody, Required]TypeUpdate type)
         {
@@ -68,6 +68,7 @@ namespace WikiLibs.API.Symbols
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> DeleteAsync([FromRoute]long id)
         {
             if (!_user.HasPermission(Permissions.DELETE_SYMBOL_TYPE))

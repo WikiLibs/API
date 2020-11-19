@@ -14,7 +14,6 @@ using WikiLibs.Shared.Service;
 namespace WikiLibs.API.Examples
 {
     [Route("example/comment")]
-    [Authorize]
     public class ExampleCommentController : Controller
     {
         private readonly IUser _user;
@@ -35,6 +34,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpPost]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Examples.Example))]
         public async Task<IActionResult> PostAsync([FromBody, Required] Models.Input.Examples.ExampleCommentCreate example)
         {
@@ -53,6 +53,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(Models.Output.Examples.Example))]
         public async Task<IActionResult> PatchAsync([FromRoute] long id, [FromBody, Required] Models.Input.Examples.ExampleCommentUpdate example)
         {
@@ -70,6 +71,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> DeleteAsync([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.DELETE_EXAMPLE))
@@ -84,9 +86,8 @@ namespace WikiLibs.API.Examples
             return (Ok());
         }
 
-        [AllowAnonymous]
         [HttpGet]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [ProducesResponseType(200, Type = typeof(PageResult<Models.Output.Examples.ExampleComment>))]
         public IActionResult Get([FromQuery] ExampleCommentQuery query)
         {

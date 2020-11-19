@@ -11,11 +11,12 @@ using WikiLibs.Shared.Helpers;
 using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Shared.Modules.Examples;
 using WikiLibs.Shared.Service;
+using WikiLibs.Shared.Attributes;
 
 namespace WikiLibs.API.Examples
 {
     [Route("example/request")]
-    [Authorize]
+    [Authorize(Policy = AuthPolicy.Bearer)]
     public class ExampleRequestController : Controller
     {
         private readonly IUser _user;

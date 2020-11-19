@@ -34,6 +34,7 @@ namespace WikiLibs.Data
         public DbSet<ApiKey> ApiKeys { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Error> Errors { get; set; }
         #endregion BASE
 
         public Context(DbContextOptions options)
@@ -67,6 +68,10 @@ namespace WikiLibs.Data
                     .HasForeignKey(e => e.UserId)
                     .OnDelete(DeleteBehavior.SetNull);
                 builder.HasMany<ExampleComment>()
+                    .WithOne(e => e.User)
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.SetNull);
+                builder.HasMany<Lib>()
                     .WithOne(e => e.User)
                     .HasForeignKey(e => e.UserId)
                     .OnDelete(DeleteBehavior.SetNull);

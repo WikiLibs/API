@@ -7,11 +7,9 @@ using WikiLibs.Shared;
 using WikiLibs.Shared.Attributes;
 using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Service;
-using static WikiLibs.API.FileController;
 
 namespace WikiLibs.API
 {
-    [Authorize]
     [Route("/user")]
     public class UserController : FileController
     {
@@ -24,9 +22,8 @@ namespace WikiLibs.API
             _ummgr = ummgr;
         }
 
-        [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(Models.Output.UserGlobal))]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("{uid}")]
         public async Task<IActionResult> GetUser([FromRoute] string uid)
         {
@@ -43,6 +40,7 @@ namespace WikiLibs.API
         }
 
         [ProducesResponseType(200, Type = typeof(Models.Output.UserLocal))]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [HttpGet("me")]
         public async Task<IActionResult> GetMe()
         {
@@ -51,6 +49,7 @@ namespace WikiLibs.API
         }
 
         [HttpDelete("{uid}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> DeleteUser([FromRoute] string uid)
         {
             if (!_user.HasPermission(Permissions.DELETE_USER))
@@ -67,6 +66,7 @@ namespace WikiLibs.API
         }
 
         [HttpDelete("me")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> DeleteUser()
         {
             if (!_user.HasPermission(Permissions.DELETE_ME))
@@ -84,6 +84,7 @@ namespace WikiLibs.API
 
         [ProducesResponseType(200, Type = typeof(Models.Output.UserGlobal))]
         [HttpPatch("{uid}")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> PatchUser([FromRoute] string uid, [FromBody] UserUpdateGlobal usr)
         {
             if (!_user.HasPermission(Permissions.UPDATE_USER))
@@ -101,6 +102,7 @@ namespace WikiLibs.API
 
         [ProducesResponseType(200, Type = typeof(Models.Output.UserLocal))]
         [HttpPatch("me")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> PatchMe([FromBody] UserUpdate usr)
         {
             if (!_user.HasPermission(Permissions.UPDATE_ME))
@@ -124,8 +126,7 @@ namespace WikiLibs.API
             return (Json(Models.Output.UserLocal.CreateModel(mdl)));
         }
 
-        [AllowAnonymous]
-        [AuthorizeApiKey(Flag = AuthorizeApiKey.Standard)]
+        [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("{uid}/icon")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> GetIconGlobal([FromRoute]string uid)
@@ -136,6 +137,7 @@ namespace WikiLibs.API
         }
 
         [HttpGet("me/icon")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> GetIconMe()
         {
@@ -144,6 +146,7 @@ namespace WikiLibs.API
         }
 
         [HttpPut("{uid}/icon")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(string))]
         //Parameter name is forced to be meaningless otherwise useless warning
         public async Task<IActionResult> PutIconGlobal([FromRoute]string uid, [FromForm, Required]FormFile seryhk)
@@ -162,6 +165,7 @@ namespace WikiLibs.API
         }
 
         [HttpPut("me/icon")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         [ProducesResponseType(200, Type = typeof(string))]
         //Parameter name is forced to be meaningless otherwise useless warning
         public async Task<IActionResult> PutIconMe([FromForm, Required]FormFile seryhk)

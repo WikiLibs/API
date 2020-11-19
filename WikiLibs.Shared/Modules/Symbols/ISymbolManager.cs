@@ -9,6 +9,7 @@ namespace WikiLibs.Shared.Modules.Symbols
     public interface ISymbolManager : IModule, ICRUDOperations<Data.Models.Symbols.Symbol>
     {
         ILangManager LangManager { get; }
+        ILibManager LibManager { get; }
         ICRUDOperations<Data.Models.Symbols.Type> TypeManager { get; }
 
         Task<Data.Models.Symbols.Symbol> GetAsync(string path);
