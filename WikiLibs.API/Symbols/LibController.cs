@@ -154,7 +154,7 @@ namespace WikiLibs.API.Symbols
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Lib))]
         [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("/symbol/lib/{id}")]
-        public async Task<IActionResult> Get([FromQuery] long id)
+        public async Task<IActionResult> Get([FromRoute] long id)
         {
             var sym = await _symmgr.LibManager.GetAsync(id);
             return (Json(Models.Output.Symbols.Lib.CreateModel(sym)));
