@@ -8,6 +8,7 @@ namespace WikiLibs.Data.Models.Symbols
     {
         public string Name { get; set; }
         public string DisplayName { get; set; }
+        public string LangName { get; set; }
         public byte[] Icon { get; set; }
         public string UserId { get; set; }
         public string Description { get; set; }
