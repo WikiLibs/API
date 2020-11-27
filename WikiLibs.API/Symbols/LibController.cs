@@ -10,6 +10,7 @@ using WikiLibs.Models.Input.Symbols;
 using WikiLibs.Models.Output.Symbols;
 using WikiLibs.Shared;
 using WikiLibs.Shared.Attributes;
+using WikiLibs.Shared.Modules;
 using WikiLibs.Shared.Modules.Symbols;
 using WikiLibs.Shared.Service;
 
@@ -19,12 +20,14 @@ namespace WikiLibs.API.Symbols
     public class LibController : FileController
     {
         private readonly ISymbolManager _symmgr;
+        private readonly IUserManager _users;
         private readonly IUser _user;
 
-        public LibController(ISymbolManager mgr, IUser usr)
+        public LibController(ISymbolManager mgr, IUser usr, IUserManager users)
         {
             _symmgr = mgr;
             _user = usr;
+            _users = users;
         }
 
         /**
@@ -85,17 +88,30 @@ namespace WikiLibs.API.Symbols
         [ProducesResponseType(200, Type = typeof(Lib))]
         public async Task<IActionResult> PostAsync([FromBody] LibCreate mdl)
         {
-            if (!_user.HasPermission(Permissions.CREATE_LIB))
+            if (!_user.HasPermission(Permissions.CREATE_LIB_CURRENT))
                 throw new Shared.Exceptions.InsuficientPermission
                 {
                     ResourceId = "0",
                     ResourceName = mdl.Name,
                     ResourceType = typeof(Data.Models.Symbols.Lib),
-                    MissingPermission = Permissions.CREATE_LIB
+                    MissingPermission = Permissions.CREATE_LIB_CURRENT
+                };
+            if (mdl.UserId != null && !_user.HasPermission(Permissions.CREATE_LIB_ANY))
+                throw new Shared.Exceptions.InsuficientPermission
+                {
+                    ResourceId = "0",
+                    ResourceName = mdl.Name,
+                    ResourceType = typeof(Data.Models.Symbols.Lib),
+                    MissingPermission = Permissions.CREATE_LIB_ANY
                 };
             var tmp = mdl.CreateModel();
-
-            tmp.UserId = _user.UserId;
+            if (mdl.UserId != null)
+            {
+                var usr = await _users.GetAsync(mdl.UserId);
+                tmp.UserId = usr.Id;
+            }
+            else
+                tmp.UserId = _user.UserId;
             var obj = await _symmgr.LibManager.PostAsync(tmp);
             return Json(Lib.CreateModel(obj));
         }

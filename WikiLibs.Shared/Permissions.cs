@@ -126,7 +126,8 @@ namespace WikiLibs.Shared
         #endregion
 
         #region LIB
-        public const string CREATE_LIB = "lib.create";
+        public const string CREATE_LIB_CURRENT = "lib.create.me";
+        public const string CREATE_LIB_ANY = "lib.create.any";
         public const string UPDATE_LIB = "lib.update";
         public const string DELETE_LIB = "lib.delete";
         #endregion
