@@ -23,7 +23,7 @@ namespace WikiLibs.Symbols
 
         public override Task<Lib> PostAsync(Lib mdl)
         {
-            if (Set.Any(e => e.Name == mdl.Name || e.DisplayName == mdl.DisplayName))
+            if (Set.Any(e => e.Name == mdl.Name))
                 throw new Shared.Exceptions.ResourceAlreadyExists
                 {
                     ResourceId = "0",
