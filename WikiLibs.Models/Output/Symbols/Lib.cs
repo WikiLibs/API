@@ -20,7 +20,6 @@ namespace WikiLibs.Models.Output.Symbols
         {
             Name = model.Name;
             DisplayName = model.DisplayName;
-            LangName = model.Name.Split('/')[0];
             Id = model.Id;
             Description = model.Description;
             Copyright = model.Copyright;
