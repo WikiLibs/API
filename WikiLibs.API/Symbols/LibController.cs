@@ -173,7 +173,7 @@ namespace WikiLibs.API.Symbols
         public async Task<IActionResult> Get([FromRoute] long id)
         {
             var sym = await _symmgr.LibManager.GetAsync(id);
-            var tmp = sym.DisplayName.Split('/');
+            var tmp = sym.Name.Split('/');
             var lang = await _symmgr.LangManager.Get(e => e.Name == tmp[0]).FirstOrDefaultAsync();
             var mdl = Lib.CreateModel(sym);
             mdl.LangName = lang != null && lang.DisplayName != null ? lang.DisplayName : tmp[0];
