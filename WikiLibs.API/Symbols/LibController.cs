@@ -161,7 +161,7 @@ namespace WikiLibs.API.Symbols
             var lang = await _symmgr.LangManager.Get(e => e.Name == tmp[0]).FirstOrDefaultAsync();
             var mdl = Lib.CreateModel(sym);
             mdl.LangName = lang != null && lang.DisplayName != null ? lang.DisplayName : tmp[0];
-            mdl.DisplayName = tmp[1];
+            mdl.Name = tmp[1];
             return (Json(mdl));
         }
     }

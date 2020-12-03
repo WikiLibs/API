@@ -18,7 +18,6 @@ namespace WikiLibs.Models.Output.Symbols
 
         public override void Map(in Data.Models.Symbols.Lib model)
         {
-            Name = model.Name;
             DisplayName = model.DisplayName;
             Id = model.Id;
             Description = model.Description;
