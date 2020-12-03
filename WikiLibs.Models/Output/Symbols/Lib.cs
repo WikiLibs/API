@@ -8,7 +8,9 @@ namespace WikiLibs.Models.Output.Symbols
 {
     public class Lib : GetModel<Lib, Data.Models.Symbols.Lib>
     {
+        public string Name { get; set; }
         public string DisplayName { get; set; }
+        public string LangName { get; set; }
         public long Id { get; set; }
         public string Description { get; set; }
         public string Copyright { get; set; }

@@ -170,10 +170,15 @@ namespace WikiLibs.API.Symbols
         [ProducesResponseType(200, Type = typeof(Models.Output.Symbols.Lib))]
         [Authorize(Policy = AuthPolicy.ApiKey, Roles = AuthorizeApiKey.Standard)]
         [HttpGet("/symbol/lib/{id}")]
-        public async Task<IActionResult> Get([FromQuery] long id)
+        public async Task<IActionResult> Get([FromRoute] long id)
         {
             var sym = await _symmgr.LibManager.GetAsync(id);
-            return (Json(Models.Output.Symbols.Lib.CreateModel(sym)));
+            var tmp = sym.DisplayName.Split('/');
+            var lang = await _symmgr.LangManager.Get(e => e.Name == tmp[0]).FirstOrDefaultAsync();
+            var mdl = Lib.CreateModel(sym);
+            mdl.LangName = lang != null && lang.DisplayName != null ? lang.DisplayName : tmp[0];
+            mdl.Name = tmp[1];
+            return (Json(mdl));
         }
     }
 }
