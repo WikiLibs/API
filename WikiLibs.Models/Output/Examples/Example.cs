@@ -29,6 +29,7 @@ namespace WikiLibs.Models.Output.Examples
             UserId = model.UserId;
             Description = model.Description;
             CreationDate = model.CreationDate;
+            VoteCount = model.VoteCount;
             Code = new ExampleCodeLine[model.Code.Count];
             int x = 0;
             foreach (var ex in model.Code)
