@@ -138,6 +138,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpPost("/example/{id}/upvote")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> UpVote([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.UPDATE_EXAMPLE_VOTE))
@@ -153,6 +154,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpPost("/example/{id}/downvote")]
+        [Authorize(Policy = AuthPolicy.Bearer)]
         public async Task<IActionResult> DownVote([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.UPDATE_EXAMPLE_VOTE))
