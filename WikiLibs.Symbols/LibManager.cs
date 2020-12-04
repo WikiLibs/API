@@ -35,7 +35,7 @@ namespace WikiLibs.Symbols
 
         public override async Task<Lib> PatchAsync(long key, Lib mdl)
         {
-            if (Set.Any(e => e.Id == mdl.Id || e.DisplayName == mdl.DisplayName))
+            if (Set.Any(e => e.Id != mdl.Id || e.DisplayName == mdl.DisplayName))
                 throw new Shared.Exceptions.ResourceAlreadyExists
                 {
                     ResourceId = "0",
