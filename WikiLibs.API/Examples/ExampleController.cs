@@ -138,7 +138,7 @@ namespace WikiLibs.API.Examples
         }
 
         [HttpPost("/example/{id}/upvote")]
-        public async Task<IActionResult> UpVote(IUser user, long exampleId)
+        public async Task<IActionResult> UpVote([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.UPDATE_EXAMPLE_VOTE))
                 throw new Shared.Exceptions.InsuficientPermission()
@@ -148,12 +148,12 @@ namespace WikiLibs.API.Examples
                     ResourceType = typeof(Data.Models.Examples.ExampleComment),
                     MissingPermission = Permissions.UPDATE_EXAMPLE_VOTE
                 };
-            await _manager.UpVote(user, exampleId);
+            await _manager.UpVote(_user, id);
             return (Ok());
         }
 
         [HttpPost("/example/{id}/downvote")]
-        public async Task<IActionResult> DownVote(IUser user, long exampleId)
+        public async Task<IActionResult> DownVote([FromRoute] long id)
         {
             if (!_user.HasPermission(Permissions.UPDATE_EXAMPLE_VOTE))
                 throw new Shared.Exceptions.InsuficientPermission()
@@ -163,7 +163,7 @@ namespace WikiLibs.API.Examples
                     ResourceType = typeof(Data.Models.Examples.ExampleComment),
                     MissingPermission = Permissions.UPDATE_EXAMPLE_VOTE
                 };
-            await _manager.DownVote(user, exampleId);
+            await _manager.DownVote(_user, id);
             return (Ok());
         }
     }
