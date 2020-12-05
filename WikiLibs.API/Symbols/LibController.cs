@@ -178,6 +178,7 @@ namespace WikiLibs.API.Symbols
             var mdl = Lib.CreateModel(sym);
             mdl.LangName = lang != null && lang.DisplayName != null ? lang.DisplayName : tmp[0];
             mdl.Name = tmp[1];
+            mdl.Lang = tmp[0];
             return (Json(mdl));
         }
     }
