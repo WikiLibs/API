@@ -10,7 +10,6 @@ namespace WikiLibs.Models.Input.Examples
     {
         public class CodeLine
         {
-            [Required]
             public string Data { get; set; }
             public string Comment { get; set; }
         }
