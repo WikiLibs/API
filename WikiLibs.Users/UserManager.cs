@@ -64,7 +64,6 @@ namespace WikiLibs.Users
             usr.LastName = mdl.LastName;
             usr.ProfileMsg = mdl.ProfileMsg;
             usr.Pseudo = mdl.Pseudo;
-            usr.Icon = mdl.Icon;
             var grp = Context.Groups.Where(x => x.Id == mdl.GroupId).FirstOrDefault();
             if (grp != null)
                 usr.Group = grp;
